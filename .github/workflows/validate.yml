@@ -1,0 +1,119 @@
+name: Validate Plugin
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Plugin Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check required files
+        run: |
+          ERRORS=0
+          check_file() {
+            if [ ! -f "$1" ]; then
+              echo "MISSING: $1"
+              ERRORS=$((ERRORS + 1))
+            else
+              echo "✓ $1"
+            fi
+          }
+          check_file ".claude-plugin/plugin.json"
+          check_file "hooks/hooks.json"
+          check_file "LICENSE"
+          check_file "README.md"
+          check_file "CONTRIBUTING.md"
+          check_file "CHANGELOG.md"
+          check_file "skills/using-harness/SKILL.md"
+          check_file "skills/harness-init/SKILL.md"
+          check_file "skills/harness-audit/SKILL.md"
+          check_file "skills/harness-evolve/SKILL.md"
+          if [ $ERRORS -gt 0 ]; then
+            echo ""
+            echo "ERROR: $ERRORS required file(s) missing"
+            exit 1
+          fi
+
+      - name: Validate plugin.json
+        run: |
+          python3 << 'EOF'
+          import json, sys
+
+          with open('.claude-plugin/plugin.json') as f:
+              manifest = json.load(f)
+
+          errors = []
+          required_fields = ['name', 'version', 'description', 'license']
+          for field in required_fields:
+              if field not in manifest:
+                  errors.append(f"Missing required field: {field}")
+
+          if 'author' in manifest and not isinstance(manifest['author'], dict):
+              errors.append("'author' must be an object {name, url}")
+
+          if errors:
+              for e in errors:
+                  print(f"ERROR: {e}")
+              sys.exit(1)
+
+          print(f"✓ plugin.json valid: {manifest['name']} v{manifest['version']}")
+          EOF
+
+      - name: Validate hooks.json
+        run: |
+          python3 << 'EOF'
+          import json, sys
+
+          with open('hooks/hooks.json') as f:
+              hooks = json.load(f)
+
+          if 'hooks' not in hooks:
+              print("ERROR: hooks.json must have a top-level 'hooks' key")
+              sys.exit(1)
+
+          print(f"✓ hooks.json valid, events: {list(hooks['hooks'].keys())}")
+          EOF
+
+      - name: Validate eval cases
+        run: |
+          python3 << 'EOF'
+          import json, sys
+
+          with open('evals/evals.json') as f:
+              evals = json.load(f)
+
+          required = ['id', 'type', 'skill', 'prompt', 'expected_behavior']
+          errors = []
+          for i, e in enumerate(evals):
+              for field in required:
+                  if field not in e:
+                      errors.append(f"eval[{i}] (id={e.get('id','?')}): missing '{field}'")
+
+          if errors:
+              for err in errors:
+                  print(f"ERROR: {err}")
+              sys.exit(1)
+
+          functional = sum(1 for e in evals if e['type'] == 'functional')
+          pressure = sum(1 for e in evals if e['type'] == 'pressure')
+          print(f"✓ {len(evals)} evals valid ({functional} functional, {pressure} pressure)")
+          EOF
+
+      - name: Check shell scripts are executable-ready
+        run: |
+          for script in scripts/*.sh; do
+            # Check scripts have a shebang line
+            if ! head -1 "$script" | grep -q "^#!"; then
+              echo "ERROR: $script missing shebang line"
+              exit 1
+            fi
+            echo "✓ $script"
+          done

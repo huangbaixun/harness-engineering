@@ -1,0 +1,26 @@
+# Project: {{PROJECT_NAME}} — CLAUDE.md
+
+## 技术栈
+- TypeScript strict mode, Node.js {{NODE_VERSION}}, {{FRAMEWORK}}
+- 包管理器：{{PACKAGE_MANAGER}}（禁止使用其他包管理器）
+
+## 关键命令
+- 测试：`{{TEST_COMMAND}}`  |  监听：`{{TEST_WATCH_COMMAND}}`
+- 构建：`{{BUILD_COMMAND}}`  |  类型检查：`{{TYPECHECK_COMMAND}}`
+- Lint：`{{LINT_COMMAND}}`
+
+## 架构约定
+- 依赖方向：types → config → repo → service → api → ui（禁止逆向）
+- 所有公共 API 必须有 JSDoc 注释
+- 新代码必须有对应测试（覆盖率 >80%）
+
+## 禁止规则
+- 永远不要删除数据库迁移文件
+- 永远不要在代码中硬编码 secret / API key
+- 提交前必须通过 typecheck（见 Stop Hook）
+- 不要使用 any 类型，使用 unknown 并做类型收窄
+
+## 更多上下文
+- 架构图：docs/architecture.md
+- 设计决策：docs/decisions/
+- 长任务进度：docs/claude-progress.json

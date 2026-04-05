@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "Stop": [{
+      "matcher": "",
+      "hooks": [
+        { "type": "command", "command": ".claude/hooks/stop-typecheck.sh" }
+      ]
+    }],
+    "PreToolUse": [{
+      "matcher": "Bash|Edit|Write",
+      "hooks": [
+        { "type": "command", "command": ".claude/hooks/pre-protect-env.sh" }
+      ]
+    }],
+    "PostToolUse": [{
+      "matcher": "Edit|Write",
+      "hooks": [
+        { "type": "command", "command": ".claude/hooks/post-format.sh" }
+      ]
+    }]
+  }
+}

@@ -1,0 +1,27 @@
+# Project: {{PROJECT_NAME}} — CLAUDE.md
+
+## 技术栈
+- Python {{PYTHON_VERSION}}, {{FRAMEWORK}}
+- 包管理器：{{PACKAGE_MANAGER}}（poetry / pip / uv）
+- 类型标注：必须使用 type hints
+
+## 关键命令
+- 测试：`{{TEST_COMMAND}}`  |  覆盖率：`{{COVERAGE_COMMAND}}`
+- Lint：`{{LINT_COMMAND}}`  |  格式化：`{{FORMAT_COMMAND}}`
+- 类型检查：`{{TYPECHECK_COMMAND}}`
+
+## 架构约定
+- 依赖方向：models → schemas → repositories → services → api（禁止逆向）
+- 所有公共函数必须有 docstring
+- 新代码必须有对应测试（覆盖率 >80%）
+
+## 禁止规则
+- 永远不要在代码中硬编码 secret / API key
+- 永远不要使用 `import *`
+- 永远不要绕过类型检查（no `# type: ignore` without explanation）
+- 提交前必须通过 mypy / pyright（见 Stop Hook）
+
+## 更多上下文
+- 架构图：docs/architecture.md
+- 设计决策：docs/decisions/
+- 长任务进度：docs/claude-progress.json
