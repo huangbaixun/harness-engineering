@@ -1,0 +1,26 @@
+# Project: {{PROJECT_NAME}} — CLAUDE.md
+
+## 技术栈
+- Go {{GO_VERSION}}, {{FRAMEWORK}}
+- 模块管理：go modules
+
+## 关键命令
+- 测试：`go test ./...`  |  覆盖率：`go test -coverprofile=cover.out ./...`
+- Lint：`golangci-lint run`  |  格式化：`gofmt -w .`
+- 构建：`go build ./...`  |  Vet：`go vet ./...`
+
+## 架构约定
+- 依赖方向：domain → repository → service → handler → cmd（禁止逆向）
+- 遵循标准 Go 项目布局（cmd/ internal/ pkg/）
+- 错误处理：不忽略 error，不 panic 用于常规错误
+
+## 禁止规则
+- 永远不要在代码中硬编码 secret / API key
+- 永远不要忽略 error 返回值（`_ = someFunc()` 必须有注释说明原因）
+- 永远不要使用 init() 做业务逻辑
+- 提交前必须通过 go vet（见 Stop Hook）
+
+## 更多上下文
+- 架构图：docs/architecture.md
+- 设计决策：docs/decisions/
+- 长任务进度：docs/claude-progress.json

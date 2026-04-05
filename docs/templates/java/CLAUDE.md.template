@@ -1,0 +1,40 @@
+# Project: {{PROJECT_NAME}} — CLAUDE.md
+
+## 技术栈
+- Java {{JAVA_VERSION}}（LTS），{{FRAMEWORK}}（Spring Boot / Quarkus / Micronaut）
+- 构建工具：{{BUILD_TOOL}}（Maven / Gradle）
+- 测试：JUnit 5 + Mockito + AssertJ
+- 代码质量：Checkstyle + SpotBugs + PMD
+
+## 关键命令
+- 测试：`{{TEST_COMMAND}}`（mvn test / ./gradlew test）
+- 构建：`{{BUILD_COMMAND}}`（mvn package / ./gradlew build）
+- 代码检查：`{{LINT_COMMAND}}`（mvn checkstyle:check / ./gradlew checkstyleMain）
+- 静态分析：`{{STATIC_ANALYSIS_COMMAND}}`（mvn spotbugs:check）
+- 运行：`{{RUN_COMMAND}}`（mvn spring-boot:run / ./gradlew bootRun）
+
+## 架构约定
+- 依赖方向：entity → repository → service → controller（禁止逆向）
+- 禁止 controller 直接调用 repository（必须经过 service 层）
+- DTO 与 Entity 严格分离，不暴露 Entity 给 API 层
+- 异步任务统一使用 `@Async` + `ThreadPoolTaskExecutor`，不直接 `new Thread()`
+
+## 禁止规则
+- 永远不要在代码中硬编码 secret / API key（使用 `application-{profile}.yml` + 环境变量）
+- 永远不要使用原始类型（Raw Types），如 `List` 必须写 `List<String>`
+- 永远不要忽略 `@SuppressWarnings("unchecked")`，需要有注释说明为何安全
+- 永远不要 catch `Exception` 或 `Throwable` 而不重新抛出或记录
+- 不要在 `@Transactional` 方法内部捕获异常后静默处理（会导致事务回滚失效）
+- 提交前必须通过 Checkstyle 和 SpotBugs（见 Stop Hook）
+
+## 测试约定
+- 单元测试：`src/test/java/**/*Test.java`
+- 集成测试：`src/test/java/**/*IT.java`（使用 `@SpringBootTest`）
+- 测试命名：`methodName_givenCondition_thenExpectedResult`
+- Mock 使用 Mockito，禁止 mock final class / 静态方法（重新设计接口）
+
+## 更多上下文
+- 架构图：docs/architecture.md
+- 设计决策：docs/decisions/
+- 长任务进度：docs/claude-progress.json
+- API 文档：http://localhost:8080/swagger-ui.html（本地运行后）

@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "product": "{{PROJECT_NAME}}",
+  "last_updated": "{{TIMESTAMP}}",
+  "updated_by": "{{AUTHOR}}",
+
+  "features": [
+    {
+      "id": "F001",
+      "name": "{{FEATURE_NAME}}",
+      "priority": 1,
+      "status": "pending",
+      "description": "{{FEATURE_DESCRIPTION}}",
+      "acceptance_criteria": [
+        "{{CRITERION_1}}",
+        "{{CRITERION_2}}"
+      ],
+      "out_of_scope": [],
+      "dependencies": [],
+      "technical_notes": "",
+      "related_files": []
+    }
+  ],
+
+  "constraints": {
+    "implementation_order": "严格按 priority 顺序，有 dependency 的特性必须等依赖完成",
+    "code_state_rule": "每个特性完成后代码必须可合并（测试全通过、无 TODO、有基本注释）",
+    "scope_rule": "out_of_scope 的内容不实现，即使很简单。需求变更必须先更新本文件"
+  }
+}

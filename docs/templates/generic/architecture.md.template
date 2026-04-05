@@ -1,0 +1,39 @@
+# {{PROJECT_NAME}} — 架构图
+
+## 系统概览
+
+{{SYSTEM_DESCRIPTION}}
+
+## 目录结构
+
+{{DIRECTORY_STRUCTURE}}
+
+## 依赖方向规则
+
+允许的依赖方向（只能向右引用）：
+
+  {{DEPENDENCY_RULE}}
+
+禁止规则：
+{{DEPENDENCY_PROHIBITIONS}}
+
+这些规则由 tests/architecture/ 中的结构化测试自动验证。
+违反规则时 CI 自动失败，错误信息包含具体修复方式。
+
+## 关键模块
+
+| 模块 | 路径 | 职责 |
+|------|------|------|
+{{KEY_MODULES}}
+
+## 外部依赖
+
+| 服务 | 用途 | 接入位置 |
+|------|------|---------|
+{{EXTERNAL_DEPS}}
+
+## 延伸阅读
+
+- 设计文档 → docs/design/
+- 架构决策 → docs/decisions/
+- 数据库模式 → {{SCHEMA_PATH}}

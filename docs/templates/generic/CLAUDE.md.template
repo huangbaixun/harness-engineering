@@ -1,0 +1,25 @@
+# Project: {{PROJECT_NAME}} — CLAUDE.md
+
+## 技术栈
+- {{TECH_STACK}}
+- 包管理器：{{PACKAGE_MANAGER}}
+
+## 关键命令
+- 测试：`{{TEST_COMMAND}}`
+- 构建：`{{BUILD_COMMAND}}`
+- Lint/格式化：`{{LINT_COMMAND}}`
+
+## 架构约定
+- {{ARCHITECTURE_RULES}}
+- 新代码必须有对应测试
+- 所有公共 API 必须有文档注释
+
+## 禁止规则
+- 永远不要在代码中硬编码 secret / API key
+- 永远不要删除已有的测试
+- 提交前必须通过质量检查（见 Stop Hook）
+
+## 更多上下文
+- 架构图：docs/architecture.md
+- 设计决策：docs/decisions/
+- 长任务进度：docs/claude-progress.json
