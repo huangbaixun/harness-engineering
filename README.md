@@ -26,7 +26,18 @@ claude plugins add harness-engineering
 
 > 「帮我初始化这个项目的 Harness」
 
-`harness-init` Skill 将自动生成完整的六层 Harness 结构，包括 `CLAUDE.md`、Hooks、`docs/` 目录和语言栈最佳实践配置。
+初始化完成后，你的项目会获得：
+
+| 文件 | 作用 |
+|------|------|
+| `CLAUDE.md` | Agent 记忆层（≤60 行） |
+| `init.sh` | 会话启动脚本，每次新会话前运行 |
+| `.claude/settings.json` | 权限控制 + Hook 注册 |
+| `.claude/hooks/` | 类型检查、.env 保护、自动格式化 |
+| `docs/architecture.md` | 架构图，Agent 的空间感知文档 |
+| `docs/claude-progress.json` | 跨会话进度追踪 |
+
+验证就绪：`bash init.sh`，看到「Harness 就绪 ✓」即可开始使用。
 
 **第三步：持续受益**
 
