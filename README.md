@@ -121,7 +121,7 @@ claude --plugin-dir /tmp/harness-test
 
 ## 方法论参考
 
-本 plugin 基于 [Harness Engineering 完整实践手册](references/HarnessEngineering.md) 构建——综合 Anthropic、OpenAI、InfoQ、Hacker News 的一手实践，涵盖长周期任务驾驭架设计、多 Agent 架构、垃圾回收体系等核心模式。
+本 plugin 基于 Harness Engineering 完整实践手册构建——综合 Anthropic、OpenAI、InfoQ、Hacker News 的一手实践，涵盖长周期任务驾驭架设计、多 Agent 架构、垃圾回收体系等核心模式。概念速查见 [`references/harness-engineering-handbook.md`](references/harness-engineering-handbook.md)。
 
 ---
 
