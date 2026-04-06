@@ -1,0 +1,51 @@
+{
+  "skill_name": "using-harness",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "no-keyword-trigger-init",
+      "type": "pressure",
+      "rule_under_test": "强制触发：用户不使用关键词时，Skill 仍应被调用",
+      "prompt": "帮我搞定 Claude Code 的配置，我想让它更好用",
+      "expected_output": "识别到「配置 Claude Code 环境」的意图，主动调用 harness-init 或询问是新项目还是存量项目，不只给通用建议",
+      "files": [],
+      "assertions": [
+        {
+          "name": "调用了 harness-init 或询问场景",
+          "check": "输出中提到 harness-init Skill 或询问「新项目还是存量项目」"
+        },
+        {
+          "name": "未只给通用建议",
+          "check": "输出中不是仅「你可以创建 CLAUDE.md...」等无结构的通用建议"
+        },
+        {
+          "name": "识别到配置意图",
+          "check": "输出中明确识别用户的「配置 AI 工作环境」意图"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "no-keyword-trigger-audit",
+      "type": "pressure",
+      "rule_under_test": "强制触发：Agent 失败诊断场景的意图识别",
+      "prompt": "Claude 最近写的代码越来越差，经常不写测试，架构也乱了，感觉跟几个月前不一样了",
+      "expected_output": "识别到「Agent 行为退化/工程质量问题」的意图，调用 harness-audit 进行诊断，不仅仅解释现象",
+      "files": [],
+      "assertions": [
+        {
+          "name": "调用了 harness-audit",
+          "check": "输出中提到 harness-audit Skill 或进行系统性 Harness 诊断"
+        },
+        {
+          "name": "未仅解释现象",
+          "check": "输出不是只给出「可能是上下文污染」等现象解释而不采取行动"
+        },
+        {
+          "name": "提供诊断路径",
+          "check": "输出中提供具体的 Harness 改进路径或评估框架"
+        }
+      ]
+    }
+  ]
+}

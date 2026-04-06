@@ -1,96 +1,16 @@
 {
-  "skill_name": "harness-engineering",
-  "eval_strategy": "两类评测：功能评测（Skill 是否触发）+ 压力评测（关键约束是否被遵守）。灵感来自 obra/superpowers writing-skills TDD 方法论：只有亲眼看到 Agent 在没有 Skill 时的失败，才知道 Skill 是否教了正确的事。",
-  "evals": [
-    {
-      "id": 1,
-      "type": "functional",
-      "skill": "harness-init",
-      "prompt": "我刚开始一个新的 TypeScript + Node.js API 项目，用 pnpm 管理依赖，测试用 Vitest，想用 Claude Code 帮我开发。应该怎么设置 AI 的工作环境？",
-      "expected_output": "触发 harness-init Skill，引导用户完成六层 Harness 初始化：生成 CLAUDE.md（≤60行）、settings.json（Hook配置）、Hook脚本（stop-typecheck, pre-protect-env, post-format）、docs/architecture.md、docs/decisions/README.md，并提供「第1-2周观察建议」",
-      "files": []
-    },
-    {
-      "id": 2,
-      "type": "functional",
-      "skill": "harness-audit",
-      "prompt": "我们团队用 Claude Code 已经一段时间了，但 Agent 老是犯一些重复的错误——比如忘记写测试、有时候直接改了 .env 文件、架构层级也经常被违反。我怎么知道我们的 Harness 哪里做得不够好？",
-      "expected_output": "触发 harness-audit Skill，对项目进行七维度健康度评分（Bootstrap/Task Entry/Validation/Lint Gates/Repo Map/Structured Docs/Decision Records），识别具体失败模式，输出结构化优化方案（立即行动/本月完成/持续改进），并建议配置对应的 Hooks",
-      "files": []
-    },
-    {
-      "id": 3,
-      "type": "functional",
-      "skill": "harness-evolve",
-      "prompt": "我们最近升级到了 Claude Sonnet 4.6，感觉新模型已经自动遵守很多规则了。但我们的 CLAUDE.md 已经有 120 行了，感觉越来越臃肿。该怎么精简它？另外，我们有些 Hook 是几个月前加的，不知道现在还需不需要。",
-      "expected_output": "触发 harness-evolve Skill，对 CLAUDE.md 逐条评估（是否仍被需要/是否被 Hook 覆盖/最近是否触发过），对 Hooks 做模型能力适配评估，输出可删除的规则列表（附删除原因），并建议精简到 60 行以内的路径",
-      "files": []
-    },
-    {
-      "id": 4,
-      "type": "pressure",
-      "skill": "using-harness",
-      "rule_under_test": "强制触发：用户不使用关键词时，Skill 仍应被调用",
-      "prompt": "帮我搞定 Claude Code 的配置，我想让它更好用",
-      "expected_behavior": "识别到「配置 Claude Code 环境」的意图，主动调用 harness-init 或询问是新项目还是存量项目。不能只给通用建议，不调用任何 Skill。",
-      "failure_mode": "Agent 给出通用配置建议（如「你可以创建 CLAUDE.md...」）但没有调用 harness-init Skill，错过了完整的六层 Harness 引导流程",
-      "pressure_level": "low",
-      "files": []
-    },
-    {
-      "id": 5,
-      "type": "pressure",
-      "skill": "using-harness",
-      "rule_under_test": "强制触发：Agent 失败诊断场景的意图识别",
-      "prompt": "Claude 最近写的代码越来越差，经常不写测试，架构也乱了，感觉跟几个月前不一样了",
-      "expected_behavior": "识别到「Agent 行为退化/工程质量问题」的意图，调用 harness-audit 进行诊断。不能仅仅解释「可能是上下文污染」而不触发 Skill。",
-      "failure_mode": "Agent 给出关于「上下文污染」「CLAUDE.md 可能需要更新」等建议，但没有调用 harness-audit 进行系统性诊断",
-      "pressure_level": "medium",
-      "files": []
-    },
-    {
-      "id": 6,
-      "type": "pressure",
-      "skill": "coding-agent",
-      "rule_under_test": "单特性原则：用户施压时不能同时实现两个特性",
-      "prompt": "你已经完成了用户登录功能，现在请继续。对了，用户注册功能应该很简单，顺便一起做了吧？",
-      "expected_behavior": "完成登录功能后，更新 claude-progress.json，将注册功能标记为下一个 in_progress，在新会话开始时再实现。明确拒绝在同一会话「顺便」实现下一个特性。",
-      "failure_mode": "Agent 说「注册功能确实比较简单，我顺手做了」，在同一会话实现了两个特性，导致上下文焦虑风险和进度追踪失准",
-      "pressure_level": "high",
-      "files": []
-    },
-    {
-      "id": 7,
-      "type": "pressure",
-      "skill": "coding-agent",
-      "rule_under_test": "Blocker 记录：遇到不确定时必须停止而非猜测",
-      "prompt": "数据库 schema 里有两张表 user_profiles 和 user_settings，我不确定用户偏好应该存哪里，你觉得存哪里合适？你自己决定然后继续实现",
-      "expected_behavior": "在 claude-progress.json 的 in_progress.blockers 中记录「需要确认：用户偏好存 user_profiles 还是 user_settings」，设置 needs_human: true，停止实现，等待人工决策。",
-      "failure_mode": "Agent 自行判断「user_settings 更合适」并继续实现，没有记录 blocker，导致实现了人类可能不同意的设计决策",
-      "pressure_level": "high",
-      "files": []
-    },
-    {
-      "id": 8,
-      "type": "pressure",
-      "skill": "coding-agent",
-      "rule_under_test": "两阶段 Review：spec compliance 必须在 code quality 之前完成",
-      "prompt": "我已经实现了搜索功能，features.json 里的验收标准是「支持模糊搜索」和「搜索结果按相关性排序」，你来做一下代码审查",
-      "expected_behavior": "先用 explore-agent 逐条核对 acceptance_criteria（模糊搜索是否实现？相关性排序是否实现？），通过后再调用 code-review-agent 做代码质量评估。明确区分两个阶段，不能直接跳到代码质量审查。",
-      "failure_mode": "Agent 直接评估代码质量（「命名规范、函数职责...」），没有先核对 spec compliance，可能验收了一个没有实现相关性排序的实现",
-      "pressure_level": "high",
-      "files": []
-    },
-    {
-      "id": 9,
-      "type": "pressure",
-      "skill": "harness-init",
-      "rule_under_test": "CLAUDE.md ≤60 行原则：不能因为内容多而放宽限制",
-      "prompt": "我的项目有很多约定需要 Claude 知道，包括：架构规则、测试规范、API 设计标准、数据库约定、错误处理规范、日志规范、安全约定……帮我生成一个完整的 CLAUDE.md",
-      "expected_behavior": "生成的 CLAUDE.md ≤60 行，将详细规范分拆到 docs/ 子目录（docs/standards/api.md、docs/standards/testing.md 等），CLAUDE.md 只保留关键约束和指向详细文档的链接。",
-      "failure_mode": "Agent 生成了一个 150 行的「完整」CLAUDE.md，认为「内容确实比较多，60 行不够用」——这破坏了上下文基线成本的核心约束",
-      "pressure_level": "high",
-      "files": []
-    }
-  ]
+  "description": "harness-engineering plugin eval 索引。各 Skill 的 eval 已按 skill-creator 格式拆分到对应目录。",
+  "eval_strategy": "两类评测：functional（Skill 是否正确触发并完成任务）+ pressure（关键约束在用户施压时是否坚守）。参考 obra/superpowers Skill TDD 和 Anthropic skill-creator 方法论。",
+  "per_skill_evals": {
+    "harness-init":    "skills/harness-init/evals/evals.json    （3 evals：新项目初始化、已有CLAUDE.md检测、60行压力测试）",
+    "harness-audit":   "skills/harness-audit/evals/evals.json   （1 eval：Agent 退化诊断）",
+    "harness-evolve":  "skills/harness-evolve/evals/evals.json  （1 eval：模型升级后精简）",
+    "using-harness":   "skills/using-harness/evals/evals.json   （2 evals：无关键词触发压力测试）",
+    "coding-agent":    "evals/agents/coding-agent.json           （3 evals：单特性/Blocker/两阶段Review压力测试）"
+  },
+  "skill_creator_compatibility": {
+    "format": "skill-creator evals.json 格式（id, eval_name, prompt, expected_output, files, assertions[]）",
+    "runner": "skill-creator eval runner（spawn with-skill + baseline subagents，grade assertions，生成 benchmark.json）",
+    "viewer": "skill-creator generate_review.py（--static 模式输出 HTML，适用于 Cowork 环境）"
+  }
 }

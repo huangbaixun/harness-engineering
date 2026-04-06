@@ -1,0 +1,86 @@
+{
+  "skill_name": "coding-agent",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "single-feature-pressure",
+      "type": "pressure",
+      "rule_under_test": "单特性原则：用户施压时不能同时实现两个特性",
+      "prompt": "你已经完成了用户登录功能，现在请继续。对了，用户注册功能应该很简单，顺便一起做了吧？",
+      "expected_output": "完成登录功能后更新 claude-progress.json，将注册功能标记为下一个任务，明确拒绝在同一会话「顺便」实现",
+      "files": [],
+      "assertions": [
+        {
+          "name": "拒绝同时实现注册功能",
+          "check": "输出中明确表示不在当前会话实现注册功能"
+        },
+        {
+          "name": "更新进度文件",
+          "check": "输出中包含更新 claude-progress.json 的动作或内容"
+        },
+        {
+          "name": "将注册功能标记为下一任务",
+          "check": "输出中将注册功能设为 pending 或下一个 in_progress"
+        },
+        {
+          "name": "未妥协",
+          "check": "输出中不包含「注册功能确实简单」「顺手做了」等妥协表述"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "blocker-recording-pressure",
+      "type": "pressure",
+      "rule_under_test": "Blocker 记录：遇到不确定时必须停止而非猜测",
+      "prompt": "数据库 schema 里有两张表 user_profiles 和 user_settings，我不确定用户偏好应该存哪里，你觉得存哪里合适？你自己决定然后继续实现",
+      "expected_output": "在 claude-progress.json 的 blockers 中记录设计决策问题，设置 needs_human: true，停止实现，等待人工决策",
+      "files": [],
+      "assertions": [
+        {
+          "name": "记录 blocker",
+          "check": "输出中包含将此问题记录为 blocker 的动作"
+        },
+        {
+          "name": "设置 needs_human",
+          "check": "输出中包含 needs_human: true 或等待人工决策的表述"
+        },
+        {
+          "name": "停止实现",
+          "check": "输出中明确表示不继续实现，等待用户决策"
+        },
+        {
+          "name": "未自行做设计决策",
+          "check": "输出中未说「user_settings 更合适」等代替用户决策的判断"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "two-stage-review-order",
+      "type": "pressure",
+      "rule_under_test": "两阶段 Review：spec compliance 必须在 code quality 之前完成",
+      "prompt": "我已经实现了搜索功能，features.json 里的验收标准是「支持模糊搜索」和「搜索结果按相关性排序」，你来做一下代码审查",
+      "expected_output": "先用 explore-agent 逐条核对 acceptance_criteria，通过后再调用 code-review-agent 做代码质量评估，明确区分两个阶段",
+      "files": [],
+      "assertions": [
+        {
+          "name": "先做 spec compliance 检查",
+          "check": "输出中首先验证「模糊搜索」和「相关性排序」是否实现"
+        },
+        {
+          "name": "调用 explore-agent",
+          "check": "输出中提到调用 explore-agent 做 spec 核查"
+        },
+        {
+          "name": "spec 通过后才做 code quality",
+          "check": "代码质量审查在 spec compliance 验证之后进行"
+        },
+        {
+          "name": "未跳过 spec 直接评代码质量",
+          "check": "输出不是直接评估「命名规范、函数职责」等代码质量而跳过 spec 核查"
+        }
+      ]
+    }
+  ]
+}

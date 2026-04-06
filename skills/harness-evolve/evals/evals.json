@@ -1,0 +1,35 @@
+{
+  "skill_name": "harness-evolve",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "model-upgrade-trim",
+      "type": "functional",
+      "prompt": "我们最近升级到了 Claude Sonnet 4.6，感觉新模型已经自动遵守很多规则了。但我们的 CLAUDE.md 已经有 120 行了，感觉越来越臃肿。该怎么精简它？另外，我们有些 Hook 是几个月前加的，不知道现在还需不需要。",
+      "expected_output": "触发 harness-evolve Skill，对 CLAUDE.md 逐条评估，对 Hooks 做模型能力适配评估，输出可删除的规则列表（附删除原因），建议精简到 60 行以内的路径",
+      "files": [],
+      "assertions": [
+        {
+          "name": "逐条评估 CLAUDE.md 规则",
+          "check": "输出中对 CLAUDE.md 现有规则逐条或分类做保留/删除评估"
+        },
+        {
+          "name": "识别模型已内化的规则",
+          "check": "输出中提到「新模型已支持」或「可删除」的规则类别"
+        },
+        {
+          "name": "输出目标行数",
+          "check": "输出中明确给出精简后的目标行数（应 ≤ 60）"
+        },
+        {
+          "name": "评估 Hook 必要性",
+          "check": "输出中对现有 Hook 做保留/删除评估"
+        },
+        {
+          "name": "删除原因明确",
+          "check": "每条建议删除的规则都有明确的删除原因"
+        }
+      ]
+    }
+  ]
+}
