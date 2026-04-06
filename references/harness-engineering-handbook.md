@@ -1,7 +1,7 @@
 # Harness Engineering 速查手册
 
 > 本文件是 Harness Engineering 核心概念的浓缩参考，供 Skills 和 Commands 按需加载。
-> 完整手册见：`references/HarnessEngineering.md`（本地文件，不纳入版本控制）
+> 完整手册见：[references/HarnessEngineering.md](./HarnessEngineering.md)（综合 Anthropic · OpenAI · InfoQ · HN 实践精华）
 
 ## 核心定义
 
