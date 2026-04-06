@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.7.0 (2026-04-06)
+
+**多人协作 + features.json 生命周期完善**
+
+- 新增 `/assign-features` 命令：Sprint feature 分配规划器，参照 superpowers `writing-plans` 风格，五阶段工作流——
+  - Phase 1：分析 features.json 依赖图，计算 `startable`（依赖是否全 done）与 `criticality`（传递闭包 blocks 数）
+  - Phase 2：自动读取 CLAUDE.md `## 团队成员` 章节，缺失时询问并写回
+  - Phase 3：四规则分配算法（文件冲突检测 / 负载上限保护 / 关键路径优先 / layer 亲和性）
+  - Phase 4：生成 `sprint-kickoff.sh`，每人独立 section，含 git 认领 + worktree + Agent 启动全套命令
+  - Phase 5：分配记录追加到 `claude-progress.json` `sprint_history`，可追溯
+- 新增 `commands/evals/evals.json`：4 个命令测试用例（标准3人Sprint、文件冲突检测、依赖解锁调度、负载过高防护）
+- 新增 `references/team-parallel-development.md`：多人全栈团队并行开发指南，综合 Anthropic Agent Teams 官方文档、OpenAI Codex 团队实践、C 编译器16-Agent 并行压测案例，涵盖 features.json 并行字段升级、Git Worktree 隔离配置、三种分工模型、减少人与 Agent 依赖的设计原则
+- `harness-init` Phase 5 补充 features.json 使用规则：明确「Agent 只读原则」和「取消不删原则」（status=cancelled + cancelled_reason，永不删除条目）
+
 ## v1.6.0 (2026-04-06)
 
 **方法论深化 + Skill TDD 完善**
