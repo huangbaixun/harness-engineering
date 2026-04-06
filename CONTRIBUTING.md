@@ -8,50 +8,89 @@
 
 ### 1. 新增或改进 Skill
 
-Skills 是最欢迎的贡献形式——不需要理解整个插件架构，只需按照 Skill TDD 流程写好 `SKILL.md` 并通过 eval 验证。
+Skills 是最欢迎的贡献形式。**所有 Skill 的新增和修改必须经过 skill-creator 工作流**——这是 Anthropic 官方元技能，提供起草 → 测试 → 评估 → 迭代的结构化流程，确保每个 Skill 有客观的质量基线。
 
-**流程（Skill TDD）：**
+**标准流程（skill-creator 工作流）：**
 
-**RED** — 先写 eval，定义 Skill 应该做什么和不应该做什么：
+**Step 1 — 起草 SKILL.md**
 
-```jsonc
-// evals/evals.json 中添加：
+在 `skills/your-skill-name/SKILL.md` 中写 Skill 草稿，包含 YAML frontmatter：
+
+```markdown
+---
+name: your-skill-name
+description: >
+  触发条件描述。当用户提到...时激活。
+  即使用户只是提到...，也应使用此 Skill。
+---
+```
+
+**Step 2 — 写 eval 测试用例**
+
+在 `skills/your-skill-name/evals/evals.json` 中写测试，格式兼容 skill-creator：
+
+```json
 {
-  "id": "your-skill-name-basic",
-  "type": "functional",
-  "skill": "your-skill-name",
-  "prompt": "触发这个 Skill 的典型用户输入",
-  "expected_behavior": "Agent 应该执行的操作",
-  "failure_mode": "如果没有这个 Skill，Agent 会犯什么错误"
+  "skill_name": "your-skill-name",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "basic-functional",
+      "type": "functional",
+      "prompt": "触发这个 Skill 的典型用户输入",
+      "expected_output": "Agent 应该执行的操作描述",
+      "files": [],
+      "assertions": [
+        { "name": "检查点描述", "check": "客观可验证的判断标准" }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "constraint-pressure",
+      "type": "pressure",
+      "rule_under_test": "Skill 中的某条关键约束",
+      "prompt": "用户施压让 Agent 跳过约束的表达",
+      "expected_output": "Agent 应坚守约束的行为描述",
+      "files": [],
+      "assertions": [
+        { "name": "约束被坚守", "check": "输出中不包含妥协表述" }
+      ]
+    }
+  ]
 }
 ```
 
-同时为每个关键约束各写一个压力 eval：
+**Step 3 — 运行 skill-creator eval**
 
-```jsonc
-{
-  "id": "your-skill-name-pressure-1",
-  "type": "pressure",
-  "skill": "your-skill-name",
-  "rule_under_test": "你的 Skill 中的某条关键约束",
-  "prompt": "用户施压让 Agent 跳过这条约束的表达",
-  "expected_behavior": "Agent 应该坚守约束",
-  "failure_mode": "Agent 如何会找到理由绕过约束",
-  "pressure_level": "medium"
-}
+使用 skill-creator 启动 eval 运行器，同时跑 with-skill 和 baseline（无 Skill）两组，生成对比结果：
+
+```
+在 Claude Code 中触发 skill-creator，告知：
+「请对 skills/your-skill-name 运行 eval，
+  eval 文件在 skills/your-skill-name/evals/evals.json」
 ```
 
-**GREEN** — 写 `skills/your-skill-name/SKILL.md`，让 Agent 通过上述 eval。
+skill-creator 会自动生成 eval-viewer HTML，供你审阅 with-skill vs baseline 的输出差异和 assertion 通过率。
 
-**REFACTOR** — 在 PR 描述中附上 eval 用例和预期输出，评审者会用 Agent 实际跑一遍。
+**Step 4 — 根据结果迭代**
 
-**Skill 文件结构：**
+在 eval-viewer 中留下反馈，skill-creator 据此修改 SKILL.md，进入下一轮迭代，直到所有 functional eval 通过、pressure eval 约束不被破坏。
+
+**Step 5 — 描述优化（可选但推荐）**
+
+使用 skill-creator 的描述优化功能（`run_loop.py`）对 description 字段做触发准确率优化。
+
+**Skill 目录结构：**
 
 ```
 skills/
 └── your-skill-name/
-    └── SKILL.md          # 必须，说明触发条件、步骤、约束
+    ├── SKILL.md                    # 必须
+    └── evals/
+        └── evals.json              # 必须，skill-creator 兼容格式
 ```
+
+**PR 要求**：附上 skill-creator 生成的 benchmark 截图或 `benchmark.json` 摘要，说明 with-skill vs baseline 的 assertion 通过率对比。
 
 ---
 
