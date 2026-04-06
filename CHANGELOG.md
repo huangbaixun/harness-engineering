@@ -1,5 +1,23 @@
 # Changelog
 
+## v1.6.0 (2026-04-06)
+
+**方法论深化 + Skill TDD 完善**
+
+- 新增 `references/HarnessEngineering.md`：综合 Anthropic · OpenAI · InfoQ · Hacker News 实践精华的完整方法论手册，作为 plugin 设计的一手来源
+- `harness-init` 新增 **Phase 0 存量检测**：初始化前先扫描 CLAUDE.md 是否已存在，区分全新项目 / 存量项目 / 损坏文件三条路径；存量模式提供「增量补充 / 优化整合 / 完整重建」三种处理方式，执行前强制备份为 `.bak`
+- `harness-init` 新增**初始化产物宣言**：Skill 开头即列出所有产物文件，用户在触发前就知道会生成什么
+- 新增 `docs/templates/generic/init.sh.template`：会话启动脚本模板，每次新 Claude Code 会话前运行，输出进度/特性清单/架构文档入口（借鉴 walkinglabs/learn-harness-engineering harness-creator 模式）
+- **Evals 重组**：从单文件拆分为 per-skill 目录，转为 skill-creator 兼容格式（含 `assertions[]` 数组，可被 grader subagent 客观评分）
+  - `skills/harness-init/evals/evals.json`（3 evals，含新增存量检测用例）
+  - `skills/harness-audit/evals/evals.json`（1 eval）
+  - `skills/harness-evolve/evals/evals.json`（1 eval）
+  - `skills/using-harness/evals/evals.json`（2 evals）
+  - `evals/agents/coding-agent.json`（3 evals）
+  - `evals/evals.json` 改为索引文件
+- `README.md` 新增「方法论参考」区块，快速上手第二步后加产物预览表格
+- `CLAUDE.md` 新增方法论手册引用链接
+
 ## v1.5.1 (2026-04-05)
 
 - 修复：release.yml 版本校验与 tag 匹配（初始发布修正）
