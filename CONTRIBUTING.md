@@ -96,23 +96,26 @@ skills/
 
 ### 2. 新增语言模板
 
-语言模板位于 `docs/templates/<language>/`，帮助工程师快速初始化某语言栈的 `CLAUDE.md`。
+语言模板位于 `docs/templates/<language>/`，帮助工程师快速初始化某语言栈的 `AGENTS.md`。
 
 **文件结构：**
 
 ```
 docs/templates/<language>/
-├── CLAUDE.md.template    # 必须，包含该语言的测试框架、Lint 工具、架构约定
+├── AGENTS.md.template    # 必须，包含该语言的测试框架、Lint 工具、架构约定
 └── README.md             # 可选，说明模板适用场景和主要约定
 ```
+
+> 注意：旧模板名为 `CLAUDE.md.template`，新增模板请统一使用 `AGENTS.md.template`（跨工具通用）。
 
 **模板内容要求：**
 - 指定测试框架和常用断言库（如 JUnit 5 + AssertJ）
 - 指定 Lint / 格式化工具（如 Checkstyle + SpotBugs）
 - 列出项目架构层次（如 entity → repository → service → controller）
 - 列出语言特有的禁止项（如 raw types、silent catch Exception）
+- 包含 `$TOOL_DIR` 无硬编码约定（参考 `docs/templates/generic/AGENTS.md.template`）
 
-参考已有模板：`docs/templates/java/CLAUDE.md.template`
+参考已有模板：`docs/templates/generic/AGENTS.md.template`
 
 ---
 
@@ -167,7 +170,9 @@ unzip harness-engineering.skill -d /tmp/harness-test
 claude --plugin-dir /tmp/harness-test
 ```
 
-验证 plugin 加载成功：启动 Claude Code 后，在对话中输入「帮我初始化这个项目的 Harness」，应该自动触发 `harness-init` Skill。
+验证 plugin 加载成功：启动 Claude Code 或 CodeBuddy 后，在对话中输入「帮我初始化这个项目的 Harness」，应该自动触发 `harness-init` Skill。
+
+> 本 plugin 从 v1.8.0 起支持工具无关架构，`init.sh` 自动检测 Claude Code / CodeBuddy 并导出 `$TOOL_DIR`。新增 Skill 或 Hook 脚本时，禁止硬编码 `.claude/` 或 `.codebuddy/` 路径，统一使用 `$TOOL_DIR`。
 
 ---
 
