@@ -1,9 +1,19 @@
 #!/bin/bash
 # init.sh — Harness 会话启动脚本
-# 每次开始新的 Claude Code 会话前运行：bash init.sh
+# 每次开始新的 AI 会话前运行：bash init.sh
 # 生成自：harness-engineering plugin / harness-init Skill
 
 set -euo pipefail
+
+# ── 工具检测（Claude Code / CodeBuddy / 其他）──────────────────────────────
+if [ -d ".codebuddy" ]; then
+  export TOOL_DIR=".codebuddy"
+  export TOOL_NAME="CodeBuddy"
+else
+  export TOOL_DIR=".claude"
+  export TOOL_NAME="Claude Code"
+fi
+# ────────────────────────────────────────────────────────────────────────────
 
 PROJECT_NAME="{{PROJECT_NAME}}"
 PROGRESS_FILE="docs/claude-progress.json"
@@ -11,6 +21,7 @@ FEATURES_FILE="docs/features.json"
 
 echo "════════════════════════════════════"
 echo "  ${PROJECT_NAME} — Harness 就绪检查"
+echo "  工具：${TOOL_NAME}（${TOOL_DIR}/）"
 echo "════════════════════════════════════"
 
 # 1. 当前进度
@@ -62,7 +73,7 @@ fi
 # 3. 架构文档提示
 echo ""
 echo "📐 架构文档：docs/architecture.md"
-echo "📖 Agent 记忆：CLAUDE.md"
+echo "📖 Agent 记忆：AGENTS.md（${TOOL_NAME} 通用）"
 echo ""
 echo "════════════════════════════════════"
 echo "  Harness 就绪，可以开始会话 ✓"

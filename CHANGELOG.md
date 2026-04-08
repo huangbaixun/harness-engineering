@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.8.0 (2026-04-08)
+
+**工具无关架构 — 全面兼容 CodeBuddy**
+
+- **AGENTS.md 作为跨工具通用记忆文件**（ADR 0005）：
+  - 新增 `AGENTS.md`：统一记忆文件，所有项目规则的唯一真相来源，Claude Code 和 CodeBuddy 均可读取
+  - `CLAUDE.md` 缩减为 2 行 wrapper，引导 Claude Code 用户至 `AGENTS.md`
+  - 新增 `CODEBUDDY.md`：2 行 wrapper，引导 CodeBuddy 用户至 `AGENTS.md`
+- **工具路径去硬编码**：
+  - 新增 `.codebuddy-plugin/plugin.json`：CodeBuddy plugin 清单（v1.8.0）
+  - `harness-init` Phase 2 六层表格改用 `$TOOL_DIR` 变量，不再硬编码 `.claude/`
+  - `harness-init` Phase 3 文件结构图更新，展示双工具兼容布局及 `AGENTS.md` 层级
+  - `harness-audit` SKILL.md 工具检测逻辑和记忆文件诊断已适配多工具（v1.8.0 前已合并）
+- **模板更新**：
+  - 新增 `docs/templates/generic/AGENTS.md.template`：包含 `$TOOL_DIR` 无硬编码约定
+  - `docs/templates/generic/init.sh.template` 新增 10 行工具检测块，自动检测 CodeBuddy / Claude Code 并导出 `$TOOL_DIR` 和 `$TOOL_NAME`
+- **ADR 0005**：记录工具无关架构决策，含三种方案对比和 Agent 约束规则
+- **docs/architecture.md** 更新：反映双工具兼容结构，目录图含 `.codebuddy-plugin/`、`CODEBUDDY.md`、`AGENTS.md` 及 `references/team-parallel-development.md`
+
 ## v1.7.0 (2026-04-06)
 
 **多人协作 + features.json 生命周期完善**
