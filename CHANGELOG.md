@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.9.0 (2026-04-10)
+
+**Claude Marketplace 支持（方案 B）**
+
+- **marketplace.json**：新增 `.claude-plugin/marketplace.json`，支持社区 marketplace 订阅分发。用户可通过以下命令一键订阅并获得自动更新：
+  ```
+  /plugin marketplace add https://raw.githubusercontent.com/huangbaixun/harness-engineering/main/.claude-plugin/marketplace.json
+  ```
+- **plugin.json 完善**：补充 `homepage`、`repository` 字段（官方 marketplace 提交必需）；新增 `userConfig`（`team_name`、`default_tech_stack`），启用时由 Claude Code 提示用户填写，无需手动配置
+- **${CLAUDE_PLUGIN_ROOT} 路径修复**：`harness-init` 中所有 plugin 内部路径引用（模板目录、init.sh.template）统一改用 `${CLAUDE_PLUGIN_ROOT}` 前缀，确保 marketplace 缓存模式下路径正确解析
+- **初始化产物表修复**：`.claude/hooks/` 路径统一改为 `$TOOL_DIR/hooks/`，与工具无关架构保持一致
+- **关键词扩充**：`plugin.json` keywords 新增 `codebuddy`、`team`、`sprint`，提升 marketplace 搜索可发现性
+
 ## v1.8.0 (2026-04-08)
 
 **工具无关架构 — 全面兼容 CodeBuddy**

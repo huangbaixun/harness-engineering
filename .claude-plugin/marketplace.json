@@ -1,0 +1,25 @@
+{
+  "name": "harness-engineering-marketplace",
+  "description": "Harness Engineering 社区 marketplace — AI Agent 工程能力建设插件集",
+  "owner": {
+    "name": "Harness Engineering",
+    "url": "https://github.com/huangbaixun/harness-engineering"
+  },
+  "plugins": [
+    {
+      "name": "harness-engineering",
+      "description": "AI Agent 工程能力建设：新项目初始化、存量项目审计、多人协作 Sprint 分配。支持 Claude Code 和 CodeBuddy。",
+      "source": {
+        "source": "github",
+        "repo": "huangbaixun/harness-engineering"
+      },
+      "version": "1.9.0",
+      "author": {
+        "name": "Harness Engineering",
+        "url": "https://github.com/huangbaixun/harness-engineering"
+      },
+      "keywords": ["harness", "agent", "engineering", "devops", "team", "sprint", "codebuddy"],
+      "license": "MIT"
+    }
+  ]
+}
