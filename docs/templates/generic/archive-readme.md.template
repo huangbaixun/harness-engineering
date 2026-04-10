@@ -1,0 +1,29 @@
+# docs/archive — 归档目录
+
+本目录存放已归档的进度记录和需求历史，**Agent 不应主动读取此目录**。
+
+## 归档策略
+
+### claude-progress.json 归档
+- 触发条件：`completed_features` 超过 10 条
+- 操作：将最早的记录移入 `progress-YYYY-QN.json`，主文件只保留最近 5 条
+- 执行者：人工（或由 harness-evolve Skill 协助）
+
+### features.json 归档
+- 触发条件：每季度 or `status=done` 条目超过 20 条
+- 操作：将 done/cancelled 条目压缩（只保留 `id` + `title` + `done_at`）并移入 `features-done.json`
+- 执行者：人工
+
+## 为什么要归档
+
+不归档的代价：每次 Agent 会话读取完整文件，已完成的历史条目持续消耗 token：
+- 无归档 6 个月后：`claude-progress.json` 可达 ~8000 tokens
+- 有归档机制：主文件保持在 ~800 tokens
+
+## 文件命名规范
+
+| 文件 | 说明 |
+|------|------|
+| `progress-2026-Q1.json` | 2026 年 Q1 完成的任务记录 |
+| `progress-2026-Q2.json` | 2026 年 Q2 完成的任务记录 |
+| `features-done.json` | 所有已完成/已取消特性的压缩记录 |
