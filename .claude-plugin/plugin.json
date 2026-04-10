@@ -1,6 +1,6 @@
 {
   "name": "harness-engineering",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "AI Agent 工程能力建设 plugin。基于 Harness Engineering 规范，支持新项目初始化、存量项目审计与持续迭代演进。支持 Claude Code 和 CodeBuddy。安装即用。",
   "homepage": "https://github.com/huangbaixun/harness-engineering",
   "repository": "https://github.com/huangbaixun/harness-engineering",

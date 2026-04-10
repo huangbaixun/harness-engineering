@@ -1,6 +1,6 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v1.9.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.9.1-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 [![CodeBuddy](https://img.shields.io/badge/CodeBuddy-%E5%85%BC%E5%AE%B9-purple)](https://codebuddy.tencent.com)

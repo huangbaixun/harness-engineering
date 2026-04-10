@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.9.1 (2026-04-10)
+
+**harness-init Phase 5 完善：归档机制 + features.json 分层策略**
+
+- `features.json` 定位调整：从「长周期可选」改为「单人可选 / 多人或多 Agent 必须」，初始化时按团队规模自动判断是否生成
+- 新增两文件职责对比表（谁写 / 记什么 / token 增长趋势 / 多 Agent 冲突风险）
+- 多人/多 Agent 场景补充扩展字段说明（`owner`、`depends_on`、`files_owned`、`worktree`、`acceptance`）
+- **新增归档机制**：`completed_features` 超 10 条触发归档，防止 6 个月后 token 膨胀至 ~8000；初始化时同时生成 `docs/archive/` 目录骨架和归档策略 README
+- 三条归档规则写入 AGENTS.md（归档阈值 / done 条目压缩策略 / Agent 读取范围限制）
+- 新增 `docs/templates/generic/archive-readme.md.template`
+
 ## v1.9.0 (2026-04-10)
 
 **Claude Marketplace 支持（方案 B）**
