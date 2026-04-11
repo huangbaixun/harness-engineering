@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.9.2 (2026-04-11)
+
+**Superpowers 工作流整合**
+
+- 新增 `skills/writing-plans/`：实现前规划 Skill，>30 分钟或涉及 3+ 文件时触发，输出 tasks.md，含人工确认门禁
+- 新增 `skills/tdd/`：TDD 工作流 Skill（RED→GREEN→REFACTOR），与 1% 规则绑定，任何代码编写自动触发
+- 新增 `skills/verification/`：完成前验证 Skill，四层检查（Functional / Quality / Architecture / Integration）
+- 新增 `scripts/session-start.sh`：SessionStart Hook，会话开启时自动读取 `claude-progress.json`，展示 in_progress 任务、待办数、阻塞项；已完成 ≥10 条时触发归档提醒
+- 更新 `hooks/hooks.json`：新增 `SessionStart` 事件注册
+- 更新 `skills/using-harness/SKILL.md`：新增 Steps 4-6，写明 writing-plans / tdd / verification 触发条件
+- 更新 `skills/harness-init/SKILL.md`：初始化产物表和文件结构图新增三个 Skill 和 session-start.sh
+- 更新 `docs/templates/generic/CLAUDE.md.template`：新增「工作流 Skill 自动触发」说明段
+- 更新 `references/HarnessEngineering.md`：新增 Section L（Superpowers 整合），含对比表、集成点、执行链全图、14 Skills 映射；参考表新增 obra/superpowers 等三条 ★★ 条目
+
 ## v1.9.1 (2026-04-10)
 
 **harness-init Phase 5 完善：归档机制 + features.json 分层策略**
