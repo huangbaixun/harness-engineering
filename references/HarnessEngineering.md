@@ -132,6 +132,17 @@ Types  →  Config  →  Repo  →  Service  →  Runtime  →  UI
 
 每层只能从左侧层引入依赖——由结构测试强制，不是建议。
 
+| 层 | 职责 | 可依赖 | 典型内容 |
+|----|------|--------|---------|
+| **Types** | 全局共享的数据结构、接口、枚举、常量 | 无 | `User`, `OrderStatus`, `MAX_RETRY` |
+| **Config** | 读取环境变量、解析配置，统一对外暴露 | Types | `dbConfig`, `appConfig` |
+| **Repo** | 数据库/缓存/外部存储的唯一读写出入口 | Types, Config | `findUserById()`, `saveOrder()` |
+| **Service** | 业务逻辑、校验、事务编排 | Types, Config, Repo | `promoteToAdmin()`, `placeOrder()` |
+| **Runtime** | 将 Service 暴露给外部：HTTP 路由、队列消费者、定时任务 | 以上所有 | `handleRequest()`, `consumeEvent()` |
+| **UI** | 前端组件与页面，只通过 API 与后端通信 | Types + Runtime API | React 组件、页面路由 |
+
+**对 Agent 的意义**：层级约束让 Agent 无法在 UI 里直接写 SQL、无法在 Service 里散落 `process.env`，结构测试在 CI 中自动拦截跨层错误引用，违规即 Build 失败。
+
 ### 3.4 量化成果
 
 | 指标 | 数值 | 背景 |
