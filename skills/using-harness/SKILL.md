@@ -12,6 +12,9 @@
 | 新建项目 / 搭建 AI 工程环境 / 项目刚开始 | **harness-init** | "帮我初始化这个项目"、"新项目怎么开始"、"setup Claude Code"、"我需要 CLAUDE.md" |
 | Agent 反复犯同类错误 / 项目 AI 协作效率低 / 想了解项目健康度 | **harness-audit** | "为什么 Claude 总是…"、"代码质量怎么样"、"检查一下我的 Harness"、"帮我诊断" |
 | 模型升级 / 精简 CLAUDE.md / Harness 优化 / 垃圾回收 | **harness-evolve** | "CLAUDE.md 太长了"、"做一次 GC"、"新版本出了要更新什么"、"优化一下 Harness" |
+| **实现新功能 / 修 Bug / 重构**（预估 >30 分钟或涉及 3+ 文件） | **writing-plans** | "帮我实现这个功能"、"来做下一个特性"、"这里有个问题需要修" |
+| **任何实现工作**（含 writing-plans 后的执行阶段） | **tdd** | 开始写代码前自动激活，确保 RED→GREEN→REFACTOR 循环 |
+| **准备声明任务完成** / 更新 claude-progress.json 前 | **verification** | "完成了"、"写好了"、"可以合并了"、准备 mark feature as done |
 
 **1% 原则**：只要有 1% 的可能某个 Skill 适用于当前任务，你就必须调用它。不要等到确定才调用。
 
@@ -40,7 +43,16 @@ Step 2: 用户在描述 Agent 失败、代码问题、工程质量问题吗？
 Step 3: 用户在优化/精简/升级现有 Harness 吗？
   → 是 → 调用 harness-evolve
 
-Step 4: 都不是 → 正常回复，但如果过程中出现上述情形，立即调用对应 Skill
+Step 4: 用户要实现功能/修 Bug/重构，且预估 >30 分钟或涉及 3+ 文件？
+  → 是 → 先调用 writing-plans（规划门控），规划确认后再开始编码
+
+Step 5: 正在编写任何实现代码？
+  → 是 → 激活 tdd 工作流（RED→GREEN→REFACTOR），不允许跳步
+
+Step 6: 准备声明"完成"或更新 claude-progress.json？
+  → 是 → 先调用 verification，通过全部检查后才能声明完成
+
+Step 7: 都不是 → 正常回复，但如果过程中出现上述情形，立即调用对应 Skill
 ```
 
 ## 为什么这条规则重要

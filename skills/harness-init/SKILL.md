@@ -19,11 +19,15 @@ description: >
 
 | 文件 | 作用 | 是否必须 |
 |------|------|---------|
-| `CLAUDE.md` | Agent 记忆层，≤60 行，架构约定 + 禁止规则 + 测试命令 | ✅ 必须 |
-| `.claude/settings.json` | 权限控制 + Hook 注册 | ✅ 必须 |
+| `CLAUDE.md` | Agent 记忆层，≤60 行，架构约定 + 禁止规则 + 测试命令 + Skill 触发规则 | ✅ 必须 |
+| `.claude/settings.json` | 权限控制 + Hook 注册（含 SessionStart） | ✅ 必须 |
+| `$TOOL_DIR/hooks/session-start.sh` | SessionStart：恢复跨会话进度，归档提示 | ✅ 必须 |
 | `$TOOL_DIR/hooks/stop-typecheck.sh` | Stop Hook：类型检查门禁 | ✅ 必须 |
 | `$TOOL_DIR/hooks/pre-protect-env.sh` | PreToolUse：防止 .env 被覆盖 | ✅ 必须 |
 | `$TOOL_DIR/hooks/post-format.sh` | PostToolUse：自动格式化 | ✅ 必须 |
+| `$TOOL_DIR/skills/writing-plans/` | 实现前规划 Skill（整合自 Superpowers） | ✅ 必须 |
+| `$TOOL_DIR/skills/tdd/` | TDD 工作流 Skill（RED→GREEN→REFACTOR） | ✅ 必须 |
+| `$TOOL_DIR/skills/verification/` | 完成前验证 Skill | ✅ 必须 |
 | `init.sh` | 会话启动脚本，每次新会话前运行以恢复上下文 | ✅ 必须 |
 | `docs/architecture.md` | 架构图，Agent 的空间感知文档，100-150 行 | ✅ 必须 |
 | `docs/decisions/README.md` | ADR 索引 | ✅ 必须 |
@@ -135,15 +139,21 @@ Harness 不是单一配置文件，而是六个相互协作的层。理解各层
 ```
 项目根/
 ├── AGENTS.md                     ← 通用记忆文件（≤ 60 行），所有工具读取
-├── CLAUDE.md                     ← 2 行 wrapper → 指向 AGENTS.md（Claude Code）
+├── CLAUDE.md                     ← 2 行 wrapper → 指向 AGENTS.md（含工作流 Skill 触发规则）
 ├── CODEBUDDY.md                  ← 2 行 wrapper → 指向 AGENTS.md（CodeBuddy）
 ├── init.sh                       ← 会话启动脚本（检测工具、导出 $TOOL_DIR）
 ├── $TOOL_DIR/                    ← .claude/ 或 .codebuddy/（由工具决定）
-│   ├── settings.json             ← 权限 + Hook 注册
+│   ├── settings.json             ← 权限 + Hook 注册（含 SessionStart Hook）
 │   └── hooks/                    ← Hook 脚本
+│       ├── session-start.sh      ← SessionStart：恢复跨会话记忆，触发归档提示
 │       ├── stop-typecheck.sh     ← Stop Hook（语言适配）
 │       ├── pre-protect-env.sh    ← PreToolUse：保护敏感文件
 │       └── post-format.sh        ← PostToolUse：自动格式化
+├── $TOOL_DIR/
+│   └── skills/
+│       ├── writing-plans/        ← 实现前规划（>30 分钟 / 3+ 文件时触发）
+│       ├── tdd/                  ← TDD 工作流（RED→GREEN→REFACTOR）
+│       └── verification/         ← 完成前验证（声明 done 前触发）
 ├── docs/
 │   ├── architecture.md           ← 架构图（100-150 行）
 │   ├── decisions/
