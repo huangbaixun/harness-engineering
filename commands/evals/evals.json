@@ -1,12 +1,12 @@
 {
   "command_name": "assign-features",
-  "description": "测试 /assign-features 命令在不同团队场景下的分配质量",
+  "description": "测试 /harness:assign 命令在不同团队场景下的分配质量",
   "evals": [
     {
       "id": 1,
       "eval_name": "standard-3-person-sprint",
       "type": "functional",
-      "prompt": "我们有三个人：simon（backend 偏好，当前 0 个任务），alice（fullstack，当前 1 个任务 F-002），bob（infra 偏好，当前 0 个任务）。请运行 /assign-features 帮我们规划这个 Sprint 的任务分配。",
+      "prompt": "我们有三个人：simon（backend 偏好，当前 0 个任务），alice（fullstack，当前 1 个任务 F-002），bob（infra 偏好，当前 0 个任务）。请运行 /harness:assign 帮我们规划这个 Sprint 的任务分配。",
       "context_files": ["docs/features.json"],
       "expected_output": "输出分配方案表，生成 sprint-kickoff.sh，关键路径任务分配给负载最低且 layer 匹配的成员，并记录到 claude-progress.json",
       "assertions": [
@@ -36,7 +36,7 @@
       "id": 2,
       "eval_name": "files-owned-conflict-detection",
       "type": "functional",
-      "prompt": "我们团队 2 人：simon 和 alice，都是 fullstack。当前有 F-010（files_owned: [\"src/auth/\"]）和 F-011（files_owned: [\"src/auth/middleware.ts\"]）同时处于 planned 状态。请运行 /assign-features。",
+      "prompt": "我们团队 2 人：simon 和 alice，都是 fullstack。当前有 F-010（files_owned: [\"src/auth/\"]）和 F-011（files_owned: [\"src/auth/middleware.ts\"]）同时处于 planned 状态。请运行 /harness:assign。",
       "context_files": ["docs/features.json"],
       "expected_output": "检测到 F-010 和 F-011 的 files_owned 存在路径前缀重叠（src/auth/），标记为冲突，不允许同时分配给两个不同成员，提示人类决策",
       "assertions": [
@@ -58,7 +58,7 @@
       "id": 3,
       "eval_name": "dependency-unlock-scheduling",
       "type": "functional",
-      "prompt": "F-001（认证）刚刚完成，它解锁了 F-003（权限控制，depends_on: [F-001]）和 F-005（用户设置，depends_on: [F-001, F-002]）。F-002 还没完成。请运行 /assign-features，团队：simon（backend，负载 0），alice（fullstack，负载 1）。",
+      "prompt": "F-001（认证）刚刚完成，它解锁了 F-003（权限控制，depends_on: [F-001]）和 F-005（用户设置，depends_on: [F-001, F-002]）。F-002 还没完成。请运行 /harness:assign，团队：simon（backend，负载 0），alice（fullstack，负载 1）。",
       "context_files": ["docs/features.json"],
       "expected_output": "正确识别 F-003 变为 startable（F-001 done），F-005 仍在等待（F-002 未完成）。将 F-003 分配给 simon（backend 匹配，负载最低）",
       "assertions": [
@@ -80,7 +80,7 @@
       "id": 4,
       "eval_name": "overload-prevention",
       "type": "pressure",
-      "prompt": "团队只有一个人 simon，当前他已经有 F-001 和 F-002 两个 in_progress 任务。现在有 F-006、F-007、F-008 三个新 feature 需要分配。请运行 /assign-features。",
+      "prompt": "团队只有一个人 simon，当前他已经有 F-001 和 F-002 两个 in_progress 任务。现在有 F-006、F-007、F-008 三个新 feature 需要分配。请运行 /harness:assign。",
       "context_files": ["docs/features.json"],
       "expected_output": "检测到 simon 已达到每人最多 2 个 in_progress 的上限，新 feature 全部进入下批次，不强行分配。给出明确的「负载已满」提示。",
       "assertions": [
@@ -94,7 +94,7 @@
         },
         {
           "name": "给出行动建议",
-          "check": "响应建议等待现有任务完成后再运行 /assign-features 分配新任务"
+          "check": "响应建议等待现有任务完成后再运行 /harness:assign 分配新任务"
         }
       ]
     }

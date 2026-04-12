@@ -1,6 +1,6 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v1.9.2-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.10.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 [![CodeBuddy](https://img.shields.io/badge/CodeBuddy-%E5%85%BC%E5%AE%B9-purple)](https://codebuddy.tencent.com)
@@ -60,9 +60,9 @@ claude plugins add harness-engineering
 | `$TOOL_DIR/settings.json` | 权限控制 + Hook 注册（含 SessionStart） |
 | `$TOOL_DIR/hooks/session-start.sh` | SessionStart Hook：会话开启时恢复进度上下文 |
 | `$TOOL_DIR/hooks/` | 类型检查、.env 保护、自动格式化 |
-| `$TOOL_DIR/skills/writing-plans/` | 实现前规划 Skill（>30 分钟或 3+ 文件时触发） |
+| `$TOOL_DIR/skills/plan/` | 实现前规划 Skill（>30 分钟或 3+ 文件时触发） |
 | `$TOOL_DIR/skills/tdd/` | TDD Skill（RED→GREEN→REFACTOR 强制循环） |
-| `$TOOL_DIR/skills/verification/` | 完成前验证 Skill（声明 done 前四层检查） |
+| `$TOOL_DIR/skills/verify/` | 完成前验证 Skill（声明 done 前四层检查） |
 | `docs/architecture.md` | 架构图，Agent 的空间感知文档 |
 | `docs/claude-progress.json` | 跨会话进度追踪 |
 
@@ -70,23 +70,23 @@ claude plugins add harness-engineering
 
 **第三步：持续受益**
 
-SessionStart Hook 每次会话开启自动恢复进度上下文。writing-plans / tdd / verification 三个工作流 Skill 在实现阶段自动介入，确保规划→实现→验证完整闭环。Commands 支持随时触发审计、PR 审查和代码熵增检测。
+SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan / harness:tdd / harness:verify 三个工作流 Skill 在实现阶段自动介入，确保规划→实现→验证完整闭环。Commands 支持随时触发审计、PR 审查和代码熵增检测。
 
 ---
 
 ## 核心 Skills
 
-安装后，以下 Skill 根据你的意图自动触发，无需记忆命令名：
+安装后，以下 Skill 根据你的意图自动触发，无需记忆命令名。所有 Skill 统一使用 `harness:` 命名空间：
 
 | Skill | 触发场景 | 做什么 |
 |-------|---------|--------|
-| **harness-init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（AGENTS.md + Hooks + 模板） |
-| **harness-audit** | 「Agent 老是犯同样的错」/ 存量项目审计 | 七维度健康评分 + 优先级修复方案 |
-| **harness-evolve** | 「AGENTS.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
-| **using-harness** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
-| **writing-plans** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为 2-5 分钟可验证任务块，人工确认后执行 |
-| **tdd** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
-| **verification** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
+| **harness:init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（AGENTS.md + Hooks + 模板） |
+| **harness:audit** | 「Agent 老是犯同样的错」/ 存量项目审计 | 七维度健康评分 + 优先级修复方案 |
+| **harness:evolve** | 「AGENTS.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
+| **harness:router** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
+| **harness:plan** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为 2-5 分钟可验证任务块，人工确认后执行 |
+| **harness:tdd** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
+| **harness:verify** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
 
 ---
 
@@ -94,15 +94,15 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。writing-plans 
 
 | Command | 功能 | 推荐频率 |
 |---------|------|---------|
-| `/harness-init` | 初始化 Harness | 项目启动 |
-| `/harness-audit` | Harness 健康度审计 | 按需 |
-| `/assign-features` | Sprint feature 分配规划，自动算依赖 + 生成认领脚本 | Sprint 开始时 |
-| `/review-pr` | PR 全面审查（质量 + 安全 + 架构） | 每次 PR |
-| `/context-dump` | 保存会话进度到 claude-progress.json | 上下文 50% 时 |
-| `/doc-sync` | 文档与代码一致性检查 | 每日 |
-| `/arch-scan` | 架构健康度扫描 | 每周 |
-| `/trim-claudemd` | 精简 AGENTS.md 至 60 行以内 | 新模型发布后 |
-| `/entropy-scan` | 死代码 + 重复实现 + 过度耦合检测 | 每月 |
+| `/harness:init` | 初始化 Harness | 项目启动 |
+| `/harness:audit` | Harness 健康度审计 | 按需 |
+| `/harness:assign` | Sprint feature 分配规划，自动算依赖 + 生成认领脚本 | Sprint 开始时 |
+| `/harness:review-pr` | PR 全面审查（质量 + 安全 + 架构） | 每次 PR |
+| `/harness:dump` | 保存会话进度到 claude-progress.json | 上下文 50% 时 |
+| `/harness:sync-docs` | 文档与代码一致性检查 | 每日 |
+| `/harness:scan-arch` | 架构健康度扫描 | 每周 |
+| `/harness:trim` | 精简 AGENTS.md 至 60 行以内 | 新模型发布后 |
+| `/harness:scan-entropy` | 死代码 + 重复实现 + 过度耦合检测 | 每月 |
 
 ---
 
@@ -119,7 +119,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。writing-plans 
 
 ## 语言模板
 
-`harness-init` 支持五种技术栈，初始化时自动选择匹配的模板：
+`harness:init` 支持五种技术栈，初始化时自动选择匹配的模板：
 
 - **TypeScript / Node.js** — strict mode, pnpm, Jest/Vitest, Biome/ESLint
 - **Python** — type hints, poetry/uv, pytest, mypy/ruff
@@ -129,19 +129,21 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。writing-plans 
 
 ---
 
-## 工具兼容性
+## 工具与平台兼容性
 
-本 plugin 从 v1.8.0 起支持**工具无关架构**（ADR 0005）：
+本 plugin 从 v1.8.0 起支持**工具无关架构**（ADR 0005），从 v1.9.3 起支持 **Windows 跨平台 Hook**：
 
-| 特性 | Claude Code | CodeBuddy |
-|------|-------------|-----------|
-| AGENTS.md 通用记忆 | ✅ | ✅ |
-| init.sh 自动工具检测 | ✅ | ✅ |
-| Skills / Commands | ✅ | ✅ |
-| Hooks（9 种事件） | ✅ | ✅ |
-| Plugin 清单 | `.claude-plugin/` | `.codebuddy-plugin/` |
+| 特性 | Claude Code | CodeBuddy | Windows |
+|------|-------------|-----------|---------|
+| AGENTS.md 通用记忆 | ✅ | ✅ | ✅ |
+| init.sh 自动工具检测 | ✅ | ✅ | ✅（Git Bash） |
+| Skills / Commands | ✅ | ✅ | ✅ |
+| Hooks（Polyglot 包装器） | ✅ | ✅ | ✅（Git Bash / MSYS2） |
+| Plugin 清单 | `.claude-plugin/` | `.codebuddy-plugin/` | 同上 |
 
 `init.sh` 在会话启动时自动检测当前工具并导出 `$TOOL_DIR`，Skills 全程使用该变量，无需手动配置。
+
+**Hook 跨平台机制**（v1.9.3）：每个 hook 脚本提供三种形式——`.cmd`（polyglot 包装器，CMD + bash 双有效）、无后缀（bash 逻辑）、`.sh`（向后兼容）。`hooks.json` 使用 `${CLAUDE_PLUGIN_ROOT:-.}` 路径变量，plugin 安装模式和本地项目开发均可正常工作。Windows 下自动查找 Git for Windows 的 bash，找不到则静默成功不阻塞。
 
 ---
 
@@ -197,38 +199,38 @@ harness-engineering-plugin/
 │   └── plugin.json                       ← Claude Code plugin 清单
 ├── .codebuddy-plugin/
 │   └── plugin.json                       ← CodeBuddy plugin 清单
-├── skills/
-│   ├── using-harness/SKILL.md            元 Skill（强制触发，1% 规则）
-│   ├── harness-init/SKILL.md             新项目初始化（六阶段）
-│   ├── harness-audit/SKILL.md            存量审计（七维度）
-│   ├── harness-evolve/SKILL.md           持续演进（垃圾回收+瘦身）
-│   ├── writing-plans/SKILL.md            ← 实现前规划（v1.9.2 新增）
-│   ├── tdd/SKILL.md                      ← TDD 工作流（v1.9.2 新增）
-│   └── verification/SKILL.md             ← 完成前验证（v1.9.2 新增）
+├── skills/                               ← 统一 harness: 命名空间
+│   ├── router/SKILL.md                   harness:router 元 Skill（1% 规则）
+│   ├── init/SKILL.md                     harness:init 新项目初始化
+│   ├── audit/SKILL.md                    harness:audit 存量审计
+│   ├── evolve/SKILL.md                   harness:evolve 持续演进
+│   ├── plan/SKILL.md                     harness:plan 实现前规划
+│   ├── tdd/SKILL.md                      harness:tdd TDD 工作流
+│   └── verify/SKILL.md                   harness:verify 完成前验证
 ├── commands/
-│   ├── assign-features.md                ← /assign-features（团队 Sprint 分配）
-│   ├── harness-init.md
-│   ├── harness-audit.md
+│   ├── assign.md                ← /harness:assign（团队 Sprint 分配）
+│   ├── init.md
+│   ├── audit.md
 │   ├── review-pr.md
-│   ├── context-dump.md
-│   ├── doc-sync.md
-│   ├── arch-scan.md
-│   ├── trim-claudemd.md
-│   └── entropy-scan.md
+│   ├── dump.md
+│   ├── sync-docs.md
+│   ├── scan-arch.md
+│   ├── trim.md
+│   └── scan-entropy.md
 ├── agents/
 │   ├── security-reviewer.md              Opus
 │   ├── explore-agent.md                  Haiku
 │   ├── code-review-agent.md              Sonnet
 │   └── coding-agent.md                   Sonnet
 ├── hooks/
-│   └── hooks.json                        ← JSON Hook 注册
-├── scripts/
-│   ├── session-start.sh                  ← SessionStart Hook（v1.9.2 新增）
-│   ├── stop-typecheck.sh
-│   ├── pre-protect-env.sh
-│   ├── post-format.sh
-│   ├── stop-commit-progress.sh
-│   └── post-observe.sh
+│   └── hooks.json                        ← Hook 注册（${CLAUDE_PLUGIN_ROOT:-.} fallback）
+├── scripts/                              ← 每个 hook 三种形式：.cmd / 无后缀 / .sh
+│   ├── session-start{,.cmd,.sh}          ← SessionStart Hook
+│   ├── stop-typecheck{,.cmd,.sh}
+│   ├── pre-protect-env{,.cmd,.sh}
+│   ├── post-format{,.cmd,.sh}
+│   ├── stop-commit-progress{,.cmd,.sh}
+│   └── post-observe{,.cmd,.sh}
 ├── docs/
 │   ├── architecture.md
 │   ├── decisions/                        ADR 记录（0001–0005）

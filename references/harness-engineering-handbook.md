@@ -83,7 +83,7 @@ Agent 失败 → 识别缺失的能力 → 工程化修复（更新文档/添加
 | 滥用 MCP（20+ Server） | 按需接入，不用时禁用 |
 | 测试成功时输出 4000 行日志 | 成功静默，失败才输出 |
 | 所有约定放 CLAUDE.md | 必须执行 = Hook，应该遵守 = CLAUDE.md |
-| 单会话处理 10+ 功能 | 每功能一个会话 + /context-dump |
+| 单会话处理 10+ 功能 | 每功能一个会话 + /harness:dump |
 | 依赖 Compaction 保持记忆 | 用 claude-progress.json 结构化交接 |
 
 ## 三层防护

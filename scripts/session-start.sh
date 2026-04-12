@@ -61,7 +61,7 @@ except:
 " 2>/dev/null)
 
   if [ "${COMPLETED_COUNT:-0}" -ge 10 ]; then
-    echo "📦 提示：completed_features 已有 ${COMPLETED_COUNT} 条，建议运行 /harness-evolve 归档历史记录以控制 token 消耗。"
+    echo "📦 提示：completed_features 已有 ${COMPLETED_COUNT} 条，建议运行 /harness:evolve 归档历史记录以控制 token 消耗。"
   fi
 fi
 

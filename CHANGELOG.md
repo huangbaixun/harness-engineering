@@ -1,5 +1,27 @@
 # Changelog
 
+## v1.10.0 (2026-04-12)
+
+**统一 `harness:` 命名空间**
+
+- **Plugin name 简化**：`harness-engineering` → `harness`，用户看到 `harness:init` 而非 `harness-engineering:harness-init`
+- **Skills 重命名**：harness-init → init, harness-audit → audit, harness-evolve → evolve, using-harness → router, writing-plans → plan, verification → verify（tdd 保持不变）
+- **Commands 重命名**：统一 `动词-名词` 格式：arch-scan → scan-arch, entropy-scan → scan-entropy, assign-features → assign, context-dump → dump, doc-sync → sync-docs, trim-claudemd → trim
+- **全量引用更新**：所有 SKILL.md 交叉引用、eval JSON、architecture.md、marketplace 文档、README、CONTRIBUTING 等 36+ 文件同步更新
+- **向后兼容说明**：旧版 slash commands（`/harness-init` 等）已不再生效，需改用 `/harness:init` 等新名称
+
+## v1.9.3 (2026-04-12)
+
+**跨平台 Hook + 上游版本追踪**
+
+- **跨平台 Polyglot Hook 包装器**（借鉴 obra/superpowers `polyglot-hooks` 方案）：
+  - 每个 hook 脚本新增 `.cmd` polyglot 入口（CMD + bash 双有效），Windows Git Bash 环境自动识别
+  - `hooks.json` 注册入口从 `.sh` 改为 `.cmd`
+  - 保留 `.sh` 文件向后兼容，新增无后缀 bash 逻辑文件（`.cmd` 委托给它）
+  - Windows 下找不到 bash 时静默成功（exit 0），不阻塞工作流
+- **上游版本追踪**：三个工作流 Skill（writing-plans / tdd / verification）头部新增 `upstream` + `harness-delta` 元信息，锁定上游 obra/superpowers @ `917e5f5`，明确每个 Skill 相对上游的差异点
+- 更新 README：scripts 目录说明、跨平台兼容性表格
+
 ## v1.9.2 (2026-04-11)
 
 **Superpowers 工作流整合**

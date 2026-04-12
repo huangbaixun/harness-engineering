@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/session-start\" \"$@\"' --"
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/stop-typecheck.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-typecheck\" \"$@\"' --"
           }
         ]
       },
@@ -23,7 +23,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/stop-commit-progress.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-commit-progress\" \"$@\"' --"
           }
         ]
       }
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/pre-protect-env.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/pre-protect-env\" \"$@\"' --"
           }
         ]
       }
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-format.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/post-format\" \"$@\"' --"
           }
         ]
       },
@@ -53,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/post-observe.sh"
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/post-observe\" \"$@\"' --"
           }
         ]
       }

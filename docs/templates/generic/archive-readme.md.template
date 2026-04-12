@@ -7,7 +7,7 @@
 ### claude-progress.json 归档
 - 触发条件：`completed_features` 超过 10 条
 - 操作：将最早的记录移入 `progress-YYYY-QN.json`，主文件只保留最近 5 条
-- 执行者：人工（或由 harness-evolve Skill 协助）
+- 执行者：人工（或由 harness:evolve Skill 协助）
 
 ### features.json 归档
 - 触发条件：每季度 or `status=done` 条目超过 20 条

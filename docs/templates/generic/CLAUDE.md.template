@@ -20,9 +20,9 @@
 - 提交前必须通过质量检查（见 Stop Hook）
 
 ## 工作流 Skill（自动触发）
-- 实现新功能前（>30 分钟 / 3+ 文件）→ **writing-plans** Skill
+- 实现新功能前（>30 分钟 / 3+ 文件）→ **harness:plan** Skill
 - 编写任何代码 → **tdd** Skill（RED→GREEN→REFACTOR）
-- 声明完成前 → **verification** Skill
+- 声明完成前 → **harness:verify** Skill
 
 ## 更多上下文
 - 架构图：docs/architecture.md

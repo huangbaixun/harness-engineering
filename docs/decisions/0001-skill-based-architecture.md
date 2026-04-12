@@ -25,7 +25,7 @@
 
 ## 决策
 
-选择选项 B。三个 Skill（harness-init / harness-audit / harness-evolve）覆盖 Harness 生命周期的三个阶段，各自按需激活。配套 Commands 提供显式操作入口。
+选择选项 B。三个 Skill（harness:init / harness:audit / harness:evolve）覆盖 Harness 生命周期的三个阶段，各自按需激活。配套 Commands 提供显式操作入口。
 
 ## 后果（对 Agent 有约束力）
 

@@ -65,7 +65,7 @@ fi
 **原因**：上下文焦虑——模型在接近上下文限制时学会了「整理并收尾」的行为
 **修复**：
 - 每个功能一个会话
-- 用 `/context-dump` 保存进度到 claude-progress.json
+- 用 `/harness:dump` 保存进度到 claude-progress.json
 - 新会话启动时读取进度文件重建状态
 - 「上下文重置 > 上下文压缩」——新 Agent 没有「已工作很久」的感知
 

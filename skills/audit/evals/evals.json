@@ -1,0 +1,35 @@
+{
+  "skill_name": "harness:audit",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "agent-regression-diagnosis",
+      "type": "functional",
+      "prompt": "我们团队用 Claude Code 已经一段时间了，但 Agent 老是犯一些重复的错误——比如忘记写测试、有时候直接改了 .env 文件、架构层级也经常被违反。我怎么知道我们的 Harness 哪里做得不够好？",
+      "expected_output": "触发 harness:audit Skill，对项目进行七维度健康度评分，识别具体失败模式，输出结构化优化方案",
+      "files": [],
+      "assertions": [
+        {
+          "name": "触发七维度评分",
+          "check": "输出中包含评分或健康度分析，涵盖至少 5 个维度"
+        },
+        {
+          "name": "识别 .env 保护缺失",
+          "check": "输出中提到「pre-protect-env」Hook 或 .env 文件保护机制"
+        },
+        {
+          "name": "识别测试缺失问题",
+          "check": "输出中提到测试门禁 Hook 或 stop-typecheck 相关配置"
+        },
+        {
+          "name": "输出优先级行动方案",
+          "check": "输出中包含「立即行动」或「优先」等分级建议"
+        },
+        {
+          "name": "建议而非仅诊断",
+          "check": "每个问题都有对应的修复建议，不只列举问题"
+        }
+      ]
+    }
+  ]
+}

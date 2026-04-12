@@ -18,21 +18,21 @@ harness-engineering-plugin/
 ├── .codebuddy-plugin/
 │   └── plugin.json                 ← CodeBuddy plugin 清单
 ├── skills/                         ← Skills（通用，$TOOL_DIR 无关）
-│   ├── harness-init/               ← 新项目 Harness 初始化
+│   ├── init/               ← 新项目 Harness 初始化
 │   │   └── SKILL.md
-│   ├── harness-audit/              ← 存量项目健康度检查与优化
+│   ├── audit/              ← 存量项目健康度检查与优化
 │   │   └── SKILL.md
-│   └── harness-evolve/             ← 持续迭代优化
+│   └── evolve/             ← 持续迭代优化
 │       └── SKILL.md
 ├── commands/                       ← Slash Commands（通用）
-│   ├── assign-features.md          ← /assign-features（团队特性分配）
-│   ├── harness-init.md
-│   ├── harness-audit.md
+│   ├── assign.md          ← /harness:assign（团队特性分配）
+│   ├── init.md
+│   ├── audit.md
 │   ├── review-pr.md
-│   ├── context-dump.md
-│   ├── doc-sync.md
-│   ├── arch-scan.md
-│   └── trim-claudemd.md
+│   ├── dump.md
+│   ├── sync-docs.md
+│   ├── scan-arch.md
+│   └── trim.md
 ├── hooks/                          ← Hook 模板脚本（通用）
 │   ├── stop-typecheck.sh
 │   ├── pre-protect-env.sh
@@ -70,9 +70,9 @@ harness-engineering-plugin/
 
 | Skill | 触发场景 | 输入 | 输出 |
 |-------|---------|------|------|
-| **harness-init** | 新项目从零建立 Harness | 技术栈信息、项目描述 | AGENTS.md + Hooks + docs/ + $TOOL_DIR/settings.json |
-| **harness-audit** | 存量项目评估和优化 | 现有代码库 | 健康度报告 + 优化建议 + 修复 PR |
-| **harness-evolve** | 持续迭代改进 | 失败记录、模型更新 | Harness 精简/增强建议 + 自动维护 |
+| **harness:init** | 新项目从零建立 Harness | 技术栈信息、项目描述 | AGENTS.md + Hooks + docs/ + $TOOL_DIR/settings.json |
+| **harness:audit** | 存量项目评估和优化 | 现有代码库 | 健康度报告 + 优化建议 + 修复 PR |
+| **harness:evolve** | 持续迭代改进 | 失败记录、模型更新 | Harness 精简/增强建议 + 自动维护 |
 
 ## 层级依赖规则
 

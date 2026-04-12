@@ -47,13 +47,13 @@ Instead of hoping Claude remembers your conventions, you encode them into a stru
 
 Install once, and your projects get:
 
-- **`harness-init`** — Bootstraps a complete AI agent harness for any new project in minutes. Generates AGENTS.md, init.sh, hooks (type-check, .env protection, auto-format), and architecture docs. Supports TypeScript, Python, Go, Java, and generic stacks.
+- **`harness:init`** — Bootstraps a complete AI agent harness for any new project in minutes. Generates AGENTS.md, init.sh, hooks (type-check, .env protection, auto-format), and architecture docs. Supports TypeScript, Python, Go, Java, and generic stacks.
 
-- **`harness-audit`** — Scores your existing project's harness health across 7 dimensions. Pinpoints weak spots and generates a prioritized fix plan.
+- **`harness:audit`** — Scores your existing project's harness health across 7 dimensions. Pinpoints weak spots and generates a prioritized fix plan.
 
-- **`harness-evolve`** — Runs periodic garbage collection on your harness: trims bloated AGENTS.md files, removes stale rules, adapts hooks to new model capabilities.
+- **`harness:evolve`** — Runs periodic garbage collection on your harness: trims bloated AGENTS.md files, removes stale rules, adapts hooks to new model capabilities.
 
-- **`/assign-features`** — Sprint planning for AI-assisted teams. Analyzes your `features.json` dependency graph, calculates critical path, and generates a `sprint-kickoff.sh` with per-member task assignments that minimize file conflicts and maximize parallel execution.
+- **`/harness:assign`** — Sprint planning for AI-assisted teams. Analyzes your `features.json` dependency graph, calculates critical path, and generates a `sprint-kickoff.sh` with per-member task assignments that minimize file conflicts and maximize parallel execution.
 
 ## Key Design Principles
 
@@ -68,7 +68,7 @@ After installing, just say:
 
 > "帮我初始化这个项目的 Harness" (Help me initialize this project's Harness)
 
-The `harness-init` skill auto-triggers and walks you through setup.
+The `harness:init` skill auto-triggers and walks you through setup.
 ```
 
 ---
@@ -94,14 +94,14 @@ harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks,
 
 | Skill / Command | 触发场景 | 核心功能 |
 |----------------|---------|---------|
-| `harness-init` | 新项目初始化 | 六层 Harness 结构生成 |
-| `harness-audit` | 存量项目审计 | 七维度健康评分 + 修复方案 |
-| `harness-evolve` | 持续优化 | AGENTS.md 瘦身 + Hooks 适配 |
-| `using-harness` | 元 Skill（1% 规则） | 意图识别，自动路由到正确 Skill |
-| `/assign-features` | Sprint 开始 | 依赖图分析 + 最优 owner 分配 |
-| `/review-pr` | 每次 PR | 质量 + 安全 + 架构全面审查 |
-| `/context-dump` | 上下文 50% 时 | 跨会话进度保存 |
-| `/arch-scan` | 每周 | 架构健康扫描 |
+| `harness:init` | 新项目初始化 | 六层 Harness 结构生成 |
+| `harness:audit` | 存量项目审计 | 七维度健康评分 + 修复方案 |
+| `harness:evolve` | 持续优化 | AGENTS.md 瘦身 + Hooks 适配 |
+| `harness:router` | 元 Skill（1% 规则） | 意图识别，自动路由到正确 Skill |
+| `/harness:assign` | Sprint 开始 | 依赖图分析 + 最优 owner 分配 |
+| `/harness:review-pr` | 每次 PR | 质量 + 安全 + 架构全面审查 |
+| `/harness:dump` | 上下文 50% 时 | 跨会话进度保存 |
+| `/harness:scan-arch` | 每周 | 架构健康扫描 |
 
 ---
 
@@ -109,10 +109,10 @@ harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks,
 
 建议准备以下截图：
 
-1. **harness-init 运行效果**：展示初始化后生成的文件树（AGENTS.md、init.sh、hooks/）
+1. **harness:init 运行效果**：展示初始化后生成的文件树（AGENTS.md、init.sh、hooks/）
 2. **init.sh 输出**：展示 `bash init.sh` 后的 Harness 就绪检查输出（含工具检测、进度展示）
-3. **harness-audit 健康报告**：展示七维度评分表和优先级修复方案
-4. **/assign-features 分配结果**：展示 Sprint 分配表和生成的 sprint-kickoff.sh 片段
+3. **harness:audit 健康报告**：展示七维度评分表和优先级修复方案
+4. **/harness:assign 分配结果**：展示 Sprint 分配表和生成的 sprint-kickoff.sh 片段
 5. **AGENTS.md vs CLAUDE.md 对比**：展示工具无关架构的两个文件
 
 ---

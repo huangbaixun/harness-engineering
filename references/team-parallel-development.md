@@ -434,9 +434,9 @@ git worktree list        # 确认所有 worktree 状态
 
 ---
 
-## 十、与 harness-init 的集成
+## 十、与 harness:init 的集成
 
-如果在项目初始化时启用多人协作模式，`harness-init` 应该在 Phase 5 生成支持并行的 features.json，并在 CLAUDE.md 中写入以下规则：
+如果在项目初始化时启用多人协作模式，`harness:init` 应该在 Phase 5 生成支持并行的 features.json，并在 CLAUDE.md 中写入以下规则：
 
 ```markdown
 ## 多人并行协作规则
