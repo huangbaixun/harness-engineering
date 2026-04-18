@@ -5,14 +5,9 @@
 
 set -euo pipefail
 
-# ── 工具检测（Claude Code / CodeBuddy / 其他）──────────────────────────────
-if [ -d ".codebuddy" ]; then
-  export TOOL_DIR=".codebuddy"
-  export TOOL_NAME="CodeBuddy"
-else
-  export TOOL_DIR=".claude"
-  export TOOL_NAME="Claude Code"
-fi
+# ── Claude Code 配置 ────────────────────────────────────────────────────────
+export TOOL_DIR=".claude"
+export TOOL_NAME="Claude Code"
 # ────────────────────────────────────────────────────────────────────────────
 
 PROJECT_NAME="{{PROJECT_NAME}}"

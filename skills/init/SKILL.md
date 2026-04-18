@@ -44,14 +44,12 @@ description: >
 **在询问任何问题之前**，先扫描项目根目录的现有状态：
 
 ```bash
-# Step 1：检测当前使用的 AI 工具（Claude Code / CodeBuddy / 其他）
-TOOL_DIR=$([ -d ".codebuddy" ] && echo ".codebuddy" || echo ".claude")
-TOOL_NAME=$([ -d ".codebuddy" ] && echo "CodeBuddy" || echo "Claude Code")
-echo "检测到工具：$TOOL_NAME（配置目录：$TOOL_DIR）"
+# Step 1：设置 Claude Code 配置目录
+TOOL_DIR=".claude"
+echo "配置目录：$TOOL_DIR"
 
 # Step 2：检测记忆文件（按优先级：AGENTS.md > 工具特定文件）
 MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" \
-           || ([ -f "CODEBUDDY.md" ] && echo "CODEBUDDY.md") \
            || echo "CLAUDE.md")
 
 # Step 3：检查关键文件是否已存在
@@ -69,7 +67,7 @@ ls "$MEMORY_FILE" "$TOOL_DIR/settings.json" "$TOOL_DIR/hooks/" init.sh 2>/dev/nu
 
 #### 存量模式：记忆文件已存在时的处理流程
 
-1. **读取并评估现有记忆文件**（AGENTS.md / CLAUDE.md / CODEBUDDY.md）
+1. **读取并评估现有记忆文件**（AGENTS.md / CLAUDE.md）
    - 行数是否 ≤60？超出多少？
    - 是否有 YAML frontmatter 或结构化章节？
    - 是否包含具体可验证的规则（测试命令、禁止项）？
@@ -114,14 +112,14 @@ Harness 不是单一配置文件，而是六个相互协作的层。理解各层
 
 | 层级 | 组件 | 核心职责 |
 |------|------|---------|
-| ① 记忆层 | `AGENTS.md`（通用）/ `CLAUDE.md` / `CODEBUDDY.md` | 静态知识：架构约定、禁止规则、测试命令 |
+| ① 记忆层 | `AGENTS.md`（通用）/ `CLAUDE.md` | 静态知识：架构约定、禁止规则、测试命令 |
 | ② 规则层 | `$TOOL_DIR/settings.json` | 确定性行为：权限、模型、输出配置 |
 | ③ 技能层 | `$TOOL_DIR/skills/` + `$TOOL_DIR/commands/` | 按需知识和手动触发的工作流 |
 | ④ 智能体层 | `$TOOL_DIR/agents/` | 上下文隔离的专用 Subagent |
 | ⑤ 钩子层 | Hooks（settings.json 中配置） | 确定性强制：不依赖模型判断 |
 | ⑥ 工具层 | MCP Servers | 能力扩展：外部服务接入 |
 
-> `$TOOL_DIR` = `.claude/`（Claude Code）或 `.codebuddy/`（CodeBuddy），由 init.sh 在会话启动时自动检测并导出。
+> `$TOOL_DIR` = `.claude/`，由 init.sh 在会话启动时导出。
 
 **三者协同原则**：AGENTS.md 规则单独使用会被偶尔忽略；Hooks 单独使用无法处理判断性任务；settings.json 单独使用缺乏上下文。三者协同才能真正有效。
 
@@ -140,9 +138,8 @@ Harness 不是单一配置文件，而是六个相互协作的层。理解各层
 项目根/
 ├── AGENTS.md                     ← 通用记忆文件（≤ 60 行），所有工具读取
 ├── CLAUDE.md                     ← 2 行 wrapper → 指向 AGENTS.md（含工作流 Skill 触发规则）
-├── CODEBUDDY.md                  ← 2 行 wrapper → 指向 AGENTS.md（CodeBuddy）
-├── init.sh                       ← 会话启动脚本（检测工具、导出 $TOOL_DIR）
-├── $TOOL_DIR/                    ← .claude/ 或 .codebuddy/（由工具决定）
+├── init.sh                       ← 会话启动脚本（导出 $TOOL_DIR）
+├── .claude/                      ← Claude Code 配置目录
 │   ├── settings.json             ← 权限 + Hook 注册（含 SessionStart Hook）
 │   └── hooks/                    ← Hook 脚本（每个 hook 提供 .cmd + 无后缀 + .sh 三形式）
 │       ├── session-start{,.cmd,.sh}  ← SessionStart：恢复跨会话记忆
@@ -161,7 +158,7 @@ Harness 不是单一配置文件，而是六个相互协作的层。理解各层
 │   └── claude-progress.json      ← Agent 进度追踪（空骨架）
 ```
 
-> **工具兼容说明**：`AGENTS.md` 是跨工具的唯一真相来源。`CLAUDE.md` 和 `CODEBUDDY.md` 各自只有 2 行，将用户引导至 `AGENTS.md`。
+> **说明**：`AGENTS.md` 是唯一真相来源。`CLAUDE.md` 只有 2 行，将用户引导至 `AGENTS.md`。
 
 `init.sh` 模板见：`${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/init.sh.template`
 

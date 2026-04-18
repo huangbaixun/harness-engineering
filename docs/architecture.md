@@ -2,9 +2,9 @@
 
 ## 系统概览
 
-这是一个工具无关的 AI Agent Harness plugin，支持 Claude Code 和 CodeBuddy，为工程团队提供标准化的 AI Agent Harness 工程能力建设。主要由三个核心 Skill 和一组配套 Commands、Hooks、References 构成。
+这是一个 AI Agent Harness plugin，支持 Claude Code，为工程团队提供标准化的 AI Agent Harness 工程能力建设。主要由三个核心 Skill 和一组配套 Commands、Hooks、References 构成。
 
-**工具兼容设计**：`AGENTS.md` 作为跨工具通用记忆文件；`CLAUDE.md` / `CODEBUDDY.md` 为 2 行 wrapper；Skills 统一使用 `$TOOL_DIR` 变量代替硬编码路径。
+**工具兼容设计**：`AGENTS.md` 作为跨工具通用记忆文件；`CLAUDE.md` 为 2 行 wrapper；Skills 统一使用 `$TOOL_DIR` 变量代替硬编码路径。
 
 ## 目录结构
 
@@ -12,11 +12,8 @@
 harness-engineering-plugin/
 ├── AGENTS.md                       ← 通用记忆文件（< 60 行，跨工具唯一真相来源）
 ├── CLAUDE.md                       ← 2 行 wrapper → AGENTS.md（Claude Code 用户）
-├── CODEBUDDY.md                    ← 2 行 wrapper → AGENTS.md（CodeBuddy 用户）
 ├── .claude-plugin/
 │   └── plugin.json                 ← Claude Code plugin 清单
-├── .codebuddy-plugin/
-│   └── plugin.json                 ← CodeBuddy plugin 清单
 ├── skills/                         ← Skills（通用，$TOOL_DIR 无关）
 │   ├── init/               ← 新项目 Harness 初始化
 │   │   └── SKILL.md

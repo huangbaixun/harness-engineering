@@ -170,9 +170,9 @@ unzip harness-engineering.skill -d /tmp/harness-test
 claude --plugin-dir /tmp/harness-test
 ```
 
-验证 plugin 加载成功：启动 Claude Code 或 CodeBuddy 后，在对话中输入「帮我初始化这个项目的 Harness」，应该自动触发 `harness:init` Skill。
+验证 plugin 加载成功：启动 Claude Code 后，在对话中输入「帮我初始化这个项目的 Harness」，应该自动触发 `harness:init` Skill。
 
-> 本 plugin 从 v1.8.0 起支持工具无关架构，`init.sh` 自动检测 Claude Code / CodeBuddy 并导出 `$TOOL_DIR`。新增 Skill 或 Hook 脚本时，禁止硬编码 `.claude/` 或 `.codebuddy/` 路径，统一使用 `$TOOL_DIR`。
+> 新增 Skill 或 Hook 脚本时，使用 `.claude/` 作为标准配置目录。
 
 ---
 

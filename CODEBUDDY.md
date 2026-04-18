@@ -1,2 +1,3 @@
-> 完整项目规则见 [AGENTS.md](AGENTS.md)。
-> CodeBuddy 用户：配置目录为 `.codebuddy/`，技能位于 `.codebuddy/skills/`。
+# DEPRECATED — CodeBuddy support removed in v1.10.1
+
+See AGENTS.md for the universal memory file.

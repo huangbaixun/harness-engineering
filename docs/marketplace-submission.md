@@ -24,12 +24,12 @@
 ## 2. 一句话描述（Short Description，≤ 120 字符）
 
 ```
-AI Agent 工程能力建设：初始化、审计、团队 Sprint 分配，支持 Claude Code 和 CodeBuddy，安装即用。
+AI Agent 工程能力建设：初始化、审计、团队 Sprint 分配，支持 Claude Code，安装即用。
 ```
 
 英文版：
 ```
-AI Agent Harness Engineering: init, audit, team sprint allocation. Works with Claude Code & CodeBuddy.
+AI Agent Harness Engineering: init, audit, team sprint allocation. Built for Claude Code.
 ```
 
 ---
@@ -61,7 +61,7 @@ Install once, and your projects get:
 
 ## Key Design Principles
 
-- **Tool-agnostic**: Works with Claude Code (`.claude/`) and Tencent CodeBuddy (`.codebuddy/`) — `init.sh` auto-detects your tool at session start
+- **Built for Claude Code**: Uses `.claude/` as the standard configuration directory
 - **AGENTS.md as single source of truth**: One universal memory file, two 2-line wrappers for each tool
 - **≤ 60 lines rule**: Based on ETH Zurich research showing performance degrades with oversized memory files
 - **Hooks over instructions**: Critical constraints enforced deterministically via hooks, not model judgment
@@ -80,7 +80,7 @@ The `harness:init` skill auto-triggers and walks you through setup.
 ## 4. 分类标签（Keywords / Tags）
 
 ```
-harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks, memory, ai-engineering
+harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai-engineering
 ```
 
 ---
@@ -88,7 +88,7 @@ harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks,
 ## 5. 目标用户（Target Audience）
 
 - 工程团队：希望在多个项目中标准化 AI Agent 工作流
-- 全栈工程师：使用 Claude Code 或 CodeBuddy 进行日常编码
+- 全栈工程师：使用 Claude Code 进行日常编码
 - 技术负责人：需要协调多人 AI 辅助开发的 Sprint 规划
 - 平台工程师：为团队建立 AI 工程规范和约束体系
 
@@ -127,7 +127,6 @@ harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks,
 | 环境 | 支持状态 |
 |------|---------|
 | Claude Code ≥ 1.0.0 | ✅ 完全支持 |
-| CodeBuddy（腾讯） | ✅ 完全支持（v1.8.0+） |
 | Cowork（Anthropic Desktop） | ✅ 支持（Skill 触发） |
 | TypeScript / Node.js 项目 | ✅ 专用模板 |
 | Python 项目 | ✅ 专用模板 |

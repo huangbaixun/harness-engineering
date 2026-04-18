@@ -1,5 +1,5 @@
 # Project: {{PROJECT_NAME}} — AGENTS.md
-> 通用 Agent 记忆文件，供 Claude Code、CodeBuddy 及所有兼容工具读取。
+> 通用 Agent 记忆文件，供 Claude Code 读取。
 
 ## 技术栈
 - {{TECH_STACK}}

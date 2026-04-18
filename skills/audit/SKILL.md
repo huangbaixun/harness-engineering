@@ -2,7 +2,7 @@
 name: harness:audit
 description: >
   存量项目 Harness 健康度检查与优化。当用户提到「检查 Harness」「优化 CLAUDE.md」
-  「优化 AGENTS.md」「优化 CODEBUDDY.md」「Agent 老是犯错」「Harness 健康度」
+  「优化 AGENTS.md」「Agent 老是犯错」「Harness 健康度」
   「审计 Harness」「评估 AI 编码环境」「harness audit」「检查 Agent 配置」
   「为什么 Agent 不听话」「改善 Agent 效果」「现有项目加 Harness」「存量优化」时激活。
   当用户抱怨 Agent 行为不符合预期、反复犯同样的错误、或项目已有一段时间但
@@ -21,11 +21,9 @@ description: >
 用 Explore subagent 或直接扫描以下文件和目录：
 
 ```bash
-# 工具检测：自动识别 Claude Code / CodeBuddy / 其他工具
-TOOL_DIR=$([ -d ".codebuddy" ] && echo ".codebuddy" || echo ".claude")
-MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" \
-           || ([ -f "CODEBUDDY.md" ] && echo "CODEBUDDY.md") \
-           || echo "CLAUDE.md")
+# Claude Code 配置目录
+TOOL_DIR=".claude"
+MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" || echo "CLAUDE.md")
 echo "检测到工具配置目录：$TOOL_DIR，记忆文件：$MEMORY_FILE"
 
 # 检查六层 Harness 的每一层
@@ -62,7 +60,7 @@ echo "=== ADR ===" && ls docs/decisions/ 2>/dev/null
 
 检查以下常见失败模式并生成诊断报告：
 
-**A. 记忆文件（AGENTS.md / CLAUDE.md / CODEBUDDY.md）问题诊断**
+**A. 记忆文件（AGENTS.md / CLAUDE.md）问题诊断**
 
 ```
 检查项：
@@ -71,7 +69,7 @@ echo "=== ADR ===" && ls docs/decisions/ 2>/dev/null
 □ 是否有模糊不可验证的规则（如「写好代码」）？→ 改为具体可验证
 □ 是否有应该用 Hook 强制但却放在记忆文件的规则？→ 迁移到 Hook
 □ 是否有过时的规则？→ 删除或标记
-□ 多文件是否内容一致？（AGENTS.md / CLAUDE.md / CODEBUDDY.md 应同步）
+□ 多文件是否内容一致？（AGENTS.md / CLAUDE.md 应同步）
 ```
 
 **B. Hook 覆盖度诊断**

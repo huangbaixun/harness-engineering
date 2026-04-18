@@ -1,7 +1,7 @@
 {
   "name": "harness",
   "version": "1.10.0",
-  "description": "AI Agent 工程能力建设 plugin。基于 Harness Engineering 规范，支持新项目初始化、存量项目审计与持续迭代演进。支持 Claude Code 和 CodeBuddy。安装即用。",
+  "description": "AI Agent Harness Engineering plugin. Initialize new projects, audit existing harness health, plan with structured triple-format tasks, verify completion with rigid/flexible constraints, and archive specs — all in one install.",
   "homepage": "https://github.com/huangbaixun/harness-engineering",
   "repository": "https://github.com/huangbaixun/harness-engineering",
   "author": {
@@ -16,17 +16,16 @@
     "engineering",
     "ai-engineering",
     "devops",
-    "codebuddy",
     "team",
     "sprint"
   ],
   "userConfig": {
     "team_name": {
-      "description": "团队名称（用于 sprint 报告和 features.json 标注，如「Backend Team」）",
+      "description": "Team name (used in sprint reports and features.json labels, e.g. 'Backend Team')",
       "sensitive": false
     },
     "default_tech_stack": {
-      "description": "默认技术栈（typescript / python / go / java / generic），初始化新项目时自动选择模板",
+      "description": "Default tech stack (typescript / python / go / java / generic) — auto-selects template during project init",
       "sensitive": false
     }
   }
