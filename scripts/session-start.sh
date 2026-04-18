@@ -37,16 +37,45 @@ except Exception as e:
     pass
 " 2>/dev/null)
 
-  if [ -n "$IN_PROGRESS" ]; then
-    echo "═══════════════════════════════════════"
-    echo "  Harness SessionStart — 进度恢复"
-    echo "═══════════════════════════════════════"
-    echo "$IN_PROGRESS"
-    echo ""
-    echo "  → 读取 $PROGRESS_FILE 获取完整状态"
-    echo "  → 读取 $FEATURES_FILE 获取需求和验收标准"
-    echo "═══════════════════════════════════════"
+  # ── features.json 摘要 ──────────────────────────────────────────────────────
+  FEATURES_SUMMARY=""
+  if [ -f "$FEATURES_FILE" ]; then
+    FEATURES_SUMMARY=$(python3 -c "
+import json
+try:
+    d = json.load(open('$FEATURES_FILE'))
+    feats = d.get('features', [])
+    pending = [f for f in feats if f.get('status') in ('pending', 'ready')]
+    ip = [f for f in feats if f.get('status') == 'in_progress']
+    done = [f for f in feats if f.get('status') in ('completed', 'done')]
+    if ip:
+        print(f'  🔧 进行中特性：{ip[0][\"id\"]} {ip[0].get(\"name\",\"\")}')
+    if pending:
+        nxt = pending[0]
+        print(f'  📌 下一个特性：{nxt[\"id\"]} {nxt.get(\"name\",\"\")} (priority={nxt.get(\"priority\",\"?\")})')
+    print(f'  📊 特性统计：{len(done)} done / {len(ip)} in_progress / {len(pending)} pending')
+except:
+    pass
+" 2>/dev/null)
   fi
+
+  echo "═══════════════════════════════════════"
+  echo "  Harness SessionStart — 仪式性启动链"
+  echo "═══════════════════════════════════════"
+  if [ -n "$IN_PROGRESS" ]; then
+    echo "$IN_PROGRESS"
+  fi
+  if [ -n "$FEATURES_SUMMARY" ]; then
+    echo "$FEATURES_SUMMARY"
+  fi
+  echo ""
+  echo "  启动检查清单（按顺序执行，不要跳过）："
+  echo "  ① pwd 确认工作目录"
+  echo "  ② 读取 $PROGRESS_FILE 了解当前进度"
+  echo "  ③ 读取 $FEATURES_FILE 了解需求和验收标准"
+  echo "  ④ 运行项目测试命令确认基线（记录失败数量）"
+  echo "  ⑤ 确认 in_progress 特性，继续或标记完成后再取下一个"
+  echo "═══════════════════════════════════════"
 fi
 
 # ── 检查是否需要归档 ──────────────────────────────────────────────────────────
