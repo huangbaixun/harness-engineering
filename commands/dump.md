@@ -1,13 +1,13 @@
 ---
-description: 保存当前会话的关键决策和进度到文档，用于长任务的跨会话交接
+description: Save key decisions and progress from the current session to documentation, for cross-session handoff of long tasks
 ---
 
-将以下信息写入 docs/claude-progress.json：
-1. 本次会话完成的特性（更新 completed_features）
-2. 当前进行中的工作（更新 in_progress）
-3. 遇到的重要决策和理由（追加到 docs/decisions/ 目录）
-4. 下一个 Agent 需要知道的关键上下文
-5. 如有 blocker，记录在 in_progress.blockers 中
+Write the following information to docs/claude-progress.json:
+1. Features completed in this session (update completed_features)
+2. Current work in progress (update in_progress)
+3. Important decisions made and their rationale (append to docs/decisions/ directory)
+4. Key context that the next Agent needs to know
+5. If there are blockers, record them in in_progress.blockers
 
-同时更新 last_updated 时间戳。
-完成后输出摘要：「已保存 X 个完成特性，当前进度：[特性名]」
+Also update the last_updated timestamp.
+After completion, output a summary: "Saved X completed features, current progress: [feature name]"

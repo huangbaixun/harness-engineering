@@ -1,72 +1,72 @@
-# tdd — 测试驱动开发工作流
+# tdd — Test-Driven Development Workflow
 
 > **upstream**: obra/superpowers `test-driven-development` @ [917e5f5](https://github.com/obra/superpowers/tree/917e5f5/skills/test-driven-development)
-> **harness-delta**: 重命名为 tdd（简短触发）、与 harness:router 1% 规则绑定、集成 features.json acceptance_criteria 作为测试输入源
+> **harness-delta**: Renamed to tdd (shorter trigger), bound to the harness:router 1% rule, integrates features.json acceptance_criteria as a test input source
 
-> 整合自 obra/superpowers TDD skill，适配 Harness Engineering 六层模型。
-> 在 Harness 环境中，Stop Hook 提供硬拦截，本 Skill 提供流程规范。
+> Adapted from the obra/superpowers TDD skill, tailored for the Harness Engineering six-layer model.
+> In the Harness environment, Stop Hooks provide hard interception; this Skill provides workflow discipline.
 
-## 核心循环：RED → GREEN → REFACTOR
+## Core Loop: RED → GREEN → REFACTOR
 
-任何功能实现必须严格遵循三阶段循环，**不允许跳步**：
-
-```
-RED（写失败测试）
-  → 先写能描述期望行为的测试
-  → 运行测试，确认它失败（红色）
-  → 失败原因必须是"功能未实现"，而非"测试本身写错了"
-
-GREEN（最小实现）
-  → 写最少的代码让测试通过
-  → 不允许过度设计，只让当前测试通过
-  → 运行全套测试，确认全部绿色
-
-REFACTOR（重构）
-  → 在测试保护下清理代码
-  → 消除重复、提升可读性
-  → 重构后再次运行测试确认仍然全绿
-```
-
-## 触发条件（1% 原则）
-
-只要有 1% 可能，必须在开始实现前激活本工作流：
-
-| 情形 | 示例 |
-|------|------|
-| 实现新功能 | "帮我写一个 X 功能" |
-| 修复 Bug | "这里有个问题，帮我修" |
-| 重构代码 | "这段代码需要优化" |
-| 实现 features.json 中的条目 | coding-agent 取下一个特性时 |
-
-## 与 Harness 其他层的协作
+All feature implementations must strictly follow the three-phase loop — **no skipping steps**:
 
 ```
-features.json（需求锚点）
-    ↓  取出 acceptance_criteria
-harness:plan Skill（任务拆解）
-    ↓  拆解为 2-5 分钟任务
-tdd Skill（本工作流）
-    ↓  RED → GREEN → REFACTOR
-Stop Hook（stop-typecheck.sh）
-    ↓  测试全通过才允许完成
-harness:verify Skill（最终确认）
-    ↓  对照 acceptance_criteria 验收
-claude-progress.json（状态更新）
+RED (Write a Failing Test)
+  → Write a test that describes the expected behavior first
+  → Run the test and confirm it fails (red)
+  → The failure reason must be "feature not implemented," not "the test itself is wrong"
+
+GREEN (Minimal Implementation)
+  → Write the minimum code to make the test pass
+  → No over-engineering — only make the current test pass
+  → Run the full test suite and confirm everything is green
+
+REFACTOR (Refactor)
+  → Clean up code under test protection
+  → Eliminate duplication, improve readability
+  → Run the tests again after refactoring to confirm everything is still green
 ```
 
-## 每个测试应满足
+## Trigger Conditions (1% Rule)
 
-- **一个测试只测一件事** — 失败时原因明确
-- **测试名描述行为** — `test_user_cannot_login_with_wrong_password`，不是 `test_login`
-- **AAA 结构** — Arrange（准备）→ Act（执行）→ Assert（断言）
-- **测试独立** — 不依赖其他测试的执行顺序或状态
+Whenever there is even a 1% chance it applies, activate this workflow before starting implementation:
 
-## 常见错误和纠正
-
-| 错误模式 | 正确做法 |
+| Scenario | Example |
 |----------|---------|
-| 先写实现再补测试 | 必须先写测试，看到红色才开始实现 |
-| 一次写多个测试 | 一次只写一个测试，通过后再写下一个 |
-| REFACTOR 阶段不运行测试 | 每次重构后必须重新运行全套测试 |
-| 测试通过就跳过 REFACTOR | REFACTOR 是必要步骤，不是可选项 |
-| 为了让测试通过而修改测试 | 测试是规格，修改测试意味着改变需求 |
+| Implementing a new feature | "Help me build feature X" |
+| Fixing a bug | "There's an issue here, help me fix it" |
+| Refactoring code | "This code needs optimization" |
+| Implementing a features.json entry | coding-agent picks up the next feature |
+
+## Collaboration with Other Harness Layers
+
+```
+features.json (Requirements Anchor)
+    ↓  Extract acceptance_criteria
+harness:plan Skill (Task Breakdown)
+    ↓  Break down into 2–5 minute tasks
+tdd Skill (This Workflow)
+    ↓  RED → GREEN → REFACTOR
+Stop Hook (stop-typecheck.sh)
+    ↓  All tests must pass before completion is allowed
+harness:verify Skill (Final Verification)
+    ↓  Validate against acceptance_criteria
+claude-progress.json (Status Update)
+```
+
+## Each Test Should Satisfy
+
+- **One test tests one thing** — failure reason is clear
+- **Test names describe behavior** — `test_user_cannot_login_with_wrong_password`, not `test_login`
+- **AAA structure** — Arrange → Act → Assert
+- **Tests are independent** — no dependency on execution order or state of other tests
+
+## Common Mistakes and Corrections
+
+| Anti-Pattern | Correct Approach |
+|--------------|-----------------|
+| Write implementation first, then add tests | Write the test first; only start implementing after you see red |
+| Write multiple tests at once | Write one test at a time; write the next only after the current one passes |
+| Skip running tests during REFACTOR | Run the full test suite after every refactoring |
+| Skip REFACTOR after tests pass | REFACTOR is a required step, not optional |
+| Modify the test to make it pass | Tests are the spec; modifying a test means changing the requirements |

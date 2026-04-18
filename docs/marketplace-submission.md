@@ -1,15 +1,15 @@
-# Anthropic Marketplace 提交材料
+# Anthropic Marketplace Submission Materials
 
-> 提交地址：https://claude.ai/settings/plugins/submit  
-> 版本：v1.10.0  
-> 准备日期：2026-04-18
+> Submission URL: https://claude.ai/settings/plugins/submit  
+> Version: v1.10.0  
+> Preparation date: 2026-04-18
 
 ---
 
-## 1. 基本信息
+## 1. Basic Information
 
-| 字段 | 内容 |
-|------|------|
+| Field | Value |
+|-------|-------|
 | **Plugin Name** | harness-engineering |
 | **Display Name** | Harness Engineering |
 | **Version** | 1.10.0 |
@@ -21,20 +21,15 @@
 
 ---
 
-## 2. 一句话描述（Short Description，≤ 120 字符）
+## 2. Short Description (120 characters max)
 
 ```
-AI Agent 工程能力建设：初始化、审计、团队 Sprint 分配，支持 Claude Code，安装即用。
-```
-
-英文版：
-```
-AI Agent Harness Engineering: init, audit, team sprint allocation. Built for Claude Code.
+AI Agent Harness Engineering: init, audit, team sprint allocation. Built for Claude Code — install and go.
 ```
 
 ---
 
-## 3. 详细描述（Long Description，Markdown）
+## 3. Long Description (Markdown)
 
 ```markdown
 ## What is Harness Engineering?
@@ -53,7 +48,7 @@ Install once, and your projects get:
 
 - **`harness:evolve`** — Runs periodic garbage collection on your harness: trims bloated AGENTS.md files, removes stale rules, adapts hooks to new model capabilities.
 
-- **`harness:archive`** — *(New in v1.10.0)* Automated completion archival + doc sync. When a feature is done, archives specs to `docs/archive/` (preserving git history), checks doc-code consistency, runs lightweight architecture health scan, and generates a structured archive report.
+- **`harness:archive`** — *(New in v1.10.0)* Automated completion archival and doc sync. When a feature is done, archives specs to `docs/archive/` (preserving git history), checks doc-code consistency, runs a lightweight architecture health scan, and generates a structured archive report.
 
 - **`harness:plan`** — *(Enhanced in v1.10.0)* Now enforces `<action>/<verify>/<done>` triple structure for every task. Reads `rigid` vs `flexible` constraints from `features.json` — rigid items (acceptance criteria, forbidden patterns) must map to tasks; flexible items (technical notes) are advisory. Ensures 100% rigid constraint coverage before execution begins.
 
@@ -63,21 +58,21 @@ Install once, and your projects get:
 
 - **Built for Claude Code**: Uses `.claude/` as the standard configuration directory
 - **AGENTS.md as single source of truth**: One universal memory file, two 2-line wrappers for each tool
-- **≤ 60 lines rule**: Based on ETH Zurich research showing performance degrades with oversized memory files
+- **60-line rule**: Based on ETH Zurich research showing performance degrades with oversized memory files
 - **Hooks over instructions**: Critical constraints enforced deterministically via hooks, not model judgment
 
 ## Quick Start
 
 After installing, just say:
 
-> "帮我初始化这个项目的 Harness" (Help me initialize this project's Harness)
+> "Help me initialize this project's Harness"
 
 The `harness:init` skill auto-triggers and walks you through setup.
 ```
 
 ---
 
-## 4. 分类标签（Keywords / Tags）
+## 4. Keywords / Tags
 
 ```
 harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai-engineering
@@ -85,76 +80,76 @@ harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai
 
 ---
 
-## 5. 目标用户（Target Audience）
+## 5. Target Audience
 
-- 工程团队：希望在多个项目中标准化 AI Agent 工作流
-- 全栈工程师：使用 Claude Code 进行日常编码
-- 技术负责人：需要协调多人 AI 辅助开发的 Sprint 规划
-- 平台工程师：为团队建立 AI 工程规范和约束体系
-
----
-
-## 6. Skills 清单（供 Marketplace 展示）
-
-| Skill / Command | 触发场景 | 核心功能 |
-|----------------|---------|---------|
-| `harness:init` | 新项目初始化 | 六层 Harness 结构生成 |
-| `harness:audit` | 存量项目审计 | 七维度健康评分 + 修复方案 |
-| `harness:evolve` | 持续优化 | AGENTS.md 瘦身 + Hooks 适配 |
-| `harness:archive` | 特性完成后归档 | Spec 归档 + 文档同步 + 架构快检 |
-| `harness:router` | 元 Skill（1% 规则） | 意图识别，自动路由到正确 Skill |
-| `/harness:assign` | Sprint 开始 | 依赖图分析 + 最优 owner 分配 |
-| `/harness:review-pr` | 每次 PR | 质量 + 安全 + 架构全面审查 |
-| `/harness:dump` | 上下文 50% 时 | 跨会话进度保存 |
-| `/harness:scan-arch` | 每周 | 架构健康扫描 |
+- **Engineering teams**: Looking to standardize AI agent workflows across multiple projects
+- **Full-stack engineers**: Using Claude Code for day-to-day development
+- **Tech leads**: Coordinating sprint planning for multi-developer AI-assisted projects
+- **Platform engineers**: Establishing AI engineering standards and constraint systems for their teams
 
 ---
 
-## 7. 截图说明（Screenshot Descriptions）
+## 6. Skills Overview (for Marketplace Display)
 
-建议准备以下截图：
-
-1. **harness:init 运行效果**：展示初始化后生成的文件树（AGENTS.md、init.sh、hooks/）
-2. **init.sh 输出**：展示 `bash init.sh` 后的 Harness 就绪检查输出（含工具检测、进度展示）
-3. **harness:audit 健康报告**：展示七维度评分表和优先级修复方案
-4. **/harness:assign 分配结果**：展示 Sprint 分配表和生成的 sprint-kickoff.sh 片段
-5. **AGENTS.md vs CLAUDE.md 对比**：展示工具无关架构的两个文件
-
----
-
-## 8. 技术兼容性声明
-
-| 环境 | 支持状态 |
-|------|---------|
-| Claude Code ≥ 1.0.0 | ✅ 完全支持 |
-| Cowork（Anthropic Desktop） | ✅ 支持（Skill 触发） |
-| TypeScript / Node.js 项目 | ✅ 专用模板 |
-| Python 项目 | ✅ 专用模板 |
-| Go 项目 | ✅ 专用模板 |
-| Java 项目 | ✅ 专用模板 |
-| 其他语言 | ✅ 通用模板 |
+| Skill / Command | Trigger Scenario | Core Functionality |
+|----------------|-----------------|-------------------|
+| `harness:init` | New project setup | Generates full 6-layer Harness structure |
+| `harness:audit` | Existing project audit | 7-dimension health score + prioritized fix plan |
+| `harness:evolve` | Ongoing optimization | AGENTS.md trimming + hook adaptation |
+| `harness:archive` | Post-feature archival | Spec archival + doc sync + architecture health check |
+| `harness:router` | Meta-skill (1% rule) | Intent recognition, auto-routes to the correct skill |
+| `/harness:assign` | Sprint kickoff | Dependency graph analysis + optimal owner assignment |
+| `/harness:review-pr` | Every PR | Quality + security + architecture review |
+| `/harness:dump` | At 50% context usage | Cross-session progress persistence |
+| `/harness:scan-arch` | Weekly | Architecture health scan |
 
 ---
 
-## 9. 隐私与安全声明
+## 7. Screenshot Descriptions
 
-- 本 plugin **不收集任何用户数据**，不发送任何网络请求
-- `userConfig` 中的 `team_name` 和 `default_tech_stack` 仅本地使用，由 Claude Code 安全存储
-- 所有 Hook 脚本均为本地 shell 脚本，源码公开可审查：[scripts/](../scripts/)
-- 无第三方 MCP 依赖
+The following screenshots should be prepared for submission:
+
+1. **harness:init output**: Shows the generated file tree after initialization (AGENTS.md, init.sh, hooks/)
+2. **init.sh output**: Shows the Harness readiness check output after running `bash init.sh` (tool detection, progress display)
+3. **harness:audit health report**: Shows the 7-dimension scoring table and prioritized fix plan
+4. **/harness:assign results**: Shows the sprint allocation table and a snippet of the generated sprint-kickoff.sh
+5. **AGENTS.md vs CLAUDE.md comparison**: Demonstrates the tool-agnostic architecture with both files
 
 ---
 
-## 10. 提交检查清单
+## 8. Technical Compatibility
 
-提交前确认：
+| Environment | Support Status |
+|-------------|---------------|
+| Claude Code >= 1.0.0 | Fully supported |
+| Cowork (Anthropic Desktop) | Supported (skill triggering) |
+| TypeScript / Node.js projects | Dedicated template |
+| Python projects | Dedicated template |
+| Go projects | Dedicated template |
+| Java projects | Dedicated template |
+| Other languages | Generic template |
 
-- [x] `plugin.json` 包含 `name`、`version`、`homepage`、`repository`、`license`
-- [x] `skills/`、`commands/`、`agents/`、`hooks/` 均在 plugin 根目录
-- [x] 所有 plugin 内部路径使用 `${CLAUDE_PLUGIN_ROOT}` 而非硬编码绝对路径
-- [x] `SKILL.md` 包含有效的 YAML frontmatter（`name`、`description`）
-- [x] Skills 在无 plugin 前缀时不与常见工具名冲突
-- [x] LICENSE 文件存在（MIT）
-- [x] README.md 包含快速上手说明
-- [x] CHANGELOG.md 记录版本历史
-- [x] 已在本地验证 plugin 加载成功（`bash init.sh` 输出正常）
+---
+
+## 9. Privacy and Security Statement
+
+- This plugin **does not collect any user data** and makes no network requests
+- The `team_name` and `default_tech_stack` fields in `userConfig` are used locally only and stored securely by Claude Code
+- All hook scripts are local shell scripts with fully auditable source code: [scripts/](../scripts/)
+- No third-party MCP dependencies
+
+---
+
+## 10. Submission Checklist
+
+Confirm before submitting:
+
+- [x] `plugin.json` includes `name`, `version`, `homepage`, `repository`, `license`
+- [x] `skills/`, `commands/`, `agents/`, `hooks/` are all in the plugin root directory
+- [x] All internal plugin paths use `${CLAUDE_PLUGIN_ROOT}` instead of hardcoded absolute paths
+- [x] `SKILL.md` contains valid YAML frontmatter (`name`, `description`)
+- [x] Skills do not conflict with common tool names when used without the plugin prefix
+- [x] LICENSE file is present (MIT)
+- [x] README.md includes quick-start instructions
+- [x] CHANGELOG.md documents version history
+- [x] Plugin loading verified locally (`bash init.sh` output is normal)

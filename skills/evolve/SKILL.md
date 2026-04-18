@@ -1,170 +1,175 @@
 ---
 name: harness:evolve
 description: >
-  Harness 持续迭代与演进优化。当用户提到「精简 Harness」「删除不需要的规则」
-  「新模型发布后更新 Harness」「Harness 维护」「垃圾回收」「代码熵」
-  「文档漂移」「架构漂移」「CLAUDE.md 太长了」「harness evolve」
-  「Harness 瘦身」「优化 Token 消耗」「清理过时规则」时激活。
-  当用户更新了 Claude 模型版本、项目经历了较长时间的迭代、或者感觉 Harness
-  变得臃肿不再高效时，也应使用此 Skill 来精简和演进 Harness 体系。
+  Continuous iteration and evolution of the Harness framework. Activate when the user mentions
+  "trim Harness", "remove unnecessary rules", "update Harness after new model release",
+  "Harness maintenance", "garbage collection", "code entropy", "documentation drift",
+  "architecture drift", "CLAUDE.md is too long", "harness evolve", "slim down Harness",
+  "optimize token usage", or "clean up outdated rules".
+  Also use this Skill when the user has updated the Claude model version, the project has gone
+  through a long iteration cycle, or the Harness feels bloated and no longer efficient —
+  use it to streamline and evolve the Harness framework.
 ---
 
-# Harness 持续演进 Skill
+# Harness Continuous Evolution Skill
 
-> 本 Skill 指导 Harness 体系的持续精简与演进。
-> 核心理念：**随模型迭代精简 Harness——当新模型自身解决了某类失败，主动删除相应脚手架。** Harness 不是只增不减的，它需要跟随模型能力和项目变化持续调整。
+> This Skill guides the continuous streamlining and evolution of the Harness framework.
+> Core principle: **Streamline the Harness as models improve — when a new model inherently handles a class of failures, proactively remove the corresponding scaffolding.** The Harness is not append-only; it must be continuously adjusted to match model capabilities and project changes.
 
-## 演进的三个维度
+## Three Dimensions of Evolution
 
-### 维度 1：垃圾回收 — 对抗代码库熵增
+### Dimension 1: Garbage Collection — Fighting Codebase Entropy
 
-代码库层面的熵增以三种形式出现：
+Codebase-level entropy manifests in three forms:
 
-**文档漂移**：代码改了，文档没更新。CLAUDE.md 里的规则已经不再必要，却还在消耗 Token。
+**Documentation Drift**: Code changes but documentation does not update. Rules in CLAUDE.md are no longer necessary but still consume tokens.
 
-**架构漂移**：早期的架构规则随时间被新代码悄悄违反。「只有一个地方违反」逐渐变成「每个地方都违反」。
+**Architecture Drift**: Early architecture rules are quietly violated by new code over time. "Only one place violates the rule" gradually becomes "every place violates the rule."
 
-**代码熵**：死代码、重复实现、过度耦合、命名约定分叉。
+**Code Entropy**: Dead code, duplicate implementations, excessive coupling, naming convention divergence.
 
-#### 四类垃圾回收操作
+#### Four Types of Garbage Collection
 
-**类型 1：文档同步（建议每日）**
+**Type 1: Documentation Sync (recommended daily)**
 
-扫描 docs/architecture.md 中的目录结构与 src/ 实际目录对比，找出不一致。检查 CLAUDE.md 中的每条规则在代码库中是否仍然适用。检查 ADR 状态是否与实际技术选型一致。
+Scan the directory structure in docs/architecture.md and compare it against the actual src/ directory to find inconsistencies. Check whether each rule in CLAUDE.md still applies in the codebase. Check whether ADR statuses match actual technology choices.
 
-对每个发现的漂移，生成具体修复建议。
+For each detected drift, generate a specific fix recommendation.
 
-**类型 2：架构约束扫描（建议每周）**
+**Type 2: Architecture Constraint Scan (recommended weekly)**
 
-运行依赖分析工具检查违规：
-- 依赖方向违规
-- 过大的模块（> 300 行）
-- 缺少测试的新文件
-- 循环依赖
+Run dependency analysis tools to check for violations:
+- Dependency direction violations
+- Oversized modules (> 300 lines)
+- New files missing tests
+- Circular dependencies
 
-**类型 3：CLAUDE.md 瘦身（每次新模型发布后）**
+**Type 3: CLAUDE.md Slimming (after each new model release)**
 
-对 CLAUDE.md 中的每条规则逐一评估：
+Evaluate each rule in CLAUDE.md one by one:
 
-1. Claude 是否在没有这条规则时仍然自然遵守？
-   → 如果是，删除规则（减少 Token 消耗）
+1. Does Claude still follow this rule naturally without it being stated?
+   -> If yes, delete the rule (reduce token cost)
 
-2. 这条规则是否已被 Hook 或 Linter 覆盖？
-   → 如果有 Computational Sensor 覆盖，文字版本只是冗余
+2. Is this rule already covered by a Hook or Linter?
+   -> If a Computational Sensor covers it, the text version is just redundant
 
-3. 这条规则是否对应一个真实存在的失败模式？
-   → 检查最近 4 周的 Agent 失败记录，没触发过就考虑删除
+3. Does this rule correspond to a failure mode that actually exists?
+   -> Check Agent failure records from the past 4 weeks; if it was never triggered, consider deleting it
 
-目标：CLAUDE.md 保持在 60 行以内。
+Goal: Keep CLAUDE.md under 60 lines.
 
-**类型 4：代码熵检测（建议每月）**
+**Type 4: Code Entropy Detection (recommended monthly)**
 
-- 死代码检测
-- 重复代码检测
-- 过度耦合检测（哪些模块被超过 3 个其他模块引用）
-- 测试质量评估（是否只测试实现细节而不测行为）
+- Dead code detection
+- Duplicate code detection
+- Excessive coupling detection (which modules are referenced by more than 3 other modules)
+- Test quality assessment (are tests verifying implementation details instead of behavior)
 
-### 维度 2：Harness 精简 — 随模型能力调整
+### Dimension 2: Harness Streamlining — Adjusting to Model Capabilities
 
-每次模型更新后，需要重新评估 Harness 的必要性。
+After each model update, reassess whether each Harness component is still necessary.
 
-#### 评估流程
-
-```
-Step 1：确认新模型版本
-Step 2：用一个标准任务（至少 5 个特性）测试
-Step 3：观察是否出现以下行为
-  □ 上下文焦虑（过早收工）
-  □ 架构违规（无视依赖规则）
-  □ 过度实现（超出 out_of_scope）
-  □ 格式不一致
-Step 4：根据结果调整
-  出现问题 → 保留/增强对应 Harness 组件
-  不出问题 → 删除对应 Harness 组件（减少复杂度）
-```
-
-#### 精简决策矩阵
-
-| Harness 组件 | 模型已自行解决 | 保留原因 |
-|-------------|-------------|---------|
-| 上下文重置脚本 | 无焦虑行为 | 删除，改用自动压缩 |
-| 格式化 Hook | 输出始终规范 | 保留，格式化是确定性操作 |
-| 类型检查 Hook | — | 永远保留，不依赖模型能力 |
-| CLAUDE.md 禁止规则 | Agent 不再犯此错 | 可考虑删除，但保守起见先注释 |
-| 安全审查 Sub-agent | — | 永远保留，安全不容有失 |
-
-**原则**：Computational Sensors（类型检查、Linter）永远保留，不管模型多强。Inferential 层面的约束可以随模型改善而精简。
-
-### 维度 3：能力升级 — 从被动到主动
-
-Harness 成熟度的演进路径：
+#### Evaluation Process
 
 ```
-阶段 1：人建 Harness，Agent 在 Harness 内工作
-        （大多数团队当前状态）
-
-阶段 2：Agent 发现 Harness 的问题，记录在 progress.json
-        人看到记录后更新 Harness
-        （推荐的当前目标）
-
-阶段 3：Agent 发现问题后，直接提 PR 改进 Harness
-        人审批 PR 后合并
-        （OpenAI「垃圾回收 Agent」模式）
-
-阶段 4：Harness 自动优化自身（Meta-Harness，实验阶段）
+Step 1: Confirm the new model version
+Step 2: Test with a standard task (at least 5 features)
+Step 3: Observe whether the following behaviors occur
+  [ ] Context anxiety (wrapping up too early)
+  [ ] Architecture violations (ignoring dependency rules)
+  [ ] Over-implementation (exceeding out_of_scope)
+  [ ] Format inconsistencies
+Step 4: Adjust based on results
+  Problem occurs -> Keep/strengthen the corresponding Harness component
+  No problem -> Delete the corresponding Harness component (reduce complexity)
 ```
 
-#### 升级到阶段 2 的操作
+#### Streamlining Decision Matrix
 
-为编码 Agent 的 Prompt 添加：
+| Harness Component | Model Handles It Natively | Action |
+|-------------------|--------------------------|--------|
+| Context reset scripts | No anxiety behavior | Delete; switch to auto-compaction |
+| Formatting Hook | Output is always well-formatted | Keep; formatting is a deterministic operation |
+| Type-checking Hook | — | Always keep; does not depend on model capability |
+| CLAUDE.md prohibition rules | Agent no longer makes this mistake | Consider deleting, but conservatively comment out first |
+| Security review Sub-agent | — | Always keep; security cannot be compromised |
+
+**Principle**: Computational Sensors (type checking, Linters) are always kept, regardless of how strong the model is. Inferential-layer constraints can be streamlined as the model improves.
+
+### Dimension 3: Capability Upgrade — From Reactive to Proactive
+
+The maturity evolution path for the Harness:
+
 ```
-遇到以下情况时，在 claude-progress.json 的 notes 里记录：
-- 规则不清晰导致你犹豫
-- 缺少某个你需要的工具或权限
-- 文档与代码不一致
-- 你觉得某条 Harness 规则多余
+Stage 1: Humans build the Harness; the Agent works within it
+         (Current state for most teams)
+
+Stage 2: The Agent discovers Harness issues and logs them in progress.json
+         Humans review the logs and update the Harness
+         (Recommended current target)
+
+Stage 3: The Agent discovers issues and directly opens a PR to improve the Harness
+         Humans approve and merge the PR
+         (OpenAI "garbage collection Agent" pattern)
+
+Stage 4: The Harness auto-optimizes itself (Meta-Harness, experimental stage)
 ```
 
-人每周审查一次 notes，有价值的反馈转化为 Harness 改进。
+#### Upgrading to Stage 2
 
-#### 升级到阶段 3 的操作
+Add the following to the coding Agent's prompt:
+```
+When you encounter any of the following, log it in the notes field of claude-progress.json:
+- A rule is unclear and causes you to hesitate
+- You need a tool or permission that is not available
+- Documentation is inconsistent with the code
+- You feel a Harness rule is unnecessary
+```
 
-创建一个 `/harness-improve` Command：
+Humans review the notes once a week; valuable feedback is converted into Harness improvements.
+
+#### Upgrading to Stage 3
+
+Create a `/harness-improve` Command:
 ```markdown
-1. 读取 claude-progress.json 中最近的 notes
-2. 筛选与 Harness 相关的反馈
-3. 对每条反馈评估：
-   - 是否是系统性问题（多次出现）？
-   - 修复的复杂度和风险？
-4. 为低风险的改进生成具体的 PR
-5. 高风险的改进只记录建议，等人决策
+1. Read recent notes from claude-progress.json
+2. Filter for Harness-related feedback
+3. For each piece of feedback, evaluate:
+   - Is this a systemic issue (occurred multiple times)?
+   - What is the complexity and risk of the fix?
+4. Generate specific PRs for low-risk improvements
+5. For high-risk improvements, only log recommendations and wait for human decision
 ```
 
-## 持续改进的核心循环
+## Core Loop of Continuous Improvement
 
 ```
-Agent 失败
-    ↓
-识别缺失的能力
-    ↓
-工程化修复（更新文档 / 添加 Linter / 构建工具）
-    ↓
-该失败永不再发生
+Agent fails
+    |
+    v
+Identify the missing capability
+    |
+    v
+Engineer a fix (update docs / add Linter / build tooling)
+    |
+    v
+That failure never happens again
 ```
 
-这个循环是 Harness Engineering 的本质。
+This loop is the essence of Harness Engineering.
 
-## 衡量成效的正确指标
+## Measuring Effectiveness: The Right Metrics
 
 ```
-❌ 错误指标：「本周帮 Agent 修复了 20 个 Bug」
-✅ 正确指标：「本周新增了 3 条架构 Linter 规则，这类 Bug 不会再出现」
+WRONG metric: "Fixed 20 bugs for the Agent this week"
+RIGHT metric: "Added 3 architecture Linter rules this week; this class of bugs will never recur"
 
-❌ 错误指标：「回顾了 Agent 的所有 PR」
-✅ 正确指标：「建立了自动安全审查 Hook，PR 质量问题自动被拦截」
+WRONG metric: "Reviewed all of the Agent's PRs"
+RIGHT metric: "Set up an automated security review Hook; PR quality issues are caught automatically"
 
-❌ 错误指标：「写了详细的 CLAUDE.md 让 Agent 不犯错」
-✅ 正确指标：「通过 Hook + settings.json 让物理上无法犯那些错」
+WRONG metric: "Wrote a detailed CLAUDE.md so the Agent won't make mistakes"
+RIGHT metric: "Used Hooks + settings.json to make those mistakes physically impossible"
 ```
 
-人对 Agent 产出不满意时，正确做法不是直接修改产物，而是改进产生这个产物的 Harness。
+When humans are dissatisfied with Agent output, the correct response is not to fix the output directly, but to improve the Harness that produced it.

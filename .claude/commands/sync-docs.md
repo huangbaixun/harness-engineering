@@ -1,19 +1,19 @@
 ---
-description: 检查文档和代码的一致性，发现漂移时生成修复建议
+description: Check consistency between documentation and code, generate fix recommendations when drift is detected
 ---
 
-用 subagent 执行以下检查：
+Use a subagent to execute the following checks:
 
-1. 扫描 docs/architecture.md 中的目录结构描述
-   与实际目录对比，找出不一致之处
+1. Scan the directory structure description in docs/architecture.md
+   Compare with the actual directory structure to find inconsistencies
 
-2. 检查 CLAUDE.md 中的每条规则
-   在代码库中验证是否仍然适用
-   - 规则对应的错误模式是否还存在？
-   - 规则是否已被其他机制（Hook/Linter）覆盖而变得多余？
+2. Check each rule in CLAUDE.md
+   Verify in the codebase whether it still applies
+   - Does the error pattern the rule addresses still exist?
+   - Has the rule been superseded by another mechanism (Hook/Linter), making the text version redundant?
 
-3. 检查 docs/decisions/ 中状态为「已采纳」的 ADR
-   验证对应的技术选型是否仍然在使用
+3. Check ADRs with "Accepted" status in docs/decisions/
+   Verify whether the corresponding technology choices are still in use
 
-对每个发现的漂移，生成具体的修复建议。
-如果用户同意，直接修复并提交。
+For each detected drift, generate a specific fix recommendation.
+If the user agrees, apply the fixes directly and commit.

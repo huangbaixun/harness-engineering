@@ -1,327 +1,330 @@
 ---
 name: harness:init
 description: >
-  新项目 AI Agent Harness 工程初始化。当用户提到「新项目」「项目初始化」「搭建 Harness」
-  「创建 CLAUDE.md」「设置 Agent 环境」「init harness」「从零开始」「初始化 AI 编码环境」
-  「建立 Agent 约束」「设置 Claude Code 项目」时激活。
-  即使用户只是提到要「开始一个新项目」或「配置 AI 开发环境」，也应使用此 Skill，
-  因为任何新项目都应该从建立 Harness 开始。
+  AI Agent Harness engineering initialization for new projects. Activate when users mention
+  "new project", "project initialization", "set up Harness", "create CLAUDE.md",
+  "set up Agent environment", "init harness", "start from scratch",
+  "initialize AI coding environment", "establish Agent constraints", or
+  "set up Claude Code project".
+  Even if the user simply mentions wanting to "start a new project" or
+  "configure an AI development environment", use this Skill,
+  because every new project should begin by establishing a Harness.
 ---
 
-# Harness 初始化 Skill
+# Harness Initialization Skill
 
-> 本 Skill 指导你为一个新项目建立完整的 AI Agent Harness 工程体系。
-> 核心理念：**先观察再约束**——不要在第一天就写满所有规则，而是建立最小可用的 Harness，让团队在实际使用中发现需要补充什么。
+> This Skill guides you in establishing a complete AI Agent Harness engineering system for a new project.
+> Core philosophy: **Observe first, then constrain** — do not fill in every rule on day one. Instead, establish a minimal viable Harness and let the team discover what needs to be added through actual usage.
 
-## 初始化产物
+## Initialization Artifacts
 
-运行此 Skill 后，项目根目录将生成以下文件：
+After running this Skill, the following files will be generated in the project root:
 
-| 文件 | 作用 | 是否必须 |
-|------|------|---------|
-| `CLAUDE.md` | Agent 记忆层，≤60 行，架构约定 + 禁止规则 + 测试命令 + Skill 触发规则 | ✅ 必须 |
-| `.claude/settings.json` | 权限控制 + Hook 注册（含 SessionStart） | ✅ 必须 |
-| `$TOOL_DIR/hooks/session-start.sh` | SessionStart：恢复跨会话进度，归档提示 | ✅ 必须 |
-| `$TOOL_DIR/hooks/stop-typecheck.sh` | Stop Hook：类型检查门禁 | ✅ 必须 |
-| `$TOOL_DIR/hooks/pre-protect-env.sh` | PreToolUse：防止 .env 被覆盖 | ✅ 必须 |
-| `$TOOL_DIR/hooks/post-format.sh` | PostToolUse：自动格式化 | ✅ 必须 |
-| `$TOOL_DIR/skills/plan/` | 实现前规划 Skill（整合自 Superpowers） | ✅ 必须 |
-| `$TOOL_DIR/skills/tdd/` | TDD 工作流 Skill（RED→GREEN→REFACTOR） | ✅ 必须 |
-| `$TOOL_DIR/skills/verify/` | 完成前验证 Skill | ✅ 必须 |
-| `init.sh` | 会话启动脚本，每次新会话前运行以恢复上下文 | ✅ 必须 |
-| `docs/architecture.md` | 架构图，Agent 的空间感知文档，100-150 行 | ✅ 必须 |
-| `docs/decisions/README.md` | ADR 索引 | ✅ 必须 |
-| `docs/claude-progress.json` | 进度追踪（Agent 可写，需归档机制） | ✅ 必须 |
-| `docs/features.json` | 需求清单（Agent 只读，多人/多 Agent 时必须） | ✅/🔵 视团队规模 |
-| `docs/archive/` | 归档目录（防止 token 无限增长） | ✅ 与上两者同时生成 |
+| File | Purpose | Required |
+|------|---------|----------|
+| `CLAUDE.md` | Agent memory layer, <=60 lines, architecture conventions + prohibited rules + test commands + Skill trigger rules | Yes |
+| `.claude/settings.json` | Permission control + Hook registration (including SessionStart) | Yes |
+| `$TOOL_DIR/hooks/session-start.sh` | SessionStart: restore cross-session progress, archive prompts | Yes |
+| `$TOOL_DIR/hooks/stop-typecheck.sh` | Stop Hook: type-checking gate | Yes |
+| `$TOOL_DIR/hooks/pre-protect-env.sh` | PreToolUse: prevent .env from being overwritten | Yes |
+| `$TOOL_DIR/hooks/post-format.sh` | PostToolUse: auto-format | Yes |
+| `$TOOL_DIR/skills/plan/` | Pre-implementation planning Skill (integrated from Superpowers) | Yes |
+| `$TOOL_DIR/skills/tdd/` | TDD workflow Skill (RED->GREEN->REFACTOR) | Yes |
+| `$TOOL_DIR/skills/verify/` | Pre-completion verification Skill | Yes |
+| `init.sh` | Session startup script, run before each new session to restore context | Yes |
+| `docs/architecture.md` | Architecture diagram, Agent spatial awareness document, 100-150 lines | Yes |
+| `docs/decisions/README.md` | ADR index | Yes |
+| `docs/claude-progress.json` | Progress tracking (Agent-writable, requires archiving mechanism) | Yes |
+| `docs/features.json` | Requirements list (Agent read-only, required for multi-person/multi-Agent setups) | Yes/Optional (depends on team size) |
+| `docs/archive/` | Archive directory (prevents unbounded token growth) | Yes (generated alongside the above two) |
 
-> **用户期望**：完成初始化后运行 `bash init.sh`，看到当前项目状态摘要，即表示 Harness 基座就绪。
+> **User expectation**: After initialization, running `bash init.sh` should display a summary of the current project status, indicating the Harness foundation is ready.
 
-## 初始化流程
+## Initialization Flow
 
-### Phase 0：检测已有 Harness（新增）
+### Phase 0: Detect Existing Harness
 
-**在询问任何问题之前**，先扫描项目根目录的现有状态：
+**Before asking any questions**, scan the project root for existing state:
 
 ```bash
-# Step 1：设置 Claude Code 配置目录
+# Step 1: Set the Claude Code config directory
 TOOL_DIR=".claude"
-echo "配置目录：$TOOL_DIR"
+echo "Config directory: $TOOL_DIR"
 
-# Step 2：检测记忆文件（按优先级：AGENTS.md > 工具特定文件）
+# Step 2: Detect memory file (priority: AGENTS.md > tool-specific file)
 MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" \
            || echo "CLAUDE.md")
 
-# Step 3：检查关键文件是否已存在
+# Step 3: Check whether key files already exist
 ls "$MEMORY_FILE" "$TOOL_DIR/settings.json" "$TOOL_DIR/hooks/" init.sh 2>/dev/null
 [ -f "$MEMORY_FILE" ] && wc -l "$MEMORY_FILE"
 ```
 
-根据检测结果，进入以下三条路径之一：
+Based on the detection results, follow one of three paths:
 
-| 场景 | 判断标准 | 处理方式 |
-|------|---------|---------|
-| **全新项目** | 记忆文件不存在 | 正常走 Phase 1-6，从零生成 |
-| **存量项目（有记忆文件）** | 记忆文件存在，内容有意义 | 进入「存量模式」（见下方） |
-| **损坏 / 空文件** | 记忆文件存在但为空或 <5 行 | 提示用户，按全新项目处理 |
+| Scenario | Criteria | Action |
+|----------|----------|--------|
+| **Brand-new project** | Memory file does not exist | Proceed normally through Phases 1-6, generating from scratch |
+| **Existing project (has memory file)** | Memory file exists with meaningful content | Enter "Existing Project Mode" (see below) |
+| **Corrupted / empty file** | Memory file exists but is empty or <5 lines | Notify user, treat as brand-new project |
 
-#### 存量模式：记忆文件已存在时的处理流程
+#### Existing Project Mode: Flow When a Memory File Already Exists
 
-1. **读取并评估现有记忆文件**（AGENTS.md / CLAUDE.md）
-   - 行数是否 ≤60？超出多少？
-   - 是否有 YAML frontmatter 或结构化章节？
-   - 是否包含具体可验证的规则（测试命令、禁止项）？
-   - 是否存在模糊无效规则（「写好代码」「保持整洁」）？
+1. **Read and evaluate the existing memory file** (AGENTS.md / CLAUDE.md)
+   - Is the line count <=60? How much does it exceed?
+   - Does it have YAML frontmatter or structured sections?
+   - Does it contain specific, verifiable rules (test commands, prohibitions)?
+   - Does it contain vague, ineffective rules ("write good code", "keep things clean")?
 
-2. **告知用户评估结果，明确询问意图**：
-   > 「检测到项目已有记忆文件 `$MEMORY_FILE`（当前 X 行）。我可以：
-   > A) **增量补充**——保留现有内容，补全缺失的结构（Hooks、docs/ 等）
-   > B) **优化整合**——精简现有规则至 ≤60 行，同时补全结构
-   > C) **完整重建**——备份现有文件为 `$MEMORY_FILE.bak`，重新生成
-   > 你倾向于哪种方式？」
+2. **Report the evaluation to the user and explicitly ask their intent**:
+   > "Detected an existing memory file `$MEMORY_FILE` (currently X lines). I can:
+   > A) **Incremental addition** — keep existing content, fill in missing structure (Hooks, docs/, etc.)
+   > B) **Optimize and consolidate** — streamline existing rules to <=60 lines while filling in structure
+   > C) **Full rebuild** — back up the existing file as `$MEMORY_FILE.bak` and regenerate
+   > Which approach do you prefer?"
 
-3. **执行前强制备份**：
+3. **Mandatory backup before execution**:
    ```bash
    cp "$MEMORY_FILE" "${MEMORY_FILE}.bak"
-   echo "已备份至 ${MEMORY_FILE}.bak"
+   echo "Backed up to ${MEMORY_FILE}.bak"
    ```
 
-4. **按选择执行**：
-   - **增量补充**：仅在现有文件末尾追加缺失章节，不修改已有内容
-   - **优化整合**：调用 `harness:evolve` 的记忆文件精简逻辑，再补全结构
-   - **完整重建**：用模板重新生成，将原有有价值的规则（测试命令等）迁移进新文件
+4. **Execute based on selection**:
+   - **Incremental addition**: Only append missing sections to the end of the existing file; do not modify existing content
+   - **Optimize and consolidate**: Invoke the memory file streamlining logic from `harness:evolve`, then fill in structure
+   - **Full rebuild**: Regenerate using templates, migrating valuable rules (test commands, etc.) from the original into the new file
 
-> 同理检查 `$TOOL_DIR/settings.json`、`init.sh`、`docs/architecture.md` 是否已存在，
-> 已存在的文件不覆盖，只在用户明确确认后才替换。
+> Similarly, check whether `$TOOL_DIR/settings.json`, `init.sh`, and `docs/architecture.md` already exist.
+> Do not overwrite existing files — only replace after the user explicitly confirms.
 
 ---
 
-### Phase 1：信息收集
+### Phase 1: Information Gathering
 
-在开始生成任何文件之前，先确认以下信息（如果用户没有提供，主动询问）：
+Before generating any files, confirm the following information (proactively ask if the user has not provided it):
 
-1. **技术栈**：主要编程语言、框架、包管理器
-2. **项目类型**：Web 应用 / API 服务 / CLI 工具 / 库 / Monorepo
-3. **测试框架**：Jest / Vitest / pytest / go test / 其他
-4. **CI/CD**：GitHub Actions / GitLab CI / 其他
-5. **团队规模**：单人 / 小团队（2-5）/ 中型（5-15）/ 大型（15+）
+1. **Tech stack**: Primary programming language, framework, package manager
+2. **Project type**: Web app / API service / CLI tool / Library / Monorepo
+3. **Test framework**: Jest / Vitest / pytest / go test / other
+4. **CI/CD**: GitHub Actions / GitLab CI / other
+5. **Team size**: Solo / small team (2-5) / medium (5-15) / large (15+)
 
-### Phase 2：生成六层 Harness 结构
+### Phase 2: Generate the Six-Layer Harness Structure
 
-Harness 不是单一配置文件，而是六个相互协作的层。理解各层职责是避免「配置越多越混乱」的关键。
+A Harness is not a single config file — it is six cooperating layers. Understanding each layer's responsibilities is the key to avoiding "more config, more confusion."
 
-| 层级 | 组件 | 核心职责 |
-|------|------|---------|
-| ① 记忆层 | `AGENTS.md`（通用）/ `CLAUDE.md` | 静态知识：架构约定、禁止规则、测试命令 |
-| ② 规则层 | `$TOOL_DIR/settings.json` | 确定性行为：权限、模型、输出配置 |
-| ③ 技能层 | `$TOOL_DIR/skills/` + `$TOOL_DIR/commands/` | 按需知识和手动触发的工作流 |
-| ④ 智能体层 | `$TOOL_DIR/agents/` | 上下文隔离的专用 Subagent |
-| ⑤ 钩子层 | Hooks（settings.json 中配置） | 确定性强制：不依赖模型判断 |
-| ⑥ 工具层 | MCP Servers | 能力扩展：外部服务接入 |
+| Layer | Component | Core Responsibility |
+|-------|-----------|---------------------|
+| 1. Memory | `AGENTS.md` (universal) / `CLAUDE.md` | Static knowledge: architecture conventions, prohibited rules, test commands |
+| 2. Rules | `$TOOL_DIR/settings.json` | Deterministic behavior: permissions, model, output config |
+| 3. Skills | `$TOOL_DIR/skills/` + `$TOOL_DIR/commands/` | On-demand knowledge and manually triggered workflows |
+| 4. Agents | `$TOOL_DIR/agents/` | Context-isolated specialized Subagents |
+| 5. Hooks | Hooks (configured in settings.json) | Deterministic enforcement: does not depend on model judgment |
+| 6. Tools | MCP Servers | Capability extension: external service integration |
 
-> `$TOOL_DIR` = `.claude/`，由 init.sh 在会话启动时导出。
+> `$TOOL_DIR` = `.claude/`, exported by init.sh at session startup.
 
-**三者协同原则**：AGENTS.md 规则单独使用会被偶尔忽略；Hooks 单独使用无法处理判断性任务；settings.json 单独使用缺乏上下文。三者协同才能真正有效。
+**Three-part synergy principle**: AGENTS.md rules alone are occasionally ignored; Hooks alone cannot handle judgment-based tasks; settings.json alone lacks context. All three working together is what makes the system truly effective.
 
-### Phase 3：按技术栈生成文件
+### Phase 3: Generate Files by Tech Stack
 
-读取对应的模板目录生成文件。模板位置（`${CLAUDE_PLUGIN_ROOT}` 是 plugin 安装目录，marketplace 模式下自动解析）：
+Read the corresponding template directory to generate files. Template locations (`${CLAUDE_PLUGIN_ROOT}` is the plugin installation directory, automatically resolved in marketplace mode):
 
-- TypeScript 项目 → 读取 `${CLAUDE_PLUGIN_ROOT}/docs/templates/typescript/`
-- Python 项目 → 读取 `${CLAUDE_PLUGIN_ROOT}/docs/templates/python/`
-- Go 项目 → 读取 `${CLAUDE_PLUGIN_ROOT}/docs/templates/go/`
-- 其他 → 读取 `${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/`
+- TypeScript project -> read `${CLAUDE_PLUGIN_ROOT}/docs/templates/typescript/`
+- Python project -> read `${CLAUDE_PLUGIN_ROOT}/docs/templates/python/`
+- Go project -> read `${CLAUDE_PLUGIN_ROOT}/docs/templates/go/`
+- Other -> read `${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/`
 
-#### 必须生成的文件清单
+#### Required File Manifest
 
 ```
-项目根/
-├── AGENTS.md                     ← 通用记忆文件（≤ 60 行），所有工具读取
-├── CLAUDE.md                     ← 2 行 wrapper → 指向 AGENTS.md（含工作流 Skill 触发规则）
-├── init.sh                       ← 会话启动脚本（导出 $TOOL_DIR）
-├── .claude/                      ← Claude Code 配置目录
-│   ├── settings.json             ← 权限 + Hook 注册（含 SessionStart Hook）
-│   └── hooks/                    ← Hook 脚本（每个 hook 提供 .cmd + 无后缀 + .sh 三形式）
-│       ├── session-start{,.cmd,.sh}  ← SessionStart：恢复跨会话记忆
-│       ├── stop-typecheck{,.cmd,.sh} ← Stop Hook（语言适配）
-│       ├── pre-protect-env{,.cmd,.sh}← PreToolUse：保护敏感文件
-│       └── post-format{,.cmd,.sh}    ← PostToolUse：自动格式化
+project-root/
+├── AGENTS.md                     <- Universal memory file (<= 60 lines), read by all tools
+├── CLAUDE.md                     <- 2-line wrapper -> points to AGENTS.md (includes workflow Skill trigger rules)
+├── init.sh                       <- Session startup script (exports $TOOL_DIR)
+├── .claude/                      <- Claude Code config directory
+│   ├── settings.json             <- Permissions + Hook registration (including SessionStart Hook)
+│   └── hooks/                    <- Hook scripts (each hook provides .cmd + extensionless + .sh variants)
+│       ├── session-start{,.cmd,.sh}  <- SessionStart: restore cross-session memory
+│       ├── stop-typecheck{,.cmd,.sh} <- Stop Hook (language-adapted)
+│       ├── pre-protect-env{,.cmd,.sh}<- PreToolUse: protect sensitive files
+│       └── post-format{,.cmd,.sh}    <- PostToolUse: auto-format
 ├── $TOOL_DIR/
 │   └── skills/
-│       ├── plan/                 ← 实现前规划（>30 分钟 / 3+ 文件时触发）
-│       ├── tdd/                  ← TDD 工作流（RED→GREEN→REFACTOR）
-│       └── verify/               ← 完成前验证（声明 done 前触发）
+│       ├── plan/                 <- Pre-implementation planning (triggered when >30 min / 3+ files)
+│       ├── tdd/                  <- TDD workflow (RED->GREEN->REFACTOR)
+│       └── verify/               <- Pre-completion verification (triggered before declaring done)
 ├── docs/
-│   ├── architecture.md           ← 架构图（100-150 行）
+│   ├── architecture.md           <- Architecture diagram (100-150 lines)
 │   ├── decisions/
-│   │   └── README.md             ← ADR 索引
-│   └── claude-progress.json      ← Agent 进度追踪（空骨架）
+│   │   └── README.md             <- ADR index
+│   └── claude-progress.json      <- Agent progress tracking (empty skeleton)
 ```
 
-> **说明**：`AGENTS.md` 是唯一真相来源。`CLAUDE.md` 只有 2 行，将用户引导至 `AGENTS.md`。
+> **Note**: `AGENTS.md` is the single source of truth. `CLAUDE.md` is only 2 lines, directing users to `AGENTS.md`.
 
-`init.sh` 模板见：`${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/init.sh.template`
+`init.sh` template is at: `${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/init.sh.template`
 
-#### AGENTS.md 编写原则
+#### AGENTS.md Writing Principles
 
-AGENTS.md 是 Agent 的「世界观」——它定义了 Agent 对项目的基本认知，供所有 AI 工具读取。
+AGENTS.md is the Agent's "worldview" — it defines the Agent's foundational understanding of the project, read by all AI tools.
 
-**好的规则**：具体、可验证、对应过去真实的 Agent 失败
-- 「永远不要删除迁移文件」
-- 「所有公共 API 必须有 JSDoc 注释」
-- 「测试命令：`pnpm test`」
+**Good rules**: Specific, verifiable, corresponding to real past Agent failures
+- "Never delete migration files"
+- "All public APIs must have JSDoc comments"
+- "Test command: `pnpm test`"
 
-**坏的规则**：模糊、无法验证、消耗 Token 却不产生约束力
-- 「写高质量代码」
-- 「保持代码整洁」
+**Bad rules**: Vague, unverifiable, consuming tokens without producing constraints
+- "Write high-quality code"
+- "Keep code clean"
 
-**≤ 60 行原则**：ETH Zurich 研究表明，AI 自动生成的过长记忆文件导致性能下降并多消耗 20% Token。人工编写且精简的文件才真正有效。超出部分移入 `docs/` 子目录，AGENTS.md 中用链接指向。
+**<=60-line principle**: ETH Zurich research shows that overly long AI-auto-generated memory files degrade performance and consume 20% more tokens. Only hand-written, concise files are truly effective. Move excess content into `docs/` subdirectories and link to them from AGENTS.md.
 
-#### architecture.md 编写原则
+#### architecture.md Writing Principles
 
-核心目标只有一个：让 Agent 在新会话开始时，快速建立对整个系统的空间感知。
+The core goal is singular: enable the Agent to quickly build spatial awareness of the entire system at the start of a new session.
 
-必须包含：
-1. **系统全局地图**：一句话说清「这是什么系统、有哪几块」
-2. **目录结构说明**：每个目录放什么，比 README 更精准
-3. **层级依赖规则**：最重要，写清楚边界和自动验证机制
-4. **关键模块说明**：复杂模块一句话解释
-5. **外部依赖说明**：服务、用途、接入位置
-6. **延伸阅读链接**：指向更深层文档
+Must include:
+1. **System-wide map**: One sentence explaining "what this system is and what its major components are"
+2. **Directory structure description**: What each directory contains, more precise than a README
+3. **Layer dependency rules**: The most important part — clearly state boundaries and automated verification mechanisms
+4. **Key module descriptions**: One-sentence explanation of complex modules
+5. **External dependency descriptions**: Service, purpose, integration point
+6. **Further reading links**: Pointers to deeper documentation
 
-控制在 100-150 行，是「地图而非百科全书」。
+Keep it to 100-150 lines — it is "a map, not an encyclopedia."
 
-#### Hook 脚本原则
+#### Hook Script Principles
 
-**判断标准**：「这个行为必须始终发生，不论 Claude 的判断如何？」→ 如果是，用 Hook。
+**Decision criteria**: "Must this behavior always happen, regardless of Claude's judgment?" -> If yes, use a Hook.
 
-**成功静默，失败可见**：4000 行通过日志会使 Agent 失去任务焦点。
+**Silent on success, visible on failure**: 4000 lines of passing logs will cause the Agent to lose focus on its task.
 
-**退出码约定**：
-- `exit 0` — 成功，继续
-- `exit 2` — 失败，错误信息反馈给 Agent，Agent 继续修复
-- `exit 其他` — 失败，不反馈给 Agent（非阻塞）
+**Exit code conventions**:
+- `exit 0` — Success, continue
+- `exit 2` — Failure, error message fed back to Agent, Agent continues to fix
+- `exit other` — Failure, not fed back to Agent (non-blocking)
 
-### Phase 4：建立初始 ADR
+### Phase 4: Establish Initial ADRs
 
-为项目已做出的关键技术决策各创建一个 ADR。每个 ADR 必须包含：
-- 背景（写触发条件，不是结论）
-- 考虑过的选项（包括被否决的，防止 Agent 重蹈覆辙）
-- 决策及理由
-- 后果（用「❌ 禁止 X，必须走 Y」格式，对 Agent 最有约束力）
+Create an ADR for each key technical decision already made in the project. Each ADR must include:
+- Context (write the trigger conditions, not the conclusion)
+- Options considered (including rejected ones, to prevent the Agent from repeating past mistakes)
+- Decision and rationale
+- Consequences (use the format "Prohibited: X, must use Y" — this is the most constraining format for Agents)
 
-### Phase 5：初始化进度追踪
+### Phase 5: Initialize Progress Tracking
 
-根据团队规模决定生成哪些文件：
+Determine which files to generate based on team size:
 
-| 场景 | `claude-progress.json` | `features.json` |
-|------|----------------------|-----------------|
-| 单人、单 Agent | ✅ 必须 | 🔵 可选 |
-| 多人 或 多 Agent 并行 | ✅ 必须 | ✅ 必须 |
+| Scenario | `claude-progress.json` | `features.json` |
+|----------|----------------------|-----------------|
+| Solo, single Agent | Yes (required) | Optional |
+| Multi-person or multi-Agent parallel | Yes (required) | Yes (required) |
 
-> **判断依据**：如果用户提到「团队」「多人」「多个 Agent 并行」「Sprint」，`features.json` 升级为必须生成项。
+> **Decision criteria**: If the user mentions "team", "multiple people", "multiple Agents in parallel", or "Sprint", `features.json` is upgraded to required.
 
-使用 JSON 而非 Markdown：Agent 对结构化数据的尊重程度显著高于纯文本，不会无意覆盖或误删记录。
+Use JSON instead of Markdown: Agents respect structured data significantly more than plain text, and are less likely to accidentally overwrite or delete records.
 
-#### 两个文件的职责分工
+#### Responsibilities of the Two Files
 
-| 维度 | `claude-progress.json` | `features.json` |
-|------|----------------------|-----------------|
-| **谁写** | Agent 写，人监督 | 人写，Agent 只读 |
-| **记录什么** | 「做到哪了」 | 「要做什么」 |
-| **更新频率** | 每次会话结束 | 需求变化时（相对稳定） |
-| **多 Agent 冲突风险** | 高（各 Agent 并发写） | 低（只读） |
-| **Token 增长趋势** | 持续增长（需归档） | 相对稳定 |
+| Dimension | `claude-progress.json` | `features.json` |
+|-----------|----------------------|-----------------|
+| **Who writes** | Agent writes, human supervises | Human writes, Agent read-only |
+| **What it records** | "Where we're at" | "What needs to be done" |
+| **Update frequency** | End of each session | When requirements change (relatively stable) |
+| **Multi-Agent conflict risk** | High (concurrent writes by multiple Agents) | Low (read-only) |
+| **Token growth trend** | Continuous growth (requires archiving) | Relatively stable |
 
-#### features.json 使用规则
+#### features.json Usage Rules
 
-**Agent 只读原则**：`features.json` 由人类维护，Agent 绝不直接写入此文件。
-- Agent 可以读取 features.json 了解需求、优先级和依赖关系
-- 如果 Agent 发现需求变更或新需求，记录到 `claude-progress.json` 的 `notes` 字段，由人类审核后决定是否更新 features.json
-- 违反此原则会导致「AI 悄悄改需求」的信任危机
+**Agent read-only principle**: `features.json` is maintained by humans; the Agent must never write directly to this file.
+- The Agent may read features.json to understand requirements, priorities, and dependencies
+- If the Agent discovers requirement changes or new requirements, record them in the `notes` field of `claude-progress.json` for human review before deciding whether to update features.json
+- Violating this principle leads to a trust crisis of "AI silently changing requirements"
 
-**取消不删原则**：需求取消时，将 `status` 改为 `"cancelled"` 并填写 `cancelled_reason`，**永远不要删除条目**。
-- 删除会丢失历史决策上下文，Agent 未来可能重新提出同样的方向
-- 已取消的条目是「不要做这个的理由」，是有价值的约束信息
+**Cancel, don't delete principle**: When a requirement is cancelled, change `status` to `"cancelled"` and fill in `cancelled_reason` — **never delete entries**.
+- Deletion loses historical decision context; the Agent may re-propose the same direction in the future
+- Cancelled entries represent "reasons not to do this" — they are valuable constraint information
 
-**多人/多 Agent 时的扩展字段**（单人可省略）：
+**Extended fields for multi-person/multi-Agent setups** (can be omitted for solo use):
 
 ```json
 {
   "id": "F-003",
-  "title": "OAuth 登录",
+  "title": "OAuth Login",
   "status": "in_progress",
   "priority": "high",
-  "description": "支持 GitHub / Google OAuth",
+  "description": "Support GitHub / Google OAuth",
   "owner": "agent-alice",
   "depends_on": ["F-001"],
   "blocks": ["F-005"],
   "files_owned": ["src/auth/", "src/middleware/oauth.ts"],
   "worktree": "feature/oauth",
-  "acceptance": "所有 OAuth 测试通过，无 .env 硬编码"
+  "acceptance": "All OAuth tests pass, no hardcoded .env values"
 }
 ```
 
-`status` 合法值：`planned` → `in_progress` → `done` | `cancelled`
+Valid `status` values: `planned` -> `in_progress` -> `done` | `cancelled`
 
-#### Token 增长与归档机制
+#### Token Growth and Archiving Mechanism
 
-⚠️ **不加归档机制，6 个月后每次会话额外消耗 ~8000 token**（`completed` 列表无限增长）。
+Warning: **Without an archiving mechanism, after 6 months each session will consume an extra ~8000 tokens** (the `completed` list grows unboundedly).
 
-初始化时将以下规则写入 AGENTS.md：
+Write the following rules into AGENTS.md during initialization:
 
 ```markdown
-## 进度文件归档规则
-- claude-progress.json 的 completed_features 超过 10 条时，
-  将最早的记录移入 docs/archive/progress-YYYY-QN.json，主文件只保留最近 5 条
-- features.json 中 status=done 的条目每季度压缩（只保留 id + title + done_at），
-  完整记录归档至 docs/archive/features-done.json
-- Agent 每次会话只读取 claude-progress.json 的 in_progress、blockers、notes 部分，
-  不需要读取 completed_features 完整历史
+## Progress File Archiving Rules
+- When claude-progress.json's completed_features exceeds 10 entries,
+  move the oldest records to docs/archive/progress-YYYY-QN.json, keeping only the 5 most recent in the main file
+- Compress features.json entries with status=done each quarter (keep only id + title + done_at),
+  archive full records to docs/archive/features-done.json
+- Agent reads only the in_progress, blockers, and notes sections of claude-progress.json each session,
+  no need to read the full completed_features history
 ```
 
-同时生成归档目录骨架：
+Also generate the archive directory skeleton:
 
 ```
 docs/
-├── features.json              ← 活跃需求（planned + in_progress）
-├── claude-progress.json       ← 当前进度（in_progress + blockers）
-└── archive/                   ← 归档目录（Agent 不主动读取）
+├── features.json              <- Active requirements (planned + in_progress)
+├── claude-progress.json       <- Current progress (in_progress + blockers)
+└── archive/                   <- Archive directory (Agent does not proactively read)
     ├── .gitkeep
-    └── README.md              ← 说明归档策略
+    └── README.md              <- Describes the archiving strategy
 ```
 
-### Phase 6：验证与交付
+### Phase 6: Verification and Delivery
 
-完成初始化后，运行验证检查：
+After completing initialization, run verification checks:
 
-1. CLAUDE.md 行数 ≤ 60
-2. 所有 Hook 脚本有执行权限（`chmod +x`）
-3. settings.json 中 Hook 注册正确
-4. architecture.md 包含依赖规则
-5. docs/decisions/README.md 索引完整
+1. CLAUDE.md line count <= 60
+2. All Hook scripts have execute permissions (`chmod +x`)
+3. Hook registration in settings.json is correct
+4. architecture.md includes dependency rules
+5. docs/decisions/README.md index is complete
 
-输出初始化摘要，包括：
-- 生成的文件清单
-- 建议的「第 1-2 周观察事项」（先用两周时间在真实工作上运行 Agent，记录失败模式）
-- 后续迭代建议（指向 harness:audit 和 harness:evolve）
+Output an initialization summary including:
+- List of generated files
+- Suggested "Week 1-2 observation items" (run the Agent on real work for two weeks first, recording failure patterns)
+- Follow-up iteration suggestions (pointing to harness:audit and harness:evolve)
 
-## 权限强制与模型推理分离
+## Permission Enforcement vs. Model Reasoning Separation
 
-初始化时特别注意这个架构原则：
+Pay special attention to this architectural principle during initialization:
 
-- **CLAUDE.md** = 解释「为什么不能做」，帮助 Agent 理解意图
-- **settings.json + Hooks** = 强制「无论如何都不能做」，不依赖 Agent 的理解
+- **CLAUDE.md** = Explains "why you cannot do this", helping the Agent understand intent
+- **settings.json + Hooks** = Enforces "you cannot do this under any circumstances", independent of Agent understanding
 
-两者都要，各司其职。只有 CLAUDE.md 是软约束，只有 Hook 是硬约束但缺少上下文解释，两者结合才是完整防护。
+Both are needed, each serving its own role. CLAUDE.md alone is a soft constraint; Hooks alone are hard constraints but lack contextual explanation. The combination of both provides complete protection.
 
-## 反模式提醒
+## Anti-Pattern Reminders
 
-生成时注意避免以下反模式：
+Avoid the following anti-patterns when generating:
 
-| 反模式 | 正确做法 |
-|--------|---------|
-| 过度膨胀的 CLAUDE.md（>100 行） | 删减至 <60 行，复杂规则移入 Hook |
-| 所有约定都放 CLAUDE.md | 「必须执行」= Hook；「应该遵守」= CLAUDE.md |
-| 不写被否决的选项 | ADR 必须列被否决的选项，防止 Agent 重提 |
-| Hook 成功时输出日志 | 成功完全静默，只有失败才产生输出 |
+| Anti-Pattern | Correct Approach |
+|--------------|-----------------|
+| Bloated CLAUDE.md (>100 lines) | Trim to <60 lines, move complex rules into Hooks |
+| Putting all conventions in CLAUDE.md | "Must execute" = Hook; "Should follow" = CLAUDE.md |
+| Not listing rejected options | ADRs must list rejected options to prevent the Agent from re-proposing them |
+| Hook outputting logs on success | Completely silent on success, only produce output on failure |

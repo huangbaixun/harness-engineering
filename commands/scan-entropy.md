@@ -1,49 +1,49 @@
 ---
-description: 检测代码库熵增，发现死代码、重复实现、过度耦合，生成健康度报告
+description: Detect codebase entropy — find dead code, duplicate implementations, and excessive coupling, then generate a health report
 ---
 
-# /harness:scan-entropy — 代码熵增检测
+# /harness:scan-entropy — Code Entropy Detection
 
-**运行频率**：每月一次，或在大规模重构后手动触发。
+**Run frequency**: Once a month, or manually triggered after a large-scale refactor.
 
-用 explore-agent subagent 执行以下检测，保持主线程干净：
+Use an explore-agent subagent to execute the following detections, keeping the main thread clean:
 
-## 检测步骤
+## Detection Steps
 
-### Step 1：死代码检测
+### Step 1: Dead Code Detection
 
-根据技术栈选择合适的工具：
+Choose the appropriate tool based on the tech stack:
 
-**TypeScript/JavaScript**：
+**TypeScript/JavaScript**:
 ```bash
-# 检测未被调用的导出
+# Detect uncalled exports
 npx ts-prune --error 2>/dev/null | grep -v "used in module" | head -30
 
-# 或使用 knip（更现代的替代方案）
+# Or use knip (a more modern alternative)
 npx knip --reporter compact 2>/dev/null | head -30
 ```
 
-**Python**：
+**Python**:
 ```bash
-# 检测未使用的导入和变量
+# Detect unused imports and variables
 python -m vulture . --min-confidence 80 2>/dev/null | head -30
 ```
 
 **Go**:
 ```bash
-# 检测未使用的函数
+# Detect unused functions
 deadcode ./... 2>/dev/null | head -30
 ```
 
-**通用**（回退方案）：
+**Generic** (fallback):
 ```bash
-# 找出最近 90 天没有被 git log 触碰到的文件（候选死代码区域）
+# Find files not touched in git log for the past 90 days (candidate dead code areas)
 git log --since="90 days ago" --name-only --format="" | sort -u > /tmp/active_files.txt
 find src -name "*.ts" -o -name "*.py" -o -name "*.go" 2>/dev/null | sort > /tmp/all_files.txt
 comm -23 /tmp/all_files.txt /tmp/active_files.txt | head -20
 ```
 
-### Step 2：重复代码检测
+### Step 2: Duplicate Code Detection
 
 ```bash
 # JavaScript/TypeScript
@@ -52,15 +52,15 @@ npx jscpd src --threshold 10 --reporters console 2>/dev/null | tail -30
 # Python
 pip install pylint --quiet && pylint --disable=all --enable=duplicate-code src/ 2>/dev/null | head -20
 
-# 通用：找相似函数名（同一逻辑可能有多个实现）
+# Generic: find similar function names (same logic may have multiple implementations)
 grep -rn "^function \|^def \|^func " src/ 2>/dev/null | \
   awk -F'[( ]' '{print $NF}' | sort | uniq -d | head -20
 ```
 
-### Step 3：过度耦合检测
+### Step 3: Excessive Coupling Detection
 
 ```bash
-# 找被超过 3 个不同模块引用的文件（潜在的「上帝文件」）
+# Find files referenced by more than 3 different modules (potential "god files")
 for f in $(find src -name "*.ts" -o -name "*.py" 2>/dev/null | head -50); do
   count=$(grep -rl "$(basename $f .ts)" src/ 2>/dev/null | wc -l)
   if [ "$count" -gt 3 ]; then
@@ -69,60 +69,60 @@ for f in $(find src -name "*.ts" -o -name "*.py" 2>/dev/null | head -50); do
 done | sort -rn | head -10
 ```
 
-### Step 4：测试质量评估
+### Step 4: Test Quality Assessment
 
 ```bash
-# 找重测试实现细节的测试（过度 mock 是信号）
+# Find tests that test implementation details (excessive mocking is a signal)
 grep -rn "jest.mock\|unittest.mock\|gomock" tests/ 2>/dev/null | wc -l
 grep -rn "spy\|stub\|mock" tests/ 2>/dev/null | wc -l
 
-# 找没有 assert/expect 的测试文件（空测试）
+# Find test files without assert/expect (empty tests)
 for f in $(find tests -name "*.test.*" -o -name "*_test.*" 2>/dev/null); do
   if ! grep -q "expect\|assert\|should" "$f" 2>/dev/null; then
-    echo "空测试：$f"
+    echo "Empty test: $f"
   fi
 done
 ```
 
-## 评估与产出
+## Assessment and Output
 
-根据上述检测结果：
+Based on the detection results above:
 
-1. **评估严重程度**：
-   - 🔴 严重：死代码 > 20 个文件，重复代码块 > 10 处，「上帝文件」被引用 > 10 次
-   - 🟡 警告：死代码 5-20 个，重复代码 3-10 处
-   - 🟢 健康：低于以上阈值
+1. **Assess severity**:
+   - 🔴 Critical: dead code > 20 files, duplicate code blocks > 10, "god file" referenced > 10 times
+   - 🟡 Warning: dead code 5-20 files, duplicate code 3-10 blocks
+   - 🟢 Healthy: below the above thresholds
 
-2. **生成健康度报告**，更新 `docs/quality.md`：
+2. **Generate a health report**, update `docs/quality.md`:
 ```markdown
-## 代码健康度报告 — [YYYY-MM-DD]
+## Code Health Report — [YYYY-MM-DD]
 
-### 熵增指标
-| 类型 | 数量 | 趋势 | 严重程度 |
-|------|------|------|---------|
-| 死代码文件 | N | ↑/→/↓ | 🔴/🟡/🟢 |
-| 重复代码块 | N | ... | ... |
-| 过耦合文件 | N | ... | ... |
+### Entropy Metrics
+| Type | Count | Trend | Severity |
+|------|-------|-------|----------|
+| Dead code files | N | ↑/→/↓ | 🔴/🟡/🟢 |
+| Duplicate code blocks | N | ... | ... |
+| Over-coupled files | N | ... | ... |
 
-### 最严重的 3 个问题
-1. [具体文件/模块，影响描述]
+### Top 3 Most Severe Issues
+1. [Specific file/module, impact description]
 2. ...
 
-### 建议行动
-- 立即：[当前 Sprint 内处理]
-- 计划：[下个 Sprint 排期]
-- 跟踪：[记录为 Tech Debt，暂不处理]
+### Recommended Actions
+- Immediate: [Handle within current Sprint]
+- Planned: [Schedule for next Sprint]
+- Track: [Record as tech debt, defer for now]
 ```
 
-3. **为最严重的 3 个问题各创建 GitHub Issue**（如有 gh CLI）：
+3. **Create a GitHub Issue for each of the top 3 issues** (if gh CLI is available):
 ```bash
-gh issue create --title "tech-debt: [具体问题]" \
-  --body "entropy-scan 发现，影响：..." \
+gh issue create --title "tech-debt: [specific issue]" \
+  --body "Found by entropy-scan, impact: ..." \
   --label "tech-debt,entropy-scan"
 ```
 
-## 注意事项
+## Important Notes
 
-- 这是**观测**任务，不要在同一会话内直接修复发现的问题
-- 把修复拆分为独立的 PR，每个 PR 只处理一类熵增
-- 对工具报告的误报保持批判性思考——不是所有「未使用」都是真的死代码
+- This is an **observation** task — do not directly fix discovered issues in the same session
+- Split fixes into separate PRs, each PR addressing only one type of entropy
+- Maintain critical thinking about tool-reported false positives — not every "unused" item is truly dead code

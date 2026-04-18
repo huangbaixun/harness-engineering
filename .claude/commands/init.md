@@ -1,17 +1,17 @@
 ---
-description: 为当前项目初始化完整的 AI Agent Harness 工程体系
+description: Initialize the full AI Agent Harness engineering system for the current project
 ---
 
-执行 Harness 初始化流程：
+Execute the Harness initialization workflow:
 
-1. 检测当前项目技术栈（扫描 package.json / requirements.txt / go.mod / Cargo.toml 等）
-2. 询问用户确认技术栈信息和项目类型
-3. 使用 harness:init Skill 的流程，按六层模型生成完整 Harness 结构：
-   - CLAUDE.md（≤ 60 行）
-   - .claude/settings.json（Hook 注册 + 权限配置）
-   - .claude/hooks/（Stop + PreToolUse + PostToolUse）
-   - docs/architecture.md（100-150 行架构图）
-   - docs/decisions/README.md（ADR 索引）
-   - docs/claude-progress.json（进度追踪骨架）
-4. 验证生成的文件完整性
-5. 输出初始化摘要和「第 1-2 周观察事项」建议
+1. Detect the current project's tech stack (scan package.json / requirements.txt / go.mod / Cargo.toml, etc.)
+2. Ask the user to confirm the tech stack information and project type
+3. Follow the harness:init Skill workflow to generate the complete Harness structure based on the six-layer model:
+   - CLAUDE.md (60 lines max)
+   - .claude/settings.json (Hook registration + permission configuration)
+   - .claude/hooks/ (Stop + PreToolUse + PostToolUse)
+   - docs/architecture.md (100-150 line architecture diagram)
+   - docs/decisions/README.md (ADR index)
+   - docs/claude-progress.json (progress tracking skeleton)
+4. Verify the completeness of all generated files
+5. Output an initialization summary and "Week 1-2 observation items" recommendations

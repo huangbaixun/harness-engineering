@@ -1,16 +1,16 @@
 ---
-description: 对当前分支的 PR 进行全面代码审查
+description: Perform a comprehensive code review of the PR on the current branch
 ---
 
-用 subagent 执行以下步骤后汇总：
-1. 运行 `git diff main...HEAD` 获取所有变更
-2. 检查代码质量（类型错误、未使用变量、逻辑漏洞）
-3. 检查安全问题（注入、认证缺陷、secret 暴露）
-4. 验证测试覆盖率（新代码必须有对应测试）
-5. 检查 API 文档更新（所有公共 API 必须有文档注释）
-6. 验证架构约束（依赖方向是否符合 architecture.md 规定）
+Use a subagent to execute the following steps, then summarize:
+1. Run `git diff main...HEAD` to get all changes
+2. Check code quality (type errors, unused variables, logic flaws)
+3. Check security issues (injection, authentication flaws, secret exposure)
+4. Verify test coverage (new code must have corresponding tests)
+5. Check API documentation updates (all public APIs must have doc comments)
+6. Verify architecture constraints (check if dependency direction complies with architecture.md rules)
 
-输出格式：
-- 🔴 必须修复（阻塞合并）
-- 🟡 建议改进（可选）
-- 🟢 值得肯定的地方
+Output format:
+- 🔴 Must fix (blocks merge)
+- 🟡 Suggested improvement (optional)
+- 🟢 Things done well

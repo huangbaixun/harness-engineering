@@ -1,70 +1,70 @@
-# harness:verify — 完成前验证
+# harness:verify — Pre-Completion Verification
 
 > **upstream**: obra/superpowers `verification-before-completion` @ [917e5f5](https://github.com/obra/superpowers/tree/917e5f5/skills/verification-before-completion)
-> **harness-delta**: 重命名为 verification（简短触发）、新增 Architecture 层检查（层级依赖违规检测）、验证后自动更新 claude-progress.json + features.json status
+> **harness-delta**: Renamed to verification (shorter trigger), added Architecture layer checks (layer dependency violation detection), auto-updates claude-progress.json + features.json status after verification
 
-> 整合自 obra/superpowers Verification Before Completion skill。
-> 核心理念：Agent 会自信地声称"完成了"，但声明完成≠真的完成。
-> 本 Skill 在 Stop Hook 之上增加语义层验证。
+> Adapted from the obra/superpowers Verification Before Completion skill.
+> Core principle: Agents will confidently claim "it's done," but claiming completion ≠ actually complete.
+> This Skill adds semantic-layer verification on top of Stop Hooks.
 
-## 强制触发：任何"完成"声明前
+## Mandatory Trigger: Before Any "Done" Claim
 
-在说出以下任何词汇前，必须先通过本验证清单：
-- "已完成" / "done" / "finished"
-- "实现了" / "写好了"
-- "你可以测试了" / "可以合并了"
-- 准备更新 `claude-progress.json` 将特性标为 completed
+Before uttering any of the following, you must pass this verification checklist:
+- "Done" / "completed" / "finished"
+- "Implemented" / "written"
+- "You can test it now" / "ready to merge"
+- About to update `claude-progress.json` to mark a feature as completed
 
-## 验证清单（按顺序执行）
+## Verification Checklist (Execute in Order)
 
-### 层次一：功能验证
-- [ ] 运行全套测试，**零失败**（不允许"这个失败无关紧要"）
-- [ ] 对照 `features.json` 中该特性的每条 `acceptance_criteria`，逐条确认满足
-- [ ] `out_of_scope` 中列出的内容**没有被实现**（过度实现也是问题）
+### Layer 1: Functional Verification
+- [ ] Run the full test suite — **zero failures** (no "this failure doesn't matter")
+- [ ] Check each `acceptance_criteria` entry in `features.json` for this feature and confirm every one is met
+- [ ] Items listed in `out_of_scope` have **not** been implemented (over-implementation is also a problem)
 
-### 层次二：质量验证
-- [ ] Lint / 类型检查通过（`{{LINT_COMMAND}}`）
-- [ ] 没有新增的 TODO / FIXME / HACK 注释（或已记录为 known debt）
-- [ ] 新增代码有对应测试（覆盖率不低于现有基线）
-- [ ] 公共 API / 函数有文档注释
+### Layer 2: Quality Verification
+- [ ] Lint / type checks pass (`{{LINT_COMMAND}}`)
+- [ ] No new TODO / FIXME / HACK comments (or they are documented as known debt)
+- [ ] New code has corresponding tests (coverage is no lower than the existing baseline)
+- [ ] Public APIs / functions have doc comments
 
-### 层次三：架构验证
-- [ ] 没有违反 `docs/architecture.md` 中的依赖规则
-- [ ] 没有跨层直接调用（如 UI 直接调 Repo）
-- [ ] 没有硬编码的 secret / 配置值
+### Layer 3: Architecture Verification
+- [ ] No violations of dependency rules in `docs/architecture.md`
+- [ ] No cross-layer direct calls (e.g., UI calling Repo directly)
+- [ ] No hardcoded secrets / configuration values
 
-### 层次四：集成验证
-- [ ] 构建成功（`{{BUILD_COMMAND}}`）
-- [ ] 如有 e2e 测试，e2e 全部通过
-- [ ] 如影响 API 接口，接口文档已同步更新
+### Layer 4: Integration Verification
+- [ ] Build succeeds (`{{BUILD_COMMAND}}`)
+- [ ] If e2e tests exist, all e2e tests pass
+- [ ] If API endpoints are affected, API documentation has been updated accordingly
 
-## 验证失败时
+## On Verification Failure
 
-任何一项未通过 → **不声明完成，继续修复**。
+If any item fails → **do not claim completion; continue fixing**.
 
-不允许"先提交，问题后续修"或"这个小问题不影响功能"的合理化。
+No rationalizing with "commit first, fix later" or "this minor issue doesn't affect functionality."
 
-## 验证通过后
-
-```
-1. 更新 docs/claude-progress.json：
-   - 将 in_progress 移入 completed_features
-   - 记录完成时间和测试通过数
-
-2. 更新 docs/features.json：
-   - 将该特性 status 改为 "completed"
-
-3. 如 completed_features 超过 10 条：
-   - 触发归档机制（见 AGENTS.md 归档规则）
-```
-
-## 与 Stop Hook 的关系
+## After Verification Passes
 
 ```
-Stop Hook（stop-typecheck.sh）：硬拦截 —— 测试/类型检查不通过则阻止工具调用
-harness:verify Skill（本文档）：软规范 —— 语义层面的"真正完成"定义
+1. Update docs/claude-progress.json:
+   - Move from in_progress to completed_features
+   - Record completion time and number of tests passed
 
-两者互补：
-  Stop Hook 防止"带错误的完成"
-  harness:verify Skill 防止"遗漏验收标准的完成"
+2. Update docs/features.json:
+   - Set the feature's status to "completed"
+
+3. If completed_features exceeds 10 entries:
+   - Trigger the archival mechanism (see AGENTS.md archival rules)
+```
+
+## Relationship with Stop Hooks
+
+```
+Stop Hook (stop-typecheck.sh): Hard interception — blocks tool calls if tests/type checks fail
+harness:verify Skill (this document): Soft discipline — semantic-level definition of "truly complete"
+
+They are complementary:
+  Stop Hook prevents "completion with errors"
+  harness:verify Skill prevents "completion with missed acceptance criteria"
 ```

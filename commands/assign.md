@@ -1,133 +1,133 @@
 ---
-description: Sprint feature 分配规划。分析 docs/features.json 的依赖图和团队负载，输出最优 owner 分配方案 + 可直接执行的 sprint-kickoff.sh 脚本。
+description: Sprint feature assignment planner. Analyze the dependency graph and team workload from docs/features.json, output the optimal owner assignment plan + a ready-to-run sprint-kickoff.sh script.
 ---
 
-# /harness:assign — Sprint Feature 分配规划器
+# /harness:assign — Sprint Feature Assignment Planner
 
-> 目标：让每位团队成员在 Sprint 开始时，5 分钟内拿到一份"我应该做什么、怎么开始"的可执行脚本，而不是一张需要二次解读的分配表。
+> Goal: Give every team member a ready-to-execute script within 5 minutes of Sprint start — "what I should do and how to begin" — instead of an assignment table that requires further interpretation.
 
-## Phase 1：读取并分析 features.json
+## Phase 1: Read and Analyze features.json
 
 ```bash
 cat docs/features.json
 ```
 
-从 JSON 中提取：
+Extract from the JSON:
 
-- **待分配池**：`status` 为 `planned` 或 `ready` 的 feature
-- **进行中**：`status` 为 `in_progress` 的 feature（含 owner）
-- **依赖图**：构建 `depends_on` → `blocks` 的有向图
+- **Unassigned pool**: features with `status` of `planned` or `ready`
+- **In progress**: features with `status` of `in_progress` (including owner)
+- **Dependency graph**: build a directed graph from `depends_on` to `blocks`
 
-然后计算每个待分配 feature 的两个关键属性：
+Then compute two key properties for each unassigned feature:
 
-**可立即开始？**（`startable`）
+**Can start immediately?** (`startable`)
 ```
-startable = depends_on 为空，
-         OR depends_on 中所有 feature 的 status == "done"
-```
-
-**关键路径权重**（`criticality`）
-```
-criticality = 直接 blocks 数 + 递归 blocks 数（传递闭包）
+startable = depends_on is empty,
+         OR all features in depends_on have status == "done"
 ```
 
-输出状态快照，格式如下：
+**Critical path weight** (`criticality`)
+```
+criticality = direct blocks count + recursive blocks count (transitive closure)
+```
+
+Output a status snapshot in the following format:
 
 ```
-🟢 可立即开始（N 个）
-  F-001 认证模块         [criticality=3, layer=backend]
-  F-004 基础设施         [criticality=2, layer=infra  ]
+🟢 Ready to start (N items)
+  F-001 Auth module          [criticality=3, layer=backend]
+  F-004 Infrastructure       [criticality=2, layer=infra  ]
 
-🟡 等待解锁（N 个）
-  F-003 权限控制         [等待: F-001]
-  F-005 用户设置         [等待: F-001, F-002]
+🟡 Waiting to unblock (N items)
+  F-003 Access control       [waiting: F-001]
+  F-005 User settings        [waiting: F-001, F-002]
 
-🔄 进行中（N 个）
-  F-002 用户管理 UI      [owner: alice, layer=frontend]
+🔄 In progress (N items)
+  F-002 User management UI   [owner: alice, layer=frontend]
 
-📊 关键路径：F-001 → F-003 → F-006（共 3 跳，影响 4 个下游）
+📊 Critical path: F-001 → F-003 → F-006 (3 hops, affects 4 downstream)
 ```
 
 ---
 
-## Phase 2：获取团队快照
+## Phase 2: Get Team Snapshot
 
-**优先读取 CLAUDE.md 中的 `## 团队成员` 章节**（若已声明）。格式示例：
+**First read the `## Team Members` section in CLAUDE.md** (if declared). Example format:
 
 ```markdown
-## 团队成员
-- simon: backend, 当前负载 1
-- alice: fullstack, 当前负载 1
-- bob: infra, 当前负载 0
+## Team Members
+- simon: backend, current load 1
+- alice: fullstack, current load 1
+- bob: infra, current load 0
 ```
 
-若 CLAUDE.md 中没有此章节，询问用户：
+If CLAUDE.md does not have this section, ask the user:
 
-> 请告诉我团队成员信息（每人一行，格式：姓名 / layer偏好 / 当前 in_progress 数量）
-> 例如：simon / backend / 1
+> Please provide team member information (one per line, format: name / layer preference / current in_progress count)
+> Example: simon / backend / 1
 
-收集后，将成员信息更新到 CLAUDE.md 的 `## 团队成员` 章节（若不存在则新增，且不计入 60 行限制外，放在文件末尾）。
+After collecting, update the member information into the `## Team Members` section of CLAUDE.md (create if it doesn't exist, placed at the end of the file, not counted toward the 60-line limit).
 
 ---
 
-## Phase 3：生成分配方案
+## Phase 3: Generate Assignment Plan
 
-按以下四条规则依次约束，输出每个待分配 feature 的推荐 owner：
+Apply the following four rules in order to output a recommended owner for each unassigned feature:
 
-### 规则 1（硬约束）：files_owned 不重叠
-两个同时 `in_progress` 的 feature，其 `files_owned` 列表不得有公共路径前缀。
-违反此规则的分配直接拒绝，标记为 `⚠️ 文件冲突`，提示人类决策。
+### Rule 1 (Hard constraint): No files_owned overlap
+Two features that are simultaneously `in_progress` must not have any common path prefix in their `files_owned` lists.
+Assignments violating this rule are rejected outright, marked as `⚠️ File conflict`, prompting human decision.
 
-### 规则 2（硬约束）：每人最多 2 个 in_progress
-超过后标记为 `⚠️ 负载过高`，放入下一批次。
+### Rule 2 (Hard constraint): Max 2 in_progress per person
+Exceeding this marks the feature as `⚠️ Overloaded`, deferred to the next batch.
 
-### 规则 3（软优先级）：关键路径优先
-`criticality` 高的 feature 优先分配，确保不阻塞下游。
+### Rule 3 (Soft priority): Critical path first
+Features with higher `criticality` are assigned first to avoid blocking downstream work.
 
-### 规则 4（软优先级）：layer 亲和性
-将 feature 分配给 `layer` 匹配的成员，减少认知切换成本。
-同一 Sprint 内，优先让同一人负责同一 layer 的多个 feature。
+### Rule 4 (Soft priority): Layer affinity
+Assign features to members whose `layer` matches, reducing cognitive switching cost.
+Within the same Sprint, prefer assigning multiple features of the same layer to the same person.
 
-输出分配方案表：
+Output the assignment plan table:
 
 ```
 ┌────────┬─────────────────────┬────────┬──────────────┬───────────────────────────────┐
-│ Owner  │ Feature             │ layer  │ criticality  │ 分配理由                       │
+│ Owner  │ Feature             │ layer  │ criticality  │ Assignment reason              │
 ├────────┼─────────────────────┼────────┼──────────────┼───────────────────────────────┤
-│ simon  │ F-001 认证模块       │backend │ ★★★（3）      │ 关键路径首位，layer 匹配       │
-│ alice  │ F-002 用户管理 UI    │frontend│ ★★（2）       │ 已在进行中，保持连续性         │
-│ bob    │ F-004 基础设施       │infra   │ ★★（2）       │ layer 匹配，负载最低           │
-│ simon  │ F-007 API 文档       │backend │ ★（1）        │ 与 F-001 共享 src/api/，合并   │
+│ simon  │ F-001 Auth module   │backend │ ★★★ (3)      │ Top of critical path, layer match │
+│ alice  │ F-002 User mgmt UI  │frontend│ ★★ (2)       │ Already in progress, maintain continuity │
+│ bob    │ F-004 Infrastructure│infra   │ ★★ (2)       │ Layer match, lowest load       │
+│ simon  │ F-007 API docs      │backend │ ★ (1)        │ Shares src/api/ with F-001, bundled │
 ├────────┼─────────────────────┼────────┼──────────────┼───────────────────────────────┤
-│ 下批次 │ F-003 权限控制       │backend │ ★★★（待解锁）  │ 等待 F-001 完成后分配         │
-│ ⚠️ 冲突 │ F-008 搜索功能       │        │              │ files_owned 与 F-002 重叠     │
+│ Next   │ F-003 Access control│backend │ ★★★ (pending)│ Assign after F-001 completes   │
+│ ⚠️ Conflict │ F-008 Search   │        │              │ files_owned overlaps with F-002│
 └────────┴─────────────────────┴────────┴──────────────┴───────────────────────────────┘
 ```
 
-对于 `⚠️ 冲突` 的 feature，明确说明重叠的文件路径，等待用户决策后再分配。
+For features marked `⚠️ Conflict`, clearly state the overlapping file paths and wait for user decision before assigning.
 
 ---
 
-## Phase 4：生成 sprint-kickoff.sh
+## Phase 4: Generate sprint-kickoff.sh
 
-为本次 Sprint 生成一个可执行脚本，每位成员的操作独立成 section，可直接发给对方执行：
+Generate an executable script for this Sprint, with each member's operations in an independent section that can be sent directly to them to run:
 
 ```bash
 #!/usr/bin/env bash
-# Sprint Kickoff Script — 生成于 {DATE}
-# 用法：bash sprint-kickoff.sh [成员名]
-# 若不带参数，显示所有成员的操作
+# Sprint Kickoff Script — Generated on {DATE}
+# Usage: bash sprint-kickoff.sh [member_name]
+# If no argument is given, show all members' operations
 
 MEMBER=${1:-"all"}
 
 # =====================
-# === simon 的任务 ===
+# === simon's tasks ===
 # =====================
 if [ "$MEMBER" = "simon" ] || [ "$MEMBER" = "all" ]; then
-  echo "=== simon: 认领 F-001 + F-007 ==="
+  echo "=== simon: Claiming F-001 + F-007 ==="
   git pull origin main
 
-  # 认领 F-001
+  # Claim F-001
   python3 -c "
 import json, sys
 with open('docs/features.json') as f: data = json.load(f)
@@ -136,9 +136,9 @@ for feat in data['features']:
         feat['owner'] = 'simon'
         feat['status'] = 'in_progress'
 with open('docs/features.json', 'w') as f: json.dump(data, f, ensure_ascii=False, indent=2)
-print('F-001 已认领')
+print('F-001 claimed')
 "
-  # 认领 F-007
+  # Claim F-007
   python3 -c "
 import json
 with open('docs/features.json') as f: data = json.load(f)
@@ -147,39 +147,39 @@ for feat in data['features']:
         feat['owner'] = 'simon'
         feat['status'] = 'in_progress'
 with open('docs/features.json', 'w') as f: json.dump(data, f, ensure_ascii=False, indent=2)
-print('F-007 已认领')
+print('F-007 claimed')
 "
   git add docs/features.json
-  git commit -m "claim(F-001, F-007): simon 认领"
+  git commit -m "claim(F-001, F-007): simon claimed"
   git push origin main
 
-  # 启动 worktree（若项目使用 worktree 模式）
+  # Start worktree (if project uses worktree mode)
   claude --worktree feature-auth -p "
-    读取 docs/features.json 中 id=F-001 的任务。
-    files_owned 是你的文件边界，不修改边界外的文件。
-    description 说明了实现要求，acceptance 是验收标准。
-    完成后运行 acceptance 中的所有测试命令，全部通过后提 PR。
+    Read the task with id=F-001 from docs/features.json.
+    files_owned defines your file boundary — do not modify files outside it.
+    description explains the implementation requirements, acceptance lists the acceptance criteria.
+    After completion, run all test commands in acceptance. Submit a PR once all pass.
   " &
 fi
 
 # =====================
-# === alice 的任务 ===
+# === alice's tasks ===
 # =====================
 if [ "$MEMBER" = "alice" ] || [ "$MEMBER" = "all" ]; then
-  echo "=== alice: 继续 F-002 ==="
-  # alice 已有 F-002，无需认领，直接启动
+  echo "=== alice: Continuing F-002 ==="
+  # alice already has F-002, no need to claim — start directly
   git pull origin main
   claude --worktree feature-users -p "
-    读取 docs/features.json 中 id=F-002 的任务。
-    继续上次的工作，参考 docs/claude-progress.json 了解已有进度。
+    Read the task with id=F-002 from docs/features.json.
+    Continue from where you left off. Refer to docs/claude-progress.json for existing progress.
   " &
 fi
 
 # =====================
-# === bob 的任务 ===
+# === bob's tasks ===
 # =====================
 if [ "$MEMBER" = "bob" ] || [ "$MEMBER" = "all" ]; then
-  echo "=== bob: 认领 F-004 ==="
+  echo "=== bob: Claiming F-004 ==="
   git pull origin main
   python3 -c "
 import json
@@ -189,28 +189,28 @@ for feat in data['features']:
         feat['owner'] = 'bob'
         feat['status'] = 'in_progress'
 with open('docs/features.json', 'w') as f: json.dump(data, f, ensure_ascii=False, indent=2)
-print('F-004 已认领')
+print('F-004 claimed')
 "
   git add docs/features.json
-  git commit -m "claim(F-004): bob 认领"
+  git commit -m "claim(F-004): bob claimed"
   git push origin main
   claude --worktree feature-infra -p "
-    读取 docs/features.json 中 id=F-004 的任务。
-    files_owned 是你的文件边界。acceptance 是验收标准。
+    Read the task with id=F-004 from docs/features.json.
+    files_owned defines your file boundary. acceptance lists the acceptance criteria.
   " &
 fi
 
-echo "✅ Sprint 已启动。各成员的 Agent 在后台运行。"
-echo "📌 当任何任务完成后，运行 /harness:dump 保存进度。"
+echo "✅ Sprint launched. Each member's Agent is running in the background."
+echo "📌 When any task completes, run /harness:dump to save progress."
 ```
 
-将此脚本保存到项目根目录：`sprint-kickoff.sh`，并 `chmod +x sprint-kickoff.sh`。
+Save this script to the project root: `sprint-kickoff.sh`, and run `chmod +x sprint-kickoff.sh`.
 
 ---
 
-## Phase 5：记录 Sprint 分配到 claude-progress.json
+## Phase 5: Record Sprint Assignment in claude-progress.json
 
-将本次分配追加到 `docs/claude-progress.json` 的 `sprint_history` 数组：
+Append this assignment to the `sprint_history` array in `docs/claude-progress.json`:
 
 ```json
 {
@@ -218,12 +218,12 @@ echo "📌 当任何任务完成后，运行 /harness:dump 保存进度。"
     {
       "date": "{DATE}",
       "assignments": [
-        { "owner": "simon", "features": ["F-001", "F-007"], "reason": "关键路径 + layer 匹配" },
-        { "owner": "alice", "features": ["F-002"],           "reason": "继续已有任务" },
-        { "owner": "bob",   "features": ["F-004"],           "reason": "layer 匹配，负载最低" }
+        { "owner": "simon", "features": ["F-001", "F-007"], "reason": "Critical path + layer match" },
+        { "owner": "alice", "features": ["F-002"],           "reason": "Continue existing task" },
+        { "owner": "bob",   "features": ["F-004"],           "reason": "Layer match, lowest load" }
       ],
-      "deferred": ["F-003（等待 F-001）"],
-      "conflicts": ["F-008（files_owned 冲突，待人工决策）"]
+      "deferred": ["F-003 (waiting on F-001)"],
+      "conflicts": ["F-008 (files_owned conflict, pending human decision)"]
     }
   ]
 }
@@ -231,32 +231,32 @@ echo "📌 当任何任务完成后，运行 /harness:dump 保存进度。"
 
 ---
 
-## 输出摘要
+## Output Summary
 
-最后以一段简洁的文字说明：
+End with a concise summary:
 
 ```
-✅ 本次 Sprint 分配完成
+✅ Sprint assignment complete
 
-分配了 3 人 × 4 个 feature：
-  simon → F-001（关键路径）+ F-007
-  alice → F-002（继续进行中）
+Assigned 3 people x 4 features:
+  simon → F-001 (critical path) + F-007
+  alice → F-002 (continuing in progress)
   bob   → F-004
 
-等待下批次：F-003（依赖 F-001 完成后解锁）
-需要人工决策：F-008（files_owned 与 F-002 冲突）
+Waiting for next batch: F-003 (unblocked after F-001 completes)
+Needs human decision: F-008 (files_owned conflicts with F-002)
 
-已生成：sprint-kickoff.sh（可直接运行或分发给团队成员）
-已记录：docs/claude-progress.json sprint_history
+Generated: sprint-kickoff.sh (ready to run or distribute to team members)
+Recorded: docs/claude-progress.json sprint_history
 ```
 
 ---
 
-## 反模式提醒
+## Anti-pattern Reminders
 
-| 反模式 | 原因 | 正确做法 |
+| Anti-pattern | Reason | Correct approach |
 |--------|------|---------|
-| 凭感觉分配，不看 criticality | 阻塞了关键路径，下游积压 | 始终优先分配 criticality 最高的 |
-| 一人同时认领 3+ 个 feature | 认知负载过高，每个都推进缓慢 | 每人最多 2 个 in_progress |
-| 忽略 files_owned 重叠 | 合并冲突，互相覆盖工作 | 冲突的 feature 必须串行或重新切割 |
-| 不记录分配历史 | 无法复盘，下次 Sprint 没有参考 | 每次都追加到 sprint_history |
+| Assigning by gut feel without checking criticality | Blocks the critical path, causes downstream backlog | Always assign highest criticality first |
+| One person claiming 3+ features at once | Cognitive overload, slow progress on each | Max 2 in_progress per person |
+| Ignoring files_owned overlap | Merge conflicts, overwriting each other's work | Conflicting features must be serialized or re-scoped |
+| Not recording assignment history | Cannot retrospect, no reference for next Sprint | Always append to sprint_history |

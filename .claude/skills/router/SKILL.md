@@ -1,52 +1,64 @@
-# harness:router — Harness Engineering 元 Skill
+# harness:router — Harness Engineering Meta Skill
 
-> 本 Skill 在每次会话启动时加载，确保 Harness Engineering 能力被正确激活。
-> 灵感来源：obra/superpowers 的 `using-superpowers` 强制触发模式。
+> This Skill is loaded at the start of every session to ensure Harness Engineering capabilities are properly activated.
+> Inspired by the `using-superpowers` forced-trigger pattern from obra/superpowers.
 
-## 核心规则：强制 Skill 调用
+## Core Rule: Mandatory Skill Invocation
 
-**只要以下情形出现，你没有选择权，必须立即调用对应 Skill：**
+**Whenever any of the following situations arise, you have no discretion — you must immediately invoke the corresponding Skill:**
 
-| 情形 | 必须调用 | 触发示例 |
-|------|---------|---------|
-| 新建项目 / 搭建 AI 工程环境 / 项目刚开始 | **harness:init** | "帮我初始化这个项目"、"新项目怎么开始"、"setup Claude Code"、"我需要 CLAUDE.md" |
-| Agent 反复犯同类错误 / 项目 AI 协作效率低 / 想了解项目健康度 | **harness:audit** | "为什么 Claude 总是…"、"代码质量怎么样"、"检查一下我的 Harness"、"帮我诊断" |
-| 模型升级 / 精简 CLAUDE.md / Harness 优化 / 垃圾回收 | **harness:evolve** | "CLAUDE.md 太长了"、"做一次 GC"、"新版本出了要更新什么"、"优化一下 Harness" |
+| Situation | Must Invoke | Trigger Examples |
+|-----------|-------------|------------------|
+| New project / setting up AI engineering environment / project just started | **harness:init** | "Help me initialize this project", "How do I start a new project", "Setup Claude Code", "I need a CLAUDE.md" |
+| Agent repeatedly makes the same type of mistake / poor AI collaboration efficiency / want to understand project health | **harness:audit** | "Why does Claude always...", "How's the code quality", "Check my Harness", "Help me diagnose" |
+| Model upgrade / streamline CLAUDE.md / Harness optimization / garbage collection | **harness:evolve** | "CLAUDE.md is too long", "Do a GC pass", "New version is out, what needs updating", "Optimize the Harness" |
+| **Implementing a new feature / fixing a bug / refactoring** (estimated >30 min or involves 3+ files) | **harness:plan** | "Help me implement this feature", "Let's do the next feature", "There's an issue here that needs fixing" |
+| **Any implementation work** (including the execution phase after harness:plan) | **tdd** | Automatically activated before writing any code to ensure the RED->GREEN->REFACTOR cycle |
+| **About to declare a task complete** / before updating claude-progress.json | **harness:verify** | "Done", "Finished writing it", "Ready to merge", about to mark a feature as done |
 
-**1% 原则**：只要有 1% 的可能某个 Skill 适用于当前任务，你就必须调用它。不要等到确定才调用。
+**The 1% Rule**: If there is even a 1% chance that a Skill applies to the current task, you must invoke it. Do not wait until you are certain.
 
-## Skill 调用方式
+## How to Invoke Skills
 
-使用平台的 Skill 工具调用，而不是手动读取 SKILL.md 文件：
+Use the platform's Skill tool invocation, rather than manually reading SKILL.md files:
 
 ```
-# 正确做法（Cowork / Claude Code）
+# Correct approach (Cowork / Claude Code)
 Skill tool: "harness:init"
 Skill tool: "harness:audit"
 Skill tool: "harness:evolve"
 ```
 
-## 判断流程
+## Decision Flow
 
-在回复用户任何请求之前，先完成以下检查：
+Before responding to any user request, complete the following checks:
 
 ```
-Step 1: 用户在初始化/搭建新项目吗？
-  → 是 → 调用 harness:init
+Step 1: Is the user initializing / setting up a new project?
+  -> Yes -> Invoke harness:init
 
-Step 2: 用户在描述 Agent 失败、代码问题、工程质量问题吗？
-  → 是 → 调用 harness:audit
+Step 2: Is the user describing Agent failures, code issues, or engineering quality problems?
+  -> Yes -> Invoke harness:audit
 
-Step 3: 用户在优化/精简/升级现有 Harness 吗？
-  → 是 → 调用 harness:evolve
+Step 3: Is the user optimizing / streamlining / upgrading an existing Harness?
+  -> Yes -> Invoke harness:evolve
 
-Step 4: 都不是 → 正常回复，但如果过程中出现上述情形，立即调用对应 Skill
+Step 4: Does the user want to implement a feature / fix a bug / refactor, estimated >30 min or involving 3+ files?
+  -> Yes -> First invoke harness:plan (planning gate), then begin coding after the plan is confirmed
+
+Step 5: Currently writing any implementation code?
+  -> Yes -> Activate the tdd workflow (RED->GREEN->REFACTOR), no skipping steps allowed
+
+Step 6: About to declare "done" or update claude-progress.json?
+  -> Yes -> First invoke verification; only declare done after all checks pass
+
+Step 7: None of the above -> Respond normally, but if any of the above situations arise during the process, immediately invoke the corresponding Skill
 ```
 
-## 为什么这条规则重要
+## Why This Rule Matters
 
-被动触发词匹配（"初始化"、"harness:init"）会漏掉大量真实场景：
-- 用户说"帮我搞定 Claude 的配置"→ 应该触发 harness:init，但不含任何关键词
-- 用户说"Claude 总是写出我不想要的代码"→ 应该触发 harness:audit，但没有"审计"这个词
+Passive trigger-word matching ("initialize", "harness:init") misses a large number of real scenarios:
+- User says "Help me set up Claude's config" -> Should trigger harness:init, but contains no matching keywords
+- User says "Claude always writes code I don't want" -> Should trigger harness:audit, but the word "audit" never appears
 
-强制意图识别比词匹配覆盖率高 10 倍以上。
+Mandatory intent recognition provides over 10x better coverage than word matching.

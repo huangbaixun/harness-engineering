@@ -1,18 +1,18 @@
 ---
-description: 评估 CLAUDE.md 中哪些规则已经不再必要，精简至 60 行以内
+description: Evaluate which rules in CLAUDE.md are no longer necessary and trim it to within 60 lines
 ---
 
-对 CLAUDE.md 中的每条规则逐一评估：
+Evaluate each rule in CLAUDE.md one by one:
 
-问题 1：Claude 是否在没有这条规则时仍然自然遵守？
-  → 尝试不带这条规则执行相关任务，观察行为
+Question 1: Does Claude naturally follow this rule even without it being stated?
+  → Try executing the related task without this rule and observe the behavior
 
-问题 2：这条规则是否已被 Hook 或 Linter 覆盖？
-  → 如果同样的约束已有确定性检查机制，文字版本只是冗余 Token
+Question 2: Has this rule been superseded by a Hook or Linter?
+  → If the same constraint already has a deterministic checking mechanism, the text version is just redundant tokens
 
-问题 3：这条规则是否对应一个真实存在的失败模式？
-  → 检查最近的 Agent 使用记录，这条规则是否被触发过？
+Question 3: Does this rule correspond to a real failure mode that still exists?
+  → Check recent Agent usage records — has this rule been triggered?
 
-对可以删除的规则列出清单，注明删除原因。
-等用户确认后执行删除。
-目标：CLAUDE.md 保持在 60 行以内。
+List the rules that can be removed, noting the reason for each removal.
+Wait for user confirmation before executing the deletions.
+Goal: Keep CLAUDE.md within 60 lines.

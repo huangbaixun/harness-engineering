@@ -1,104 +1,106 @@
-# harness:archive — 完成归档与文档同步
+# harness:archive — Completion Archiving and Documentation Sync
 
-> **来源**: OpenSpec `/opsx:archive` + 手册 §K.6「文档同步 Agent」+ 手册 §2.3「结构化交接物」
-> **整合**: 将 commands/sync-docs.md + commands/scan-arch.md 的核心检查合并为一个 Skill，
-> 在任务完成时自动触发，确保交接物完整、文档与代码一致。
+> **Source**: OpenSpec `/opsx:archive` + Handbook S K.6 "Documentation Sync Agent" + Handbook S 2.3 "Structured Handoff Artifacts"
+> **Integration**: Merges the core checks from commands/sync-docs.md and commands/scan-arch.md into a single Skill,
+> triggered automatically upon task completion to ensure handoff artifacts are complete and documentation is consistent with code.
 
-## 何时使用
+## When to Use
 
-| 触发条件 | 示例 |
+| Trigger Condition | Example |
 |---------|------|
-| 特性标记为 completed | harness:verify 通过后 |
-| 手动调用 `/harness:archive` | Sprint 结束整理 |
-| completed_features >= 10 | session-start 提示归档 |
-| 重大重构完成 | 架构变更后同步文档 |
+| Feature marked as completed | After harness:verify passes |
+| Manual invocation via `/harness:archive` | End-of-sprint cleanup |
+| completed_features >= 10 | session-start prompts archiving |
+| Major refactor completed | Sync documentation after architecture changes |
 
-## 归档流程
+## Archiving Workflow
 
-### Step 1：归档已完成的 Spec
+### Step 1: Archive Completed Specs
 
-检查 `docs/features.json` 中 `status: "completed"` 的特性：
+Check `docs/features.json` for features with `status: "completed"`:
 
 ```
-对每个已完成特性：
-  1. 如果存在对应的设计文档（docs/specs/F-xxx.md 或 docs/plans/F-xxx.md）
-     → git mv 到 docs/archive/（保留 git 历史）
-  2. 在归档文件顶部追加完成元数据：
+For each completed feature:
+  1. If a corresponding design document exists (docs/specs/F-xxx.md or docs/plans/F-xxx.md)
+     -> git mv to docs/archive/ (preserve git history)
+  2. Prepend completion metadata at the top of the archived file:
      ---
      archived_at: {{TIMESTAMP}}
      completed_by: {{SESSION_ID}}
      feature_id: F-xxx
      ---
-  3. 更新 docs/features.json：添加 archived_at 字段
+  3. Update docs/features.json: add the archived_at field
 ```
 
-**目录约定**：归档目录固定为 `docs/archive/`，如不存在则创建。使用 `git mv` 而非 copy+delete，确保 `git log --follow` 可追溯完整历史。
+**Directory convention**: The archive directory is always `docs/archive/`. Create it if it does not exist. Use `git mv` instead of copy+delete to ensure `git log --follow` can trace the full history.
 
-### Step 2：文档一致性检查
+### Step 2: Documentation Consistency Check
 
-执行以下对比（来源：commands/sync-docs.md）：
+Run the following comparisons (source: commands/sync-docs.md):
 
-1. **目录结构对比**
-   - 读取 `docs/architecture.md` 中描述的目录结构
-   - 与 `src/` 实际目录对比
-   - 列出新增但未记录的目录、已删除但仍被引用的目录
+1. **Directory structure comparison**
+   - Read the directory structure described in `docs/architecture.md`
+   - Compare against the actual `src/` directory
+   - List directories that are new but undocumented, and directories that are deleted but still referenced
 
-2. **CLAUDE.md 规则有效性**
-   - 逐条检查 CLAUDE.md / AGENTS.md 中的规则
-   - 标记已被 Hook 或 Linter 覆盖的冗余规则
-   - 标记对应错误模式已不存在的过时规则
+2. **CLAUDE.md rule validity**
+   - Check each rule in CLAUDE.md / AGENTS.md one by one
+   - Flag redundant rules already covered by Hooks or Linters
+   - Flag obsolete rules whose corresponding error patterns no longer exist
 
-3. **ADR 状态同步**
-   - 检查 `docs/decisions/` 中状态为「已采纳」的 ADR
-   - 验证对应技术选型是否仍在使用
+3. **ADR status sync**
+   - Check ADRs in `docs/decisions/` with status "Adopted"
+   - Verify that the corresponding technology choices are still in use
 
-### Step 3：架构健康快检（来源：commands/scan-arch.md）
+### Step 3: Architecture Health Quick Check (source: commands/scan-arch.md)
 
-轻量版架构扫描（完整版使用 `/harness:audit`）：
+Lightweight architecture scan (use `/harness:audit` for the full version):
 
-- [ ] 依赖方向违规（参照 architecture.md）
-- [ ] 超过 300 行的源代码文件
-- [ ] 最近 7 天新增但无测试的文件
+- [ ] Dependency direction violations (per architecture.md)
+- [ ] Source files exceeding 300 lines
+- [ ] Files added in the last 7 days that have no tests
 
-### Step 4：生成归档报告
+### Step 4: Generate Archiving Report
 
-输出格式：
+Output format:
 
 ```markdown
-## 归档报告 — {{DATE}}
+## Archiving Report — {{DATE}}
 
-### 已归档
-- F-001: 用户登录 → docs/archive/F-001-user-login.md
+### Archived
+- F-001: User Login -> docs/archive/F-001-user-login.md
 
-### 文档漂移
-- [严重] docs/architecture.md 缺少 src/services/notification/ 描述
-- [建议] CLAUDE.md 第 12 行规则已被 pre-protect-env Hook 覆盖
+### Documentation Drift
+- [Critical] docs/architecture.md missing description for src/services/notification/
+- [Suggestion] CLAUDE.md line 12 rule is already covered by pre-protect-env Hook
 
-### 架构快检
-- [警告] src/utils/helpers.ts 超过 300 行（当前 342 行）
+### Architecture Quick Check
+- [Warning] src/utils/helpers.ts exceeds 300 lines (currently 342 lines)
 
-### 建议操作
-1. 更新 architecture.md 补充 notification 模块描述
-2. 删除 CLAUDE.md 第 12 行冗余规则
+### Suggested Actions
+1. Update architecture.md to add the notification module description
+2. Remove the redundant rule on line 12 of CLAUDE.md
 ```
 
-## 与其他组件的关系
+## Relationship with Other Components
 
 ```
-harness:verify（验证通过）
-    ↓
-harness:archive（本 Skill — 归档 + 文档同步）
-    ↓
-Stop Hook（提交进度）
+harness:verify (verification passed)
+    |
+    v
+harness:archive (this Skill — archiving + documentation sync)
+    |
+    v
+Stop Hook (commit progress)
 
-触发链：verify 确认完成 → archive 整理交接物 → stop 保存状态
+Trigger chain: verify confirms completion -> archive organizes handoff artifacts -> stop saves state
 ```
 
-## 与 harness:evolve 的分工
+## Division of Responsibility with harness:evolve
 
 ```
-harness:archive：每次任务完成时触发，聚焦「归档 + 文档同步」
-harness:evolve：  按需触发（模型更新/Sprint 结束），聚焦「Harness 自身的精简与演进」
+harness:archive: Triggered on each task completion, focused on "archiving + documentation sync"
+harness:evolve:  Triggered on demand (model update / end of sprint), focused on "streamlining and evolving the Harness itself"
 
-archive 发现的文档漂移 → 如果涉及 Harness 组件本身 → 交给 evolve 处理
+Documentation drift found by archive -> if it involves Harness components themselves -> hand off to evolve
 ```

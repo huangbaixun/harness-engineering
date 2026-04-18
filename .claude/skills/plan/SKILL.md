@@ -1,121 +1,121 @@
-# harness:plan — 实现前规划
+# harness:plan — Pre-Implementation Planning
 
 > **upstream**: obra/superpowers `writing-plans` @ [917e5f5](https://github.com/obra/superpowers/tree/917e5f5/skills/writing-plans)
-> **harness-delta**: 新增 features.json 读取（Step 1）、OpenSpec XML 三段式任务结构、rigid/flexible 约束分类、人工确认门禁与 Harness 的 Stop Hook 联动
+> **harness-delta**: Added features.json reading (Step 1), OpenSpec XML three-phase task structure, rigid/flexible constraint classification, human confirmation gate, and Stop Hook integration with Harness
 
-> 整合自 obra/superpowers Writing Plans skill，适配 Harness Engineering 工作流。
-> 核心理念：Agent 在编码前先对齐设计，是减少方向错误最高性价比的节点。
+> Adapted from the obra/superpowers Writing Plans skill for the Harness Engineering workflow.
+> Core principle: Having the Agent align on design before coding is the highest-ROI checkpoint for reducing directional errors.
 
-## 何时使用
+## When to Use
 
-在以下任何情形下，**在写任何代码前**先执行本工作流：
+Under any of the following circumstances, execute this workflow **before writing any code**:
 
-| 情形 | 示例 |
+| Circumstance | Example |
 |------|------|
-| 实现 features.json 中的新特性 | coding-agent 取下一个特性 |
-| 非平凡 Bug 修复（影响超过 1 个文件） | 需要修改多处才能修复 |
-| 重构（影响模块边界或接口） | 调整层级关系、拆分模块 |
-| 接到新需求描述 | 用户描述了一个新功能 |
+| Implementing a new feature from features.json | coding-agent picks up the next feature |
+| Non-trivial bug fix (affects more than 1 file) | Fix requires changes in multiple places |
+| Refactoring (affects module boundaries or interfaces) | Adjusting layer relationships, splitting modules |
+| Receiving a new requirement description | User describes a new feature |
 
-判断规则：**预估实现超过 30 分钟或涉及 3 个以上文件，必须先规划。**
+Decision rule: **If the estimated implementation exceeds 30 minutes or involves more than 3 files, planning is mandatory.**
 
-## 规划流程
+## Planning Workflow
 
-### Step 1：澄清需求（Brainstorm）
+### Step 1: Clarify Requirements (Brainstorm)
 
-从 `docs/features.json` 读取当前特性，**区分 rigid 与 flexible 约束**：
+Read the current feature from `docs/features.json`, **distinguishing rigid from flexible constraints**:
 
-**rigid（硬约束，不可跳过、不可降级）：**
-- `acceptance_criteria` — 验收标准，每条必须映射到至少一个任务的 `<verify>`
-- `out_of_scope` — 明确不做什么，违反则视为过度实现
-- `forbidden_patterns` — 禁止模式（如有），违反则阻止完成
-- `dependencies` — 前置依赖，必须在开始前确认已满足
+**rigid (hard constraints, cannot be skipped or downgraded):**
+- `acceptance_criteria` — Acceptance criteria; each must map to at least one task's `<verify>`
+- `out_of_scope` — Explicitly what not to do; violations are treated as over-implementation
+- `forbidden_patterns` — Forbidden patterns (if any); violations block completion
+- `dependencies` — Prerequisites; must be confirmed satisfied before starting
 
-**flexible（软约束，Agent 可根据实际情况调整）：**
-- `description` — 功能意图，作为参考而非逐字规范
-- `technical_notes` — 技术建议，可选择替代方案
-- `related_files` — 参考文件，实际实现可能涉及更多
+**flexible (soft constraints, Agent may adjust based on actual conditions):**
+- `description` — Feature intent, used as reference rather than a literal spec
+- `technical_notes` — Technical suggestions; alternative approaches are acceptable
+- `related_files` — Reference files; actual implementation may involve additional files
 
-如有歧义，在开始规划前向用户确认，**不要假设**。
+If there is any ambiguity, confirm with the user before starting to plan. **Do not assume.**
 
-### Step 2：拆解为三段式任务块
+### Step 2: Break Down into Three-Phase Task Blocks
 
-将工作拆解为每块 **2-5 分钟**的独立任务。每个任务必须使用 **`<action> → <verify> → <done>` 三段式结构**：
+Break the work into independent tasks of **2-5 minutes** each. Each task must use the **`<action> -> <verify> -> <done>` three-phase structure**:
 
-- `<action>` — 具体执行什么（创建文件、修改函数、添加配置...）
-- `<verify>` — 如何验证执行正确（测试通过、文件存在、命令输出匹配...）
-- `<done>` — 完成标志和状态更新（更新 progress、标记 rigid 条目已覆盖...）
+- `<action>` — What to execute specifically (create file, modify function, add configuration...)
+- `<verify>` — How to verify correct execution (tests pass, file exists, command output matches...)
+- `<done>` — Completion marker and status update (update progress, mark rigid item as covered...)
 
-每块还需标注约束类型：
-- **[rigid]** — 覆盖 features.json 中的 rigid 约束，不可跳过
-- **[flexible]** — Agent 自行拆解的实现细节，可合并或调整
+Each block must also be labeled with its constraint type:
+- **[rigid]** — Covers a rigid constraint from features.json; cannot be skipped
+- **[flexible]** — Implementation detail decomposed by the Agent; may be merged or adjusted
 
-**输出格式（三段式）：**
+**Output format (three-phase):**
 
 ```markdown
-## 实现计划：[特性名称]
+## Implementation Plan: [Feature Name]
 
-### rigid 约束（来自 features.json）
-- AC-1: JWT token 有效期 24h
-- AC-2: 密码 bcrypt 加密
-- OOS-1: 不实现 OAuth 第三方登录
+### Rigid Constraints (from features.json)
+- AC-1: JWT token validity 24h
+- AC-2: Password bcrypt encryption
+- OOS-1: Do not implement OAuth third-party login
 
-### 任务列表
+### Task List
 
-T01 [rigid:AC-2] 创建密码加密模块
-  <action> 创建 src/auth/password.ts，实现 hashPassword / verifyPassword
-  <verify> 运行 pnpm test src/auth/password.test.ts，全部通过
-  <done>   AC-2 已覆盖，更新 claude-progress.json
+T01 [rigid:AC-2] Create password encryption module
+  <action> Create src/auth/password.ts, implement hashPassword / verifyPassword
+  <verify> Run pnpm test src/auth/password.test.ts, all pass
+  <done>   AC-2 covered, update claude-progress.json
 
-T02 [rigid:AC-1] 实现 JWT 签发与验证
-  <action> 创建 src/auth/jwt.ts，设置 expiresIn: '24h'
-  <verify> 单元测试验证 token 过期时间为 24h
-  <done>   AC-1 已覆盖
+T02 [rigid:AC-1] Implement JWT issuance and verification
+  <action> Create src/auth/jwt.ts, set expiresIn: '24h'
+  <verify> Unit test verifies token expiration is 24h
+  <done>   AC-1 covered
 
-T03 [flexible] 集成到 UserService
-  <action> 在 src/services/user.ts 中调用 password + jwt 模块
-  <verify> 集成测试通过
-  <done>   更新 progress
+T03 [flexible] Integrate into UserService
+  <action> Call password + jwt modules in src/services/user.ts
+  <verify> Integration tests pass
+  <done>   Update progress
 
-T04 [flexible] 更新 API 路由
-  <action> 添加 POST /api/auth/login 路由
-  <verify> e2e 测试通过
-  <done>   特性完成，触发 harness:verify
+T04 [flexible] Update API routes
+  <action> Add POST /api/auth/login route
+  <verify> e2e tests pass
+  <done>   Feature complete, trigger harness:verify
 
-### 不做的事（out_of_scope）
-- OOS-1: 不实现 OAuth 第三方登录
+### Out of Scope
+- OOS-1: Do not implement OAuth third-party login
 
-### 风险点
-- T02 依赖 JWT_SECRET 环境变量已配置
+### Risks
+- T02 depends on JWT_SECRET environment variable being configured
 ```
 
-**覆盖检查**：所有 rigid 约束必须被至少一个 `[rigid:xxx]` 任务覆盖。如有未覆盖的 rigid 条目，规划不完整，需补充任务。
+**Coverage check**: All rigid constraints must be covered by at least one `[rigid:xxx]` task. If any rigid item is uncovered, the plan is incomplete and additional tasks must be added.
 
-### Step 3：人工确认门控
+### Step 3: Human Confirmation Gate
 
-**输出计划后，等待用户确认再开始执行。**
+**After outputting the plan, wait for user confirmation before starting execution.**
 
-不要在规划后自动开始编码。计划是对齐点，不是自动触发器。
+Do not automatically begin coding after planning. The plan is an alignment point, not an automatic trigger.
 
-用户确认后：
-1. 将任务列表写入 `docs/claude-progress.json` 的 `in_progress` 字段
-2. 按顺序执行，每完成一个任务更新状态
-3. 每个任务完成后运行对应验证
+After user confirmation:
+1. Write the task list to the `in_progress` field of `docs/claude-progress.json`
+2. Execute in order, updating status after each task is completed
+3. Run the corresponding verification after each task is completed
 
-## 与 OpenSpec 的关系
+## Relationship with OpenSpec
 
-如果项目使用了 OpenSpec：
-- `openspec/changes/proposal.md` 对应本 Skill 的 Step 1（澄清需求）
-- `openspec/changes/tasks.md` 对应本 Skill 的 Step 2（任务拆解）
-- 两者重叠时，以 OpenSpec 的产物为准，本 Skill 提供 Harness 上下文同步
+If the project uses OpenSpec:
+- `openspec/changes/proposal.md` corresponds to Step 1 of this Skill (clarify requirements)
+- `openspec/changes/tasks.md` corresponds to Step 2 of this Skill (task breakdown)
+- When they overlap, OpenSpec artifacts take precedence; this Skill provides Harness context sync
 
-## 计划质量检查
+## Plan Quality Checklist
 
-好的计划满足：
-- [ ] 每个任务有完整的 `<action>` / `<verify>` / `<done>` 三段
-- [ ] 所有 rigid 约束（acceptance_criteria + out_of_scope + forbidden_patterns）被至少一个任务覆盖
-- [ ] 没有任何任务描述是"实现 X 功能"这种模糊表述
-- [ ] out_of_scope 明确列出
-- [ ] 依赖顺序清晰（有依赖的任务排在被依赖任务之后）
-- [ ] 总任务数 ≤ 15（超过说明特性太大，应该拆分到 features.json）
-- [ ] [rigid] 任务不可被标记为"跳过"或"延后"
+A good plan satisfies:
+- [ ] Each task has a complete `<action>` / `<verify>` / `<done>` three-phase structure
+- [ ] All rigid constraints (acceptance_criteria + out_of_scope + forbidden_patterns) are covered by at least one task
+- [ ] No task description uses vague language like "implement X feature"
+- [ ] out_of_scope is explicitly listed
+- [ ] Dependency order is clear (dependent tasks come after the tasks they depend on)
+- [ ] Total task count <= 15 (more than that means the feature is too large and should be split in features.json)
+- [ ] [rigid] tasks cannot be marked as "skipped" or "deferred"

@@ -1,47 +1,47 @@
 # Harness Engineering Plugin — AGENTS.md
 
-> 通用 Agent 记忆文件。支持 Claude Code（读取 CLAUDE.md）
-> 及所有兼容 AGENTS.md 的 AI 编程工具。内容在各工具间完全一致。
+> Universal agent memory file. Supports Claude Code (reads CLAUDE.md)
+> and all AI coding tools compatible with AGENTS.md. Content is identical across tools.
 
-## 项目概述
-Harness Engineering 能力建设 plugin：为新项目初始化和存量项目优化提供标准化 AI Agent Harness 工程体系。
+## Project Overview
+Harness Engineering capability-building plugin: provides a standardized AI Agent Harness engineering framework for new project initialization and existing project optimization.
 
-## 技术栈
-- Shell 脚本（Hook 模板和自动化脚本）
-- Markdown + JSON（Skills、Commands、配置模板）
-- Python 3.10+（辅助脚本：健康度评分、架构扫描）
-- 多语言模板：TypeScript、Python、Go、通用
+## Tech Stack
+- Shell scripts (Hook templates and automation scripts)
+- Markdown + JSON (Skills, Commands, configuration templates)
+- Python 3.10+ (helper scripts: health scoring, architecture scanning)
+- Multi-language templates: TypeScript, Python, Go, generic
 
-## 关键命令
-- 验证 Skill 结构：`find skills/ -name "SKILL.md" | head -20`
-- 检查 JSON 合法性：`python3 -m json.tool docs/templates/*/features.json`
-- 运行自测：`bash scripts/self-test.sh`
+## Key Commands
+- Validate Skill structure: `find skills/ -name "SKILL.md" | head -20`
+- Check JSON validity: `python3 -m json.tool docs/templates/*/features.json`
+- Run self-tests: `bash scripts/self-test.sh`
 
-## 架构约定
-- 依赖方向：references → templates → skills → commands（禁止逆向）
-- 所有 Skill 的 SKILL.md 必须包含 YAML frontmatter（name, description）
-- 所有 Hook 脚本必须遵循「成功静默、失败可见」原则
-- 模板文件中的占位符统一用 `{{PLACEHOLDER}}` 格式
-- Skills/Commands 内容不得硬编码 `.claude/` 路径，统一用 `$TOOL_DIR`
+## Architecture Conventions
+- Dependency direction: references → templates → skills → commands (reverse is prohibited)
+- Every Skill's SKILL.md must include YAML frontmatter (name, description)
+- All Hook scripts must follow the "silent on success, visible on failure" principle
+- Placeholders in template files must use the `{{PLACEHOLDER}}` format
+- Skills/Commands must not hardcode `.claude/` paths; use `$TOOL_DIR` instead
 
-## Skill 开发强制流程
-任何 Skill 的新增或修改必须经过 skill-creator 工作流，不允许跳过：
-1. 起草 SKILL.md → 2. 在对应 `evals/evals.json` 写测试用例 → 3. 运行 eval（with-skill vs baseline）→ 4. 生成 eval-viewer 供人审阅 → 5. 根据反馈迭代
-- eval 文件位置：`skills/<name>/evals/evals.json`，格式兼容 skill-creator
-- 禁止在未经 eval 验证的情况下直接修改 SKILL.md 并提交
-- 详见：docs/decisions/0004-skill-creator-methodology.md
+## Mandatory Skill Development Workflow
+Any new or modified Skill must go through the skill-creator workflow — no exceptions:
+1. Draft SKILL.md → 2. Write test cases in the corresponding `evals/evals.json` → 3. Run eval (with-skill vs baseline) → 4. Generate eval-viewer for human review → 5. Iterate based on feedback
+- Eval file location: `skills/<name>/evals/evals.json`, format compatible with skill-creator
+- Directly modifying and committing SKILL.md without eval validation is prohibited
+- See: docs/decisions/0004-skill-creator-methodology.md
 
-## 禁止规则
-- 永远不要在模板中硬编码具体项目名或团队信息
-- 永远不要生成超过 60 行的 AGENTS.md 模板
-- 永远不要让 Hook 模板在成功时输出日志
-- 永远不要在单个 Skill 文件中超过 500 行
-- 永远不要在 Skill 内容中硬编码 `.claude/` 路径
+## Prohibited Practices
+- Never hardcode specific project names or team information in templates
+- Never generate an AGENTS.md template exceeding 60 lines
+- Never let Hook templates produce output on success
+- Never exceed 500 lines in a single Skill file
+- Never hardcode `.claude/` paths in Skill content
 
-## 更多上下文
-- 架构图：docs/architecture.md
-- 设计决策：docs/decisions/
-- 模板目录：docs/templates/
-- 方法论完整手册：references/HarnessEngineering.md（一手来源）
-- 概念速查：references/harness-engineering-handbook.md
-- 多工具兼容决策：docs/decisions/0005-tool-agnostic-agents-md.md
+## Further Context
+- Architecture diagram: docs/architecture.md
+- Design decisions: docs/decisions/
+- Template directory: docs/templates/
+- Methodology reference manual: references/HarnessEngineering.md (primary source)
+- Concept quick reference: references/harness-engineering-handbook.md
+- Multi-tool compatibility decision: docs/decisions/0005-tool-agnostic-agents-md.md

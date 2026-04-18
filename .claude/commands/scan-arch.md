@@ -1,14 +1,14 @@
 ---
-description: 运行架构健康度扫描，检查依赖违规、过大模块和缺失测试
+description: Run an architecture health scan to check for dependency violations, oversized modules, and missing tests
 ---
 
-执行架构健康度扫描：
+Execute an architecture health scan:
 
-1. 检查依赖方向违规（参照 architecture.md 中的依赖规则）
-2. 识别过大文件（> 300 行的源代码文件）
-3. 找出缺少对应测试的新文件（最近 7 天新增）
-4. 检测循环依赖
-5. 评估模块耦合度（哪些模块被超过 3 个其他模块引用）
+1. Check dependency direction violations (per the dependency rules defined in architecture.md)
+2. Identify oversized files (source files exceeding 300 lines)
+3. Find new files missing corresponding tests (added in the last 7 days)
+4. Detect circular dependencies
+5. Assess module coupling (which modules are referenced by more than 3 other modules)
 
-汇总生成架构健康报告，更新 docs/quality.md（如果存在）。
-为最严重的问题提供具体修复建议。
+Generate a consolidated architecture health report and update docs/quality.md (if it exists).
+Provide specific fix recommendations for the most severe issues.
