@@ -83,6 +83,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 | **harness:evolve** | 「AGENTS.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
 | **harness:router** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
 | **harness:plan** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为可验证任务块，`<action>/<verify>/<done>` 三段式结构 |
+| **harness:canary** | 准备部署 / 发布规划 | 基于风险评分的灰度发布 Runbook，含分阶段流量切换、回滚触发条件、可观测性清单 |
 | **harness:archive** | 特性完成后归档 | Spec 归档至 `docs/archive/`、文档一致性检查、架构快检 |
 | **harness:tdd** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
 | **harness:verify** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
@@ -96,6 +97,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 | `/harness:init` | 初始化 Harness | 项目启动 |
 | `/harness:audit` | Harness 健康度审计 | 按需 |
 | `/harness:assign` | Sprint feature 分配规划，自动算依赖 + 生成认领脚本 | Sprint 开始时 |
+| `/harness:canary` | 生成灰度发布 Runbook（含风险评估） | 部署前 |
 | `/harness:review-pr` | PR 全面审查（质量 + 安全 + 架构） | 每次 PR |
 | `/harness:dump` | 保存会话进度到 claude-progress.json | 上下文 50% 时 |
 | `/harness:sync-docs` | 文档与代码一致性检查 | 每日 |

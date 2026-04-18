@@ -15,6 +15,7 @@
 | **Implementing a new feature / fixing a bug / refactoring** (estimated >30 min or involves 3+ files) | **harness:plan** | "Help me implement this feature", "Let's do the next feature", "There's an issue here that needs fixing" |
 | **Any implementation work** (including the execution phase after harness:plan) | **tdd** | Automatically activated before writing any code to ensure the RED->GREEN->REFACTOR cycle |
 | **About to declare a task complete** / before updating claude-progress.json | **harness:verify** | "Done", "Finished writing it", "Ready to merge", about to mark a feature as done |
+| **Preparing to deploy to production** / release planning / writing a deploy checklist | **harness:canary** | "Let's deploy this", "Write a deploy plan", "How should we roll this out", "Prepare for release" |
 
 **The 1% Rule**: If there is even a 1% chance that a Skill applies to the current task, you must invoke it. Do not wait until you are certain.
 
@@ -52,7 +53,10 @@ Step 5: Currently writing any implementation code?
 Step 6: About to declare "done" or update claude-progress.json?
   -> Yes -> First invoke verification; only declare done after all checks pass
 
-Step 7: None of the above -> Respond normally, but if any of the above situations arise during the process, immediately invoke the corresponding Skill
+Step 7: Is the user preparing to deploy, release, or roll out to production?
+  -> Yes -> Invoke harness:canary to generate a risk-scored deployment runbook
+
+Step 8: None of the above -> Respond normally, but if any of the above situations arise during the process, immediately invoke the corresponding Skill
 ```
 
 ## Why This Rule Matters

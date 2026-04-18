@@ -97,6 +97,7 @@ harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai
 | `harness:audit` | Existing project audit | 7-dimension health score + prioritized fix plan |
 | `harness:evolve` | Ongoing optimization | AGENTS.md trimming + hook adaptation |
 | `harness:archive` | Post-feature archival | Spec archival + doc sync + architecture health check |
+| `harness:canary` | Pre-deployment planning | Risk-scored canary runbook with staged rollout + rollback triggers |
 | `harness:router` | Meta-skill (1% rule) | Intent recognition, auto-routes to the correct skill |
 | `/harness:assign` | Sprint kickoff | Dependency graph analysis + optimal owner assignment |
 | `/harness:review-pr` | Every PR | Quality + security + architecture review |

@@ -83,6 +83,7 @@ After installation, these Skills trigger automatically based on your intent -- n
 | **harness:evolve** | "AGENTS.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
 | **harness:router** | Every scenario (1% rule, loaded each session) | Intent recognition, ensures the right Skill is triggered |
 | **harness:plan** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
+| **harness:canary** | Ready to deploy / release planning | Risk-scored canary deployment runbook with staged rollout, rollback triggers, observability checklists |
 | **harness:archive** | Feature completed, ready to archive | Archives specs to `docs/archive/`, checks doc-code consistency, runs architecture health scan |
 | **harness:tdd** | Any code writing (bound to 1% rule) | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
 | **harness:verify** | Before declaring a task complete | 4-layer check (Functional / Quality / Architecture / Integration) |
@@ -96,6 +97,7 @@ After installation, these Skills trigger automatically based on your intent -- n
 | `/harness:init` | Initialize Harness | Project start |
 | `/harness:audit` | Harness health audit | On demand |
 | `/harness:assign` | Sprint feature assignment -- auto-calculates dependencies + generates claim script | Sprint start |
+| `/harness:canary` | Generate canary deployment runbook with risk assessment | Pre-deploy |
 | `/harness:review-pr` | Comprehensive PR review (quality + security + architecture) | Every PR |
 | `/harness:dump` | Save session progress to claude-progress.json | At ~50% context usage |
 | `/harness:sync-docs` | Doc-code consistency check | Daily |
@@ -202,11 +204,13 @@ harness-engineering-plugin/
 │   ├── audit/SKILL.md                    harness:audit legacy audit
 │   ├── evolve/SKILL.md                   harness:evolve continuous evolution
 │   ├── archive/SKILL.md                  harness:archive completion archival
+│   ├── canary/SKILL.md                   harness:canary deployment runbook
 │   ├── plan/SKILL.md                     harness:plan pre-implementation planning
 │   ├── tdd/SKILL.md                      harness:tdd TDD workflow
 │   └── verify/SKILL.md                   harness:verify pre-completion verification
 ├── commands/
 │   ├── assign.md                <- /harness:assign (team sprint assignment)
+│   ├── canary.md                <- /harness:canary (deployment runbook)
 │   ├── init.md
 │   ├── audit.md
 │   ├── review-pr.md
