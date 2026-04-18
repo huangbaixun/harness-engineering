@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.10.1 (2026-04-18)
+
+**Marketplace preparation + CodeBuddy removal**
+
+- **Removed CodeBuddy support**: `.codebuddy-plugin/` directory removed, `CODEBUDDY.md` marked deprecated, all CodeBuddy references cleaned from Skills, Commands, Agents, templates, and docs. Plugin now targets Claude Code exclusively.
+- **English-first documentation**: README.md, CONTRIBUTING.md, CHANGELOG.md, all 8 SKILL.md files, 9 Command files, 4 Agent files, architecture.md, and marketplace-submission.md translated to English. Chinese README preserved as `README.zh-CN.md`.
+- **Plugin metadata in English**: plugin.json description, userConfig fields, and keywords; marketplace.json description and version bump.
+- **New: harness:archive Skill** (P0-1): 4-step workflow — archive completed specs to `docs/archive/` (preserving git history via `git mv`), check doc-code consistency, run architecture health scan, generate structured archive report.
+- **Enhanced: harness:plan** (P0-2): now enforces `<action>/<verify>/<done>` triple structure for every task. Reads `rigid` vs `flexible` constraints from `features.json` — rigid items must map to tasks, flexible items are advisory. 100% rigid constraint coverage check before execution.
+- **Enhanced: session-start.sh** (P0-3): added features.json summary output (in-progress feature, next feature, stats) and 5-step ceremony chain checklist for Agent.
+- **Expanded safety hooks**: `pre-protect-env` upgraded with comprehensive secret detection patterns (SSH keys, service accounts, .netrc, AWS credentials), dangerous command blocking (force-push, hard-reset, chmod 777, curl-pipe-to-shell), and inline secret detection.
+- **Marketplace submitted**: v1.10.1 submitted to Anthropic Plugin Directory for review (Claude Code + Claude Cowork).
+
 ## v1.10.0 (2026-04-12)
 
 **Unified `harness:` namespace**

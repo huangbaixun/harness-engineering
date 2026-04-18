@@ -1,6 +1,6 @@
 {
   "name": "harness",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "AI Agent Harness Engineering plugin. Initialize new projects, audit existing harness health, plan with structured triple-format tasks, verify completion with rigid/flexible constraints, and archive specs — all in one install.",
   "homepage": "https://github.com/huangbaixun/harness-engineering",
   "repository": "https://github.com/huangbaixun/harness-engineering",

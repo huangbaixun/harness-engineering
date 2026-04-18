@@ -1,7 +1,7 @@
 # Anthropic Marketplace Submission Materials
 
 > Submission URL: https://claude.ai/settings/plugins/submit  
-> Version: v1.10.0  
+> Version: v1.10.1  
 > Preparation date: 2026-04-18
 
 ---
@@ -12,7 +12,7 @@
 |-------|-------|
 | **Plugin Name** | harness-engineering |
 | **Display Name** | Harness Engineering |
-| **Version** | 1.10.0 |
+| **Version** | 1.10.1 |
 | **Author / Organization** | Harness Engineering |
 | **Repository URL** | https://github.com/huangbaixun/harness-engineering |
 | **Homepage URL** | https://github.com/huangbaixun/harness-engineering |
