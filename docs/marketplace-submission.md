@@ -1,8 +1,8 @@
 # Anthropic Marketplace 提交材料
 
 > 提交地址：https://claude.ai/settings/plugins/submit  
-> 版本：v1.9.0  
-> 准备日期：2026-04-10
+> 版本：v1.10.0  
+> 准备日期：2026-04-18
 
 ---
 
@@ -12,7 +12,7 @@
 |------|------|
 | **Plugin Name** | harness-engineering |
 | **Display Name** | Harness Engineering |
-| **Version** | 1.9.0 |
+| **Version** | 1.10.0 |
 | **Author / Organization** | Harness Engineering |
 | **Repository URL** | https://github.com/huangbaixun/harness-engineering |
 | **Homepage URL** | https://github.com/huangbaixun/harness-engineering |
@@ -52,6 +52,10 @@ Install once, and your projects get:
 - **`harness:audit`** — Scores your existing project's harness health across 7 dimensions. Pinpoints weak spots and generates a prioritized fix plan.
 
 - **`harness:evolve`** — Runs periodic garbage collection on your harness: trims bloated AGENTS.md files, removes stale rules, adapts hooks to new model capabilities.
+
+- **`harness:archive`** — *(New in v1.10.0)* Automated completion archival + doc sync. When a feature is done, archives specs to `docs/archive/` (preserving git history), checks doc-code consistency, runs lightweight architecture health scan, and generates a structured archive report.
+
+- **`harness:plan`** — *(Enhanced in v1.10.0)* Now enforces `<action>/<verify>/<done>` triple structure for every task. Reads `rigid` vs `flexible` constraints from `features.json` — rigid items (acceptance criteria, forbidden patterns) must map to tasks; flexible items (technical notes) are advisory. Ensures 100% rigid constraint coverage before execution begins.
 
 - **`/harness:assign`** — Sprint planning for AI-assisted teams. Analyzes your `features.json` dependency graph, calculates critical path, and generates a `sprint-kickoff.sh` with per-member task assignments that minimize file conflicts and maximize parallel execution.
 
@@ -97,6 +101,7 @@ harness, agent-engineering, devops, team, sprint, claude-code, codebuddy, hooks,
 | `harness:init` | 新项目初始化 | 六层 Harness 结构生成 |
 | `harness:audit` | 存量项目审计 | 七维度健康评分 + 修复方案 |
 | `harness:evolve` | 持续优化 | AGENTS.md 瘦身 + Hooks 适配 |
+| `harness:archive` | 特性完成后归档 | Spec 归档 + 文档同步 + 架构快检 |
 | `harness:router` | 元 Skill（1% 规则） | 意图识别，自动路由到正确 Skill |
 | `/harness:assign` | Sprint 开始 | 依赖图分析 + 最优 owner 分配 |
 | `/harness:review-pr` | 每次 PR | 质量 + 安全 + 架构全面审查 |
