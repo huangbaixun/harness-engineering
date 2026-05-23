@@ -52,8 +52,7 @@ claude plugins add harness-engineering
 
 | 文件 | 作用 |
 |------|------|
-| `AGENTS.md` | 通用记忆层（≤60 行），唯一真相来源 |
-| `CLAUDE.md` | Claude Code 用户的 2 行入口，指向 AGENTS.md |
+| `CLAUDE.md` | 项目记忆层（≤60 行），唯一真相来源 |
 | `init.sh` | 会话启动脚本，每次新会话前运行 |
 | `.claude/settings.json` | 权限控制 + Hook 注册（含 SessionStart） |
 | `.claude/hooks/session-start.sh` | SessionStart Hook：会话开启时恢复进度上下文 |
@@ -78,9 +77,9 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 
 | Skill | 触发场景 | 做什么 |
 |-------|---------|--------|
-| **harness:init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（AGENTS.md + Hooks + 模板） |
+| **harness:init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（CLAUDE.md + Hooks + 模板） |
 | **harness:audit** | 「Agent 老是犯同样的错」/ 存量项目审计 | 七维度健康评分 + 优先级修复方案 |
-| **harness:evolve** | 「AGENTS.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
+| **harness:evolve** | 「CLAUDE.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
 | **harness:router** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
 | **harness:plan** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为可验证任务块，`<action>/<verify>/<done>` 三段式结构 |
 | **harness:canary** | 准备部署 / 发布规划 | 基于风险评分的灰度发布 Runbook，含分阶段流量切换、回滚触发条件、可观测性清单 |
@@ -102,7 +101,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 | `/harness:dump` | 保存会话进度到 claude-progress.json | 上下文 50% 时 |
 | `/harness:sync-docs` | 文档与代码一致性检查 | 每日 |
 | `/harness:scan-arch` | 架构健康度扫描 | 每周 |
-| `/harness:trim` | 精简 AGENTS.md 至 60 行以内 | 新模型发布后 |
+| `/harness:trim` | 精简 CLAUDE.md 至 60 行以内 | 新模型发布后 |
 | `/harness:scan-entropy` | 死代码 + 重复实现 + 过度耦合检测 | 每月 |
 
 ---
@@ -126,7 +125,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 - **Python** — type hints, poetry/uv, pytest, mypy/ruff
 - **Go** — go modules, golangci-lint, testing
 - **Java** — JUnit 5 + Mockito + AssertJ, Maven/Gradle, Checkstyle + SpotBugs
-- **通用** — 语言无关的 Harness 骨架（含 AGENTS.md 模板）
+- **通用** — 语言无关的 Harness 骨架
 
 ---
 
@@ -136,7 +135,6 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 
 | 特性 | Claude Code | Windows |
 |------|-------------|---------|
-| AGENTS.md 通用记忆 | ✅ | ✅ |
 | init.sh 自动检测 | ✅ | ✅（Git Bash） |
 | Skills / Commands | ✅ | ✅ |
 | Hooks（Polyglot 包装器） | ✅ | ✅（Git Bash / MSYS2） |
@@ -147,7 +145,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 
 本 plugin 完全自举（dogfooding）——用 Harness Engineering 规范开发 Harness Engineering Plugin 本身：
 
-- `AGENTS.md` ≤ 60 行，是唯一真相来源
+- `CLAUDE.md` ≤ 60 行，是唯一真相来源
 - `docs/architecture.md` 包含明确的依赖规则
 - `docs/decisions/` 有完整 ADR 记录每个关键决策
 - Hook 脚本遵循「成功静默、失败可见」原则

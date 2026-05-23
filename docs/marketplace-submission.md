@@ -1,8 +1,8 @@
 # Anthropic Marketplace Submission Materials
 
 > Submission URL: https://claude.ai/settings/plugins/submit  
-> Version: v1.10.1  
-> Preparation date: 2026-04-18
+> Version: v1.11.0  
+> Preparation date: 2026-05-23
 
 ---
 
@@ -12,7 +12,7 @@
 |-------|-------|
 | **Plugin Name** | harness-engineering |
 | **Display Name** | Harness Engineering |
-| **Version** | 1.10.1 |
+| **Version** | 1.11.0 |
 | **Author / Organization** | Harness Engineering |
 | **Repository URL** | https://github.com/huangbaixun/harness-engineering |
 | **Homepage URL** | https://github.com/huangbaixun/harness-engineering |
@@ -36,17 +36,17 @@ AI Agent Harness Engineering: init, audit, team sprint allocation. Built for Cla
 
 Harness Engineering transforms how your team works with AI agents — shifting the focus from "writing code" to "designing environments where AI agents work reliably."
 
-Instead of hoping Claude remembers your conventions, you encode them into a structured **6-layer Harness**: Memory (AGENTS.md), Rules (settings.json), Skills, Agents, Hooks, and MCP Tools.
+Instead of hoping Claude remembers your conventions, you encode them into a structured **6-layer Harness**: Memory (CLAUDE.md), Rules (settings.json), Skills, Agents, Hooks, and MCP Tools.
 
 ## What This Plugin Does
 
 Install once, and your projects get:
 
-- **`harness:init`** — Bootstraps a complete AI agent harness for any new project in minutes. Generates AGENTS.md, init.sh, hooks (type-check, .env protection, auto-format), and architecture docs. Supports TypeScript, Python, Go, Java, and generic stacks.
+- **`harness:init`** — Bootstraps a complete AI agent harness for any new project in minutes. Generates CLAUDE.md, init.sh, hooks (type-check, .env protection, auto-format), and architecture docs. Supports TypeScript, Python, Go, Java, and generic stacks.
 
 - **`harness:audit`** — Scores your existing project's harness health across 7 dimensions. Pinpoints weak spots and generates a prioritized fix plan.
 
-- **`harness:evolve`** — Runs periodic garbage collection on your harness: trims bloated AGENTS.md files, removes stale rules, adapts hooks to new model capabilities.
+- **`harness:evolve`** — Runs periodic garbage collection on your harness: trims bloated CLAUDE.md files, removes stale rules, adapts hooks to new model capabilities.
 
 - **`harness:archive`** — *(New in v1.10.0)* Automated completion archival and doc sync. When a feature is done, archives specs to `docs/archive/` (preserving git history), checks doc-code consistency, runs a lightweight architecture health scan, and generates a structured archive report.
 
@@ -57,7 +57,7 @@ Install once, and your projects get:
 ## Key Design Principles
 
 - **Built for Claude Code**: Uses `.claude/` as the standard configuration directory
-- **AGENTS.md as single source of truth**: One universal memory file, two 2-line wrappers for each tool
+- **CLAUDE.md as single source of truth**: A concise project memory file (≤60 lines)
 - **60-line rule**: Based on ETH Zurich research showing performance degrades with oversized memory files
 - **Hooks over instructions**: Critical constraints enforced deterministically via hooks, not model judgment
 
@@ -95,7 +95,7 @@ harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai
 |----------------|-----------------|-------------------|
 | `harness:init` | New project setup | Generates full 6-layer Harness structure |
 | `harness:audit` | Existing project audit | 7-dimension health score + prioritized fix plan |
-| `harness:evolve` | Ongoing optimization | AGENTS.md trimming + hook adaptation |
+| `harness:evolve` | Ongoing optimization | CLAUDE.md trimming + hook adaptation |
 | `harness:archive` | Post-feature archival | Spec archival + doc sync + architecture health check |
 | `harness:canary` | Pre-deployment planning | Risk-scored canary runbook with staged rollout + rollback triggers |
 | `harness:router` | Meta-skill (1% rule) | Intent recognition, auto-routes to the correct skill |
@@ -110,11 +110,10 @@ harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai
 
 The following screenshots should be prepared for submission:
 
-1. **harness:init output**: Shows the generated file tree after initialization (AGENTS.md, init.sh, hooks/)
+1. **harness:init output**: Shows the generated file tree after initialization (CLAUDE.md, init.sh, hooks/)
 2. **init.sh output**: Shows the Harness readiness check output after running `bash init.sh` (tool detection, progress display)
 3. **harness:audit health report**: Shows the 7-dimension scoring table and prioritized fix plan
 4. **/harness:assign results**: Shows the sprint allocation table and a snippet of the generated sprint-kickoff.sh
-5. **AGENTS.md vs CLAUDE.md comparison**: Demonstrates the tool-agnostic architecture with both files
 
 ---
 

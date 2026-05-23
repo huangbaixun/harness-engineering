@@ -96,26 +96,24 @@ skills/
 
 ### 2. Adding Language Templates
 
-Language templates live in `docs/templates/<language>/` and help engineers quickly initialize an `AGENTS.md` for a given language stack.
+Language templates live in `docs/templates/<language>/` and help engineers quickly initialize a `CLAUDE.md` for a given language stack.
 
 **File structure:**
 
 ```
 docs/templates/<language>/
-├── AGENTS.md.template    # Required — includes testing frameworks, lint tools, and architectural conventions for the language
+├── CLAUDE.md.template    # Required — includes testing frameworks, lint tools, and architectural conventions for the language
 └── README.md             # Optional — describes the template's intended use cases and key conventions
 ```
-
-> Note: Older templates used the name `CLAUDE.md.template`. New templates should use `AGENTS.md.template` (cross-tool compatible).
 
 **Template content requirements:**
 - Specify test frameworks and commonly used assertion libraries (e.g., JUnit 5 + AssertJ)
 - Specify lint / formatting tools (e.g., Checkstyle + SpotBugs)
 - List project architecture layers (e.g., entity -> repository -> service -> controller)
 - List language-specific prohibitions (e.g., raw types, silent `catch Exception`)
-- Use `.claude/` as the standard configuration directory with no hardcoded paths (refer to `docs/templates/generic/AGENTS.md.template`)
+- Use `.claude/` as the standard configuration directory with no hardcoded paths (refer to `docs/templates/generic/CLAUDE.md.template`)
 
-See existing templates for reference: `docs/templates/generic/AGENTS.md.template`
+See existing templates for reference: `docs/templates/generic/CLAUDE.md.template`
 
 ---
 

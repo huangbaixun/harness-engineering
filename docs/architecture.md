@@ -2,19 +2,16 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that supports Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. It consists of three core Skills along with a set of supporting Commands, Hooks, and References.
-
-**Tool-agnostic design**: `AGENTS.md` serves as the cross-tool universal memory file; `CLAUDE.md` is a 2-line wrapper; Skills use the `$TOOL_DIR` variable instead of hardcoded paths.
+This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. It consists of three core Skills along with a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
 ```
 harness-engineering-plugin/
-├── AGENTS.md                       ← Universal memory file (< 60 lines, single source of truth across tools)
-├── CLAUDE.md                       ← 2-line wrapper → AGENTS.md (for Claude Code users)
+├── CLAUDE.md                       ← Project memory file (< 60 lines, single source of truth)
 ├── .claude-plugin/
 │   └── plugin.json                 ← Claude Code plugin manifest
-├── skills/                         ← Skills (universal, $TOOL_DIR agnostic)
+├── skills/                         ← Skills
 │   ├── init/               ← New project Harness initialization
 │   │   └── SKILL.md
 │   ├── audit/              ← Existing project health check and optimization
@@ -44,14 +41,15 @@ harness-engineering-plugin/
 │   │   ├── 0002-multi-language-templates.md
 │   │   ├── 0003-dogfooding-harness.md
 │   │   ├── 0004-skill-creator-methodology.md
-│   │   └── 0005-tool-agnostic-agents-md.md  ← Tool-agnostic architecture decision
+│   │   ├── 0005-tool-agnostic-agents-md.md  ← Superseded by 0007
+│   │   └── 0007-claude-code-only.md         ← Current architecture decision
 │   ├── design/
 │   │   └── skill-interaction-flow.md
 │   └── templates/                  ← Multi-language project templates
 │       ├── typescript/
 │       ├── python/
 │       ├── go/
-│       └── generic/                ← Language-agnostic generic templates (includes AGENTS.md.template)
+│       └── generic/                ← Language-agnostic generic templates
 ├── references/                     ← Reference documents (loaded on demand)
 │   ├── harness-engineering-handbook.md
 │   ├── hook-patterns.md
@@ -67,7 +65,7 @@ harness-engineering-plugin/
 
 | Skill | Trigger Scenario | Input | Output |
 |-------|-----------------|-------|--------|
-| **harness:init** | Setting up Harness for a new project from scratch | Tech stack info, project description | AGENTS.md + Hooks + docs/ + $TOOL_DIR/settings.json |
+| **harness:init** | Setting up Harness for a new project from scratch | Tech stack info, project description | CLAUDE.md + Hooks + docs/ + .claude/settings.json |
 | **harness:audit** | Evaluating and optimizing an existing project | Existing codebase | Health report + optimization recommendations + fix PR |
 | **harness:evolve** | Continuous iterative improvement | Failure logs, model updates | Harness simplification/enhancement suggestions + automated maintenance |
 
