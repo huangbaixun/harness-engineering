@@ -5,18 +5,13 @@
 
 set -euo pipefail
 
-# ── Claude Code 配置 ────────────────────────────────────────────────────────
-export TOOL_DIR=".claude"
-export TOOL_NAME="Claude Code"
-# ────────────────────────────────────────────────────────────────────────────
-
 PROJECT_NAME="{{PROJECT_NAME}}"
 PROGRESS_FILE="docs/claude-progress.json"
 FEATURES_FILE="docs/features.json"
 
 echo "════════════════════════════════════"
 echo "  ${PROJECT_NAME} — Harness 就绪检查"
-echo "  工具：${TOOL_NAME}（${TOOL_DIR}/）"
+echo "  工具：Claude Code（.claude/）"
 echo "════════════════════════════════════"
 
 # 1. 当前进度
@@ -68,7 +63,7 @@ fi
 # 3. 架构文档提示
 echo ""
 echo "📐 架构文档：docs/architecture.md"
-echo "📖 Agent 记忆：AGENTS.md（${TOOL_NAME} 通用）"
+echo "📖 Agent 记忆：CLAUDE.md"
 echo ""
 echo "════════════════════════════════════"
 echo "  Harness 就绪，可以开始会话 ✓"

@@ -52,8 +52,7 @@ After initialization, your project gets:
 
 | File | Purpose |
 |------|---------|
-| `AGENTS.md` | Universal memory layer (<=60 lines), the single source of truth |
-| `CLAUDE.md` | 2-line entry point for Claude Code, points to AGENTS.md |
+| `CLAUDE.md` | Project memory layer (<=60 lines), the single source of truth |
 | `init.sh` | Session startup script -- runs tool detection before each new session |
 | `.claude/settings.json` | Permission control + Hook registration (incl. SessionStart) |
 | `.claude/hooks/session-start.sh` | SessionStart Hook: restores progress context on session start |
@@ -78,9 +77,9 @@ After installation, these Skills trigger automatically based on your intent -- n
 
 | Skill | Trigger | What it does |
 |-------|---------|-------------|
-| **harness:init** | New project / "set up my Harness" | Generates complete 6-layer Harness structure (AGENTS.md + Hooks + templates) |
+| **harness:init** | New project / "set up my Harness" | Generates complete 6-layer Harness structure (CLAUDE.md + Hooks + templates) |
 | **harness:audit** | "Agent keeps making the same mistakes" / legacy project audit | 7-dimension health score + prioritized fix plan |
-| **harness:evolve** | "AGENTS.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
+| **harness:evolve** | "CLAUDE.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
 | **harness:router** | Every scenario (1% rule, loaded each session) | Intent recognition, ensures the right Skill is triggered |
 | **harness:plan** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
 | **harness:canary** | Ready to deploy / release planning | Risk-scored canary deployment runbook with staged rollout, rollback triggers, observability checklists |
@@ -102,7 +101,7 @@ After installation, these Skills trigger automatically based on your intent -- n
 | `/harness:dump` | Save session progress to claude-progress.json | At ~50% context usage |
 | `/harness:sync-docs` | Doc-code consistency check | Daily |
 | `/harness:scan-arch` | Architecture health scan | Weekly |
-| `/harness:trim` | Trim AGENTS.md to <=60 lines | After new model release |
+| `/harness:trim` | Trim CLAUDE.md to <=60 lines | After new model release |
 | `/harness:scan-entropy` | Dead code + duplicate implementation + over-coupling detection | Monthly |
 
 ---
@@ -126,7 +125,7 @@ After installation, these Skills trigger automatically based on your intent -- n
 - **Python** -- type hints, poetry/uv, pytest, mypy/ruff
 - **Go** -- go modules, golangci-lint, testing
 - **Java** -- JUnit 5 + Mockito + AssertJ, Maven/Gradle, Checkstyle + SpotBugs
-- **Generic** -- Language-agnostic Harness skeleton (includes AGENTS.md template)
+- **Generic** -- Language-agnostic Harness skeleton
 
 ---
 
@@ -136,7 +135,6 @@ This plugin supports cross-platform Hooks since v1.9.3:
 
 | Feature | Claude Code | Windows |
 |---------|-------------|---------|
-| AGENTS.md universal memory | Yes | Yes |
 | init.sh auto-detection | Yes | Yes (Git Bash) |
 | Skills / Commands | Yes | Yes |
 | Hooks (polyglot wrappers) | Yes | Yes (Git Bash / MSYS2) |
@@ -161,9 +159,9 @@ claude --plugin-dir /tmp/harness-test
 
 This plugin is fully self-bootstrapped (dogfooding) -- Harness Engineering conventions are used to develop the Harness Engineering Plugin itself:
 
-- `AGENTS.md` <=60 lines, the single source of truth
+- `CLAUDE.md` <=60 lines, the single source of truth
 - `docs/architecture.md` contains explicit dependency rules
-- `docs/decisions/` has complete ADR records for every key decision (incl. ADR 0005 tool-agnostic architecture)
+- `docs/decisions/` has complete ADR records for every key decision (incl. ADR 0007 Claude-Code-only architecture)
 - Hook scripts follow the "silent on success, visible on failure" principle
 - Skills use `.claude/` paths directly
 
@@ -194,8 +192,7 @@ We welcome new Skills, language templates, and Hook script improvements. See [CO
 
 ```
 harness-engineering-plugin/
-├── AGENTS.md                             <- Universal memory file (single source of truth, <=60 lines)
-├── CLAUDE.md                             <- 2-line wrapper (Claude Code)
+├── CLAUDE.md                             <- Project memory file (single source of truth, <=60 lines)
 ├── .claude-plugin/
 │   └── plugin.json                       <- Claude Code plugin manifest
 ├── skills/                               <- Unified harness: namespace
@@ -235,8 +232,8 @@ harness-engineering-plugin/
 │   └── post-observe{,.cmd,.sh}
 ├── docs/
 │   ├── architecture.md
-│   ├── decisions/                        ADR records (0001-0005)
-│   └── templates/                        Five language stack templates (incl. AGENTS.md.template)
+│   ├── decisions/                        ADR records (0001-0007)
+│   └── templates/                        Five language stack templates
 ├── references/
 │   ├── HarnessEngineering.md             Full methodology manual
 │   ├── team-parallel-development.md      Team parallel development guide

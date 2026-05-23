@@ -40,7 +40,7 @@
 
 | 要素 | 内容 | 核心来源 |
 |------|------|---------|
-| **上下文工程** | 持续充实的知识库（AGENTS.md、设计文档、架构图）及动态可观察性数据接入 | OpenAI / Anthropic |
+| **上下文工程** | 持续充实的知识库（CLAUDE.md、设计文档、架构图）及动态可观察性数据接入 | OpenAI / Anthropic |
 | **架构约束** | 通过 Linter 和结构化测试机械性强制执行依赖层级、模块边界、数据结构规范 | OpenAI Codex 团队 |
 | **验证与反馈** | CI 管道、单元测试、集成测试；每次失败都触发 Harness 改进而非手动修复 | Mitchell Hashimoto |
 | **垃圾回收** | 周期性运行清理智能体，检测文档陈旧、架构漂移、代码熵增，自动提交修复 PR | OpenAI / Martin Fowler |
@@ -109,12 +109,12 @@ OpenAI Codex 团队用五个月，三名工程师引导 Codex 智能体生成超
 
 ### 3.2 知识库架构：地图而非百科全书
 
-❌ **反模式** — 一个「巨型 AGENTS.md」：
+❌ **反模式** — 一个「巨型 CLAUDE.md」：
 - 上下文占用大，重要约束被淹没
 - 智能体局部模式匹配而非全局导航
 - 即刻陈旧，无法被机械验证
 
-✅ **正确模式** — AGENTS.md 约 100 行作为「目录」，指向 `docs/` 目录下结构化知识库：
+✅ **正确模式** — CLAUDE.md 约 60 行作为「目录」，指向 `docs/` 目录下结构化知识库：
 - `docs/architecture.md` — 架构图（领域地图）
 - `docs/design/` — 设计规格（执行计划）
 - `docs/quality.md` — 质量评分文档（各域现状）
@@ -198,13 +198,13 @@ Types  →  Config  →  Repo  →  Service  →  Runtime  →  UI
 
 ### 5.1 立刻可做（Day 1）
 
-1. **创建 AGENTS.md（或 CLAUDE.md）** — 技术栈、测试命令、禁止规则、编码约定，严格控制在 60 行以内
+1. **创建 CLAUDE.md** — 技术栈、测试命令、禁止规则、编码约定，严格控制在 60 行以内
 2. **审查 Pre-commit Hooks** — 确保 Linter、格式化器、类型检查在本地运行——为 Agent 提供即时反馈
 3. **建立「失败即改进」反射** — Agent 犯错时，第一反应是「如何让它永不再犯？」然后更新配置或添加工具
 
 ### 5.2 本周完成（Week 1）
 
-1. **建立 `docs/` 知识库结构** — 创建架构图、领域地图、ADR；将 AGENTS.md 精简为指向这些文档的目录
+1. **建立 `docs/` 知识库结构** — 创建架构图、领域地图、ADR；将 CLAUDE.md 精简为指向这些文档的目录
 2. **引入初始化+编码双 Agent 模式** — 初始化 Agent 建立 JSON 特性清单和进度文件；编码 Agent 每次启动先读取状态
 3. **测量基线** — 记录每次会话的 Token 成本，建立对比基准
 
@@ -779,7 +779,7 @@ project-root/
 │   ├── hooks/                  ← Hook 脚本
 │   └── settings.json
 ├── CLAUDE.md                   ← 精简目录（< 60 行）
-└── AGENTS.md                   ← 团队级 Agent 约定（可选）
+└── CLAUDE.md                   ← 团队级 Agent 约定（可选）
 ```
 
 ### F.2 进度文件设计与维护（claude-progress.json）
@@ -1941,13 +1941,13 @@ Guides 和 Sensors 有两种执行类型：**Computational（计算式）**—�
 
 #### Guides 与 Sensors 的对应关系表
 
-Guides 和 Sensors 的示例对应：编码规范 → 前馈，推理式（AGENTS.md、Skills）；结构测试 → 反馈，计算式（运行 ArchUnit 测试检查模块边界违规的 pre-commit Hook）。
+Guides 和 Sensors 的示例对应：编码规范 → 前馈，推理式（CLAUDE.md、Skills）；结构测试 → 反馈，计算式（运行 ArchUnit 测试检查模块边界违规的 pre-commit Hook）。
 
 | 控制对象 | 方向 | 类型 | 具体实现 |
 |---------|------|------|---------|
 | 架构依赖规则 | 前馈 | Computational Guide | CLAUDE.md 架构约定 |
 | 架构依赖验证 | 反馈 | Computational Sensor | 结构测试 + Stop Hook |
-| 编码规范 | 前馈 | Inferential Guide | AGENTS.md、Skills |
+| 编码规范 | 前馈 | Inferential Guide | CLAUDE.md、Skills |
 | 代码质量审查 | 反馈 | Inferential Sensor | /code-review Skill 或审查 Sub-agent |
 | API 使用方式 | 前馈 | Computational Guide | MCP 工具定义、CLI 说明 |
 | 类型错误 | 反馈 | Computational Sensor | Stop Hook（pnpm typecheck） |

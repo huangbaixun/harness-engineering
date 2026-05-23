@@ -44,7 +44,7 @@ Run the following comparisons (source: commands/sync-docs.md):
    - List directories that are new but undocumented, and directories that are deleted but still referenced
 
 2. **CLAUDE.md rule validity**
-   - Check each rule in CLAUDE.md / AGENTS.md one by one
+   - Check each rule in CLAUDE.md one by one
    - Flag redundant rules already covered by Hooks or Linters
    - Flag obsolete rules whose corresponding error patterns no longer exist
 

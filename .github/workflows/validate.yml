@@ -32,10 +32,10 @@ jobs:
           check_file "README.md"
           check_file "CONTRIBUTING.md"
           check_file "CHANGELOG.md"
-          check_file "skills/using-harness/SKILL.md"
-          check_file "skills/harness-init/SKILL.md"
-          check_file "skills/harness-audit/SKILL.md"
-          check_file "skills/harness-evolve/SKILL.md"
+          check_file "skills/router/SKILL.md"
+          check_file "skills/init/SKILL.md"
+          check_file "skills/audit/SKILL.md"
+          check_file "skills/evolve/SKILL.md"
           if [ $ERRORS -gt 0 ]; then
             echo ""
             echo "ERROR: $ERRORS required file(s) missing"
@@ -85,26 +85,37 @@ jobs:
       - name: Validate eval cases
         run: |
           python3 << 'EOF'
-          import json, sys
+          import json, sys, glob
 
-          with open('evals/evals.json') as f:
-              evals = json.load(f)
-
-          required = ['id', 'type', 'skill', 'prompt', 'expected_behavior']
+          # Top-level evals/evals.json is the index (dict). Per-skill evals
+          # live at skills/<name>/evals/evals.json in skill-creator format:
+          #   {"skill_name": "...", "evals": [ {id, type, eval_name, prompt, expected_output, assertions, files}, ... ]}
+          required = ['id', 'type', 'eval_name', 'prompt', 'expected_output', 'assertions']
           errors = []
-          for i, e in enumerate(evals):
-              for field in required:
-                  if field not in e:
-                      errors.append(f"eval[{i}] (id={e.get('id','?')}): missing '{field}'")
+          total = functional = pressure = 0
+
+          for path in sorted(glob.glob('skills/*/evals/evals.json')):
+              with open(path) as f:
+                  d = json.load(f)
+              if not isinstance(d, dict) or 'evals' not in d:
+                  errors.append(f"{path}: missing top-level 'evals' list")
+                  continue
+              for i, e in enumerate(d['evals']):
+                  for field in required:
+                      if field not in e:
+                          errors.append(f"{path} eval[{i}] (id={e.get('id','?')}): missing '{field}'")
+                  total += 1
+                  if e.get('type') == 'functional':
+                      functional += 1
+                  elif e.get('type') == 'pressure':
+                      pressure += 1
 
           if errors:
               for err in errors:
                   print(f"ERROR: {err}")
               sys.exit(1)
 
-          functional = sum(1 for e in evals if e['type'] == 'functional')
-          pressure = sum(1 for e in evals if e['type'] == 'pressure')
-          print(f"✓ {len(evals)} evals valid ({functional} functional, {pressure} pressure)")
+          print(f"✓ {total} evals valid across per-skill files ({functional} functional, {pressure} pressure)")
           EOF
 
       - name: Check shell scripts are executable-ready
