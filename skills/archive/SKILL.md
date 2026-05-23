@@ -8,7 +8,7 @@
 
 | Trigger Condition | Example |
 |---------|------|
-| Feature marked as completed | After harness:verify passes |
+| Feature marked as completed | After harness:verification-before-completion passes |
 | Manual invocation via `/harness:archive` | End-of-sprint cleanup |
 | completed_features >= 10 | session-start prompts archiving |
 | Major refactor completed | Sync documentation after architecture changes |
@@ -85,7 +85,7 @@ Output format:
 ## Relationship with Other Components
 
 ```
-harness:verify (verification passed)
+harness:verification-before-completion (verification passed)
     |
     v
 harness:archive (this Skill — archiving + documentation sync)
