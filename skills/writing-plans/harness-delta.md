@@ -19,7 +19,7 @@ Do NOT change `status` here. Status transitions are owned by other skills (see �
 If, during planning, a new architectural decision surfaces (vendor-vs-build, naming conventions, schema changes, etc.), pause planning and produce an ADR draft in `docs/decisions/NNNN-<slug>.md`. The plan then references the ADR.
 
 ### docs / spec linkage
-Plan output: `docs/plans/YYYY-MM-DD-<topic>-plan.md`. The plan front-matter (or first paragraph) must reference the source spec under `docs/specs/`.
+**Override of upstream default.** Plan output goes to `docs/plans/YYYY-MM-DD-<topic>-plan.md` (the harness convention), not `docs/superpowers/plans/` (the upstream default in SKILL.md). This is intentional per the integration spec §8 — `docs/plans/` is the canonical location in this plugin. The plan front-matter (or first paragraph) must reference the source spec under `docs/specs/`.
 
 ### 100% rigid coverage gate
 At the end of plan authoring, verify every entry in `acceptance_criteria` has at least one corresponding task. List any orphan criteria and either add tasks or push back to brainstorming.
@@ -32,5 +32,5 @@ At the end of plan authoring, verify every entry in `acceptance_criteria` has at
 None directly. Downstream `harness:executing-plans` and `harness:verification-before-completion` carry the Stop Hook integrations.
 
 ## Verification (covered by evals)
-- with-skill: when features.json has an in-progress feature, the plan output references that feature's `acceptance_criteria` line-for-line.
+- with-skill: when features.json has an in-progress feature, the plan output references each entry in that feature's `acceptance_criteria` (verbatim or paraphrased per eval #1 assertion).
 - baseline: without the skill, plan output may diverge from `acceptance_criteria` or invent unrelated tasks.
