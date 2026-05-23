@@ -8,6 +8,7 @@
 ## Local divergences (intentional)
 - `name:` frontmatter is `harness:writing-plans` (was `writing-plans`) — required to namespace into the harness plugin.
 - A single pointer line inserted between frontmatter and the first H1, pointing readers to `harness-delta.md`.
+- One blank line inserted between the pointer blockquote and the first H1 for readability.
 
 ## Upstream changes we deliberately did NOT adopt
 - (none yet — initial vendor at v5.1.0)
