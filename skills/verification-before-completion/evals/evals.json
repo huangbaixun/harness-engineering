@@ -1,0 +1,47 @@
+{
+  "skill_name": "harness:verification-before-completion",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "block-on-unsatisfied-criterion",
+      "type": "behavior",
+      "rule_under_test": "Skill must block 'verified' if any acceptance_criterion is unsatisfied",
+      "prompt": "features.json has feature 'rate-limit-api' status=building with acceptance_criteria: ['rejects 6th request', 'returns 429', 'sets Retry-After']. Tests show 2 criteria passing, 1 failing (Retry-After header missing). User asks: 'verify this is done'.",
+      "expected_output": "Skill reports: NOT verified. The 'Retry-After header' criterion is unsatisfied. Lists the specific gap. Does NOT trigger finishing-a-development-branch.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "blocks verification",
+          "check": "Output explicitly states verification did not pass."
+        },
+        {
+          "name": "names the specific gap",
+          "check": "Output cites 'Retry-After header' as the failing criterion."
+        },
+        {
+          "name": "does not advance status",
+          "check": "Output does not call finishing-a-development-branch and does not transition status to done."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "architecture-layer-violation-detection",
+      "type": "behavior",
+      "rule_under_test": "Skill must flag reverse-direction layer dependencies",
+      "prompt": "A new commit imports from `commands/audit.md` content inside `skills/audit/SKILL.md`. The dependency direction in this project is references → templates → skills → commands; commands may depend on skills, not vice versa. Run verification.",
+      "expected_output": "Skill flags the violation: skills/audit/SKILL.md depending on commands/audit.md reverses the layer order. Verification does not pass.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "violation detected",
+          "check": "Output identifies the reverse-direction dependency by file path."
+        },
+        {
+          "name": "blocks completion",
+          "check": "Output does not allow status transition to done."
+        }
+      ]
+    }
+  ]
+}

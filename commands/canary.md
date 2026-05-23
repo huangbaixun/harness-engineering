@@ -24,7 +24,7 @@ description: Generate a canary deployment runbook with risk assessment, staged r
 
 ## When to Use
 
-- After harness:verify passes and before deploying to production
+- After harness:verification-before-completion passes and before deploying to production
 - When preparing a release that includes database migrations
 - When deploying changes to auth, payments, or core data paths
 - When rolling out to a new environment or region

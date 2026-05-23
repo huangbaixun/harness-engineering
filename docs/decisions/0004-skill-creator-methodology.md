@@ -36,7 +36,7 @@ Skill 是本 plugin 最核心的交付物，但 Skill 质量难以客观衡量�
 - skill-creator 是 Anthropic 官方元技能，与 Claude Code 深度集成，维护成本由 Anthropic 承担
 - 提供 with-skill vs baseline 的客观对比，每个 assertion 有明确通过/失败判断
 - eval-viewer 让人工审阅从「读文字」变成「看实际输出对比」
-- 描述优化器（`run_loop.py`）可以客观测量 Skill 触发准确率，解决 `harness:router` 的 1% 规则效果问题
+- 描述优化器（`run_loop.py`）可以客观测量 Skill 触发准确率，解决 `harness:using-harness` 的 1% 规则效果问题
 - 与现有 `evals/evals.json` 格式高度兼容，只需补充 `assertions[]` 字段
 
 ---

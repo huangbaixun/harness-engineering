@@ -46,13 +46,13 @@
 
 ## 三、本项目（harness-engineering v1.10.0）可借鉴建议
 
-当前已经 fork 了 superpowers 并建立了 `harness:init / plan / tdd / verify / audit` 命名空间、features.json、三智能体 GAN 架构、PreToolUse/Stop Hook 体系。下面按借鉴来源 → 对接阶段 → 要解决的问题组织。
+当前已经 fork 了 superpowers 并建立了 `harness:init / writing-plans / test-driven-development / verification-before-completion / audit` 命名空间、features.json、三智能体 GAN 架构、PreToolUse/Stop Hook 体系。下面按借鉴来源 → 对接阶段 → 要解决的问题组织。
 
-### 1. 借 OpenSpec 的"活规格归档" → 增强 `harness:plan` + 新增 `harness:archive`
+### 1. 借 OpenSpec 的"活规格归档" → 增强 `harness:writing-plans` + 新增 `harness:archive`
 
-在 `harness:plan` 生成 features.json 的同时，额外产出目录 `.harness/changes/<feature>/{proposal.md, design.md, tasks.md}`；完工后 `harness:archive` 把整个目录移入 `.harness/archive/YYYY-MM-DD-<feature>/`。解决：当前 features.json 完成后即终结，设计决策和"为什么这样做"散落在 git commit 里难以检索；归档机制给未来审计和人员交接提供单一事实源，对应 HarnessEngineering.md 中"防止文档陈旧和架构漂移"的垃圾回收原则。
+在 `harness:writing-plans` 生成 features.json 的同时，额外产出目录 `.harness/changes/<feature>/{proposal.md, design.md, tasks.md}`；完工后 `harness:archive` 把整个目录移入 `.harness/archive/YYYY-MM-DD-<feature>/`。解决：当前 features.json 完成后即终结，设计决策和"为什么这样做"散落在 git commit 里难以检索；归档机制给未来审计和人员交接提供单一事实源，对应 HarnessEngineering.md 中"防止文档陈旧和架构漂移"的垃圾回收原则。
 
-### 2. 借 GSD 的"Wave 并行 + Fresh Context" → 增强 `harness:tdd`
+### 2. 借 GSD 的"Wave 并行 + Fresh Context" → 增强 `harness:test-driven-development`
 
 把 features.json 里互相独立的 feature 分析依赖图，独立的 feature 分派到独立 subagent（每个 200K fresh context）并行跑 Red-Green-Refactor，依赖的串行。为每个 feature 落盘 `{N}-SUMMARY.md` + `{N}-VERIFICATION.md`。解决：长周期项目中主线程 context 膨胀导致后期质量退化——这是当前 three-engineers-5-months-1M-LOC 这类 OpenAI Codex 式规模最大的风险。Hashimoto 的"永不再犯"+ GSD 的"永不污染 context"是 Harness Engineering 的两条互补底线。
 
@@ -64,13 +64,13 @@
 
 吸收 `/careful`（破坏性命令前确认 rm -rf、DROP TABLE、force-push）、`/freeze`（调试期限制编辑到单一目录）、`/guard`（两者合并）作为三级 Hook 开关。解决：当前 PreToolUse 只阻止写 .env，对"agent 在 debug 过程中漫游到无关目录改坏东西"缺乏防护——这是 HN 讨论中 Harness Engineering 最常被提到的事故场景。
 
-### 5. 借 gstack 的"真浏览器 QA" → 新增 `harness:e2e` 或作为 `harness:verify` 的子命令
+### 5. 借 gstack 的"真浏览器 QA" → 新增 `harness:e2e` 或作为 `harness:verification-before-completion` 的子命令
 
 对 Web 项目引入 Chromium 自动化（Playwright 或 CDP）作为四层完成度检查的第五层：Lint → 单测 → 集成测 → 评审 → 真浏览器。解决：Evaluator agent 目前在代码和测试层面判断完成度，但用户侧体验（首屏 LCP、交互报错、可访问性）看不见，相当于只验证了"代码对"但没验证"产品对"。
 
 ### 6. 借 gstack 的 `/canary` + `/benchmark` → 新增 `harness:canary`
 
-发版后 N 分钟内监测 console 错误、性能回归、核心 Web Vitals，和 baseline 对比，超阈值触发 rollback 或 issue。解决：Harness Engineering 当前覆盖到 `harness:verify` 为止，发布后的"第一线证据"没闭环，等于反馈循环缺了最后一段。
+发版后 N 分钟内监测 console 错误、性能回归、核心 Web Vitals，和 baseline 对比，超阈值触发 rollback 或 issue。解决：Harness Engineering 当前覆盖到 `harness:verification-before-completion` 为止，发布后的"第一线证据"没闭环，等于反馈循环缺了最后一段。
 
 ### 7. 借 gstack 的 `/codex`（交叉模型评审） → 增强 `harness:audit`
 
@@ -82,7 +82,7 @@
 
 ### 9. 借 Superpowers 的 `dispatching-parallel-agents` skill → 独立抽离到 `.harness/skills/dispatch`
 
-当前 features.json 的并行是隐式的，显式化成一个可复用 skill，让其他 harness:* 命令（比如 audit、archive）也能并行化。解决：并行能力目前和 tdd 流程耦合，迁移到其他阶段需要重新造轮子。
+当前 features.json 的并行是隐式的，显式化成一个可复用 skill，让其他 harness:* 命令（比如 audit、archive）也能并行化。解决：并行能力目前和 test-driven-development 流程耦合，迁移到其他阶段需要重新造轮子。
 
 ### 10. 借 GSD 的 STATE.md → 增强你现有的 claude-progress.json
 

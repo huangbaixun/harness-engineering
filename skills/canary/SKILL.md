@@ -9,7 +9,7 @@ Under any of the following circumstances, execute this workflow **before deployi
 
 | Circumstance | Example |
 |------|------|
-| Feature passed harness:verify, ready to ship | "Let's deploy this to production" |
+| Feature passed harness:verification-before-completion, ready to ship | "Let's deploy this to production" |
 | Preparing a release with database migrations | "We have schema changes, need a deploy plan" |
 | Deploying to a new environment or region | "Rolling out to EU region" |
 | Any change touching auth, payments, or core data paths | "The auth rewrite is ready to go live" |
@@ -92,7 +92,7 @@ Output the runbook to `deploy/runbook-<feature-or-release-name>.md` using the fo
 ## 1. Pre-Deploy Checklist
 
 - [ ] All CI checks passing on the deployment branch
-- [ ] harness:verify completed (4-layer check passed)
+- [ ] harness:verification-before-completion completed (4-layer check passed)
 - [ ] Environment variables confirmed for target environment
   - [ ] [List any new env vars introduced in this change]
 - [ ] Database migration reviewed and tested against staging data
@@ -262,8 +262,8 @@ Do not initiate any deployment. The runbook is a planning artifact, not an execu
 
 | Upstream | This Skill | Downstream |
 |----------|-----------|------------|
-| harness:verify (code quality confirmed) | **harness:canary** (deploy plan) | Manual deployment execution |
-| harness:plan (rigid constraints) | Risk assessment uses rigid constraints | harness:archive (post-deploy cleanup) |
+| harness:verification-before-completion (code quality confirmed) | **harness:canary** (deploy plan) | Manual deployment execution |
+| harness:writing-plans (rigid constraints) | Risk assessment uses rigid constraints | harness:archive (post-deploy cleanup) |
 
 ## Runbook Quality Checklist
 

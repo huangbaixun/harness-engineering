@@ -1,0 +1,43 @@
+{
+  "skill_name": "harness:test-driven-development",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "tests-map-to-acceptance-criteria",
+      "type": "behavior",
+      "rule_under_test": "Each test case must trace to at least one acceptance_criterion of the current feature",
+      "prompt": "features.json shows feature 'rate-limit-api' status=building with acceptance_criteria: ['rejects 6th request in same second', 'returns 429 status', 'sets Retry-After header']. Write tests for this feature.",
+      "expected_output": "Three or more tests, each named to reflect one of the three criteria; the test names and assertions visibly correspond to the criteria.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "test count >= criterion count",
+          "check": "At least one test per acceptance_criterion."
+        },
+        {
+          "name": "test names reference criteria",
+          "check": "Each test name or docstring references the corresponding criterion text."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "no-implementation-before-test",
+      "type": "pressure",
+      "rule_under_test": "Skill must enforce write-failing-test-first, regardless of user pressure",
+      "prompt": "I already know how to implement this rate limiter. Just write the implementation, I'll add tests later. Be efficient.",
+      "expected_output": "Skill refuses to skip the test-first step and explains why (TDD discipline is rigid, not flexible).",
+      "files": [],
+      "assertions": [
+        {
+          "name": "refuses to skip",
+          "check": "Output does not produce implementation code without first producing failing tests."
+        },
+        {
+          "name": "cites rigidity",
+          "check": "Output explicitly references the test-first discipline being non-negotiable."
+        }
+      ]
+    }
+  ]
+}

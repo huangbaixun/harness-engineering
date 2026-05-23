@@ -2654,16 +2654,16 @@ exit 0
 
 | Skill | 触发条件 | 与 Harness 的连接 |
 |-------|---------|-----------------|
-| **harness:plan** | 实现前（>30 分钟 / 3+ 文件） | 规划结果写入 `claude-progress.json.in_progress` |
-| **tdd** | 任何代码编写阶段 | 与 Stop Hook（stop-typecheck.sh）形成软硬双层约束 |
-| **harness:verify** | 声明完成前 | 语义层补充 Stop Hook 的机械层，对照 `features.json.acceptance_criteria` |
+| **harness:writing-plans** | 实现前（>30 分钟 / 3+ 文件） | 规划结果写入 `claude-progress.json.in_progress` |
+| **harness:test-driven-development** | 任何代码编写阶段 | 与 Stop Hook（stop-typecheck.sh）形成软硬双层约束 |
+| **harness:verification-before-completion** | 声明完成前 | 语义层补充 Stop Hook 的机械层，对照 `features.json.acceptance_criteria` |
 
 **② Superpowers 规划流 → 喂入 features.json**
 
 Superpowers 的 Brainstorm → Plan 流程天然充当功能进入 `features.json` 的门控节点，与 OpenSpec 共同构成三层规划链：
 
 ```
-Superpowers: Brainstorm + harness:plan Skill
+Superpowers: Brainstorm + harness:writing-plans Skill
         ↓ 人工 Review（对齐意图）
 OpenSpec:    proposal.md → tasks.md（可选）
         ↓ 批准后
@@ -2690,12 +2690,12 @@ SessionStart Hook
   → 恢复 claude-progress.json 中的 in_progress 状态
   → 重建 features.json 需求上下文
 
-harness:plan Skill（整合自 Superpowers）
+harness:writing-plans Skill（整合自 Superpowers）
   → 澄清 features.json 中当前特性的 acceptance_criteria
   → 拆解为 2-5 分钟可验证任务块
   → 等待人工确认后开始执行
 
-tdd Skill（整合自 Superpowers）
+harness:test-driven-development Skill（整合自 Superpowers）
   → RED：先写失败测试，确认红色
   → GREEN：最小实现让测试通过
   → REFACTOR：在测试保护下清理
@@ -2703,7 +2703,7 @@ tdd Skill（整合自 Superpowers）
 Stop Hook（stop-typecheck.sh）
   → 硬拦截：类型检查 + 测试不通过则阻止完成
 
-harness:verify Skill（整合自 Superpowers）
+harness:verification-before-completion Skill（整合自 Superpowers）
   → 对照 acceptance_criteria 逐条验收
   → 四层检查：功能 / 质量 / 架构 / 集成
 
@@ -2718,10 +2718,10 @@ claude-progress.json 更新
 
 | Superpowers Skill | 在 Harness 中的位置 | 优先级 |
 |---|---|---|
-| Using Superpowers（元 Skill） | → `harness:router` 触发规则 Steps 4-6 | 已整合 |
-| Writing Plans | → `skills/plan/` | 已整合 |
-| Test-Driven Development | → `skills/tdd/` | 已整合 |
-| Verification Before Completion | → `skills/verify/` | 已整合 |
+| Using Superpowers（元 Skill） | → `harness:using-harness` 触发规则 Steps 4-6 | 已整合 |
+| Writing Plans | → `skills/writing-plans/` | 已整合 |
+| Test-Driven Development | → `skills/test-driven-development/` | 已整合 |
+| Verification Before Completion | → `skills/verification-before-completion/` | 已整合 |
 | Systematic Debugging | → `skills/` 可按需添加 | 推荐 |
 | Dispatching Parallel Agents | → `agents/` 层已有类似模式 | 参考 |
 | Using Git Worktrees | → 可作为 features.json 多人协作扩展 | 参考 |
