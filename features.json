@@ -56,7 +56,7 @@
       "id": "F003",
       "name": "superpowers-docs-refresh",
       "priority": 3,
-      "status": "proposed",
+      "status": "building",
       "spec": "docs/specs/2026-05-23-superpowers-integration-design.md",
       "description": "Phase 3 + 4: update architecture.md, READMEs, CLAUDE.md (≤60 lines), rewrite commands/review-pr.md as wrapper, bump version to 2.0.0, write CHANGELOG, then run verification (grep gate, evals, init-template, audit).",
       "acceptance_criteria": [
@@ -68,7 +68,7 @@
       ],
       "out_of_scope": [],
       "dependencies": ["F001", "F002"],
-      "technical_notes": "Plan: docs/plans/<TBD>-phase-3-and-4-docs-and-verify.md (authored after F002 completes)",
+      "technical_notes": "Plan: docs/plans/2026-05-23-phase-3-and-4-docs-and-verify.md",
       "related_files": []
     }
   ],
