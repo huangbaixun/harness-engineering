@@ -1,4 +1,5 @@
 {
+  "schema_version": "2.0",
   "version": "1.0",
   "product": "{{PROJECT_NAME}}",
   "last_updated": "{{TIMESTAMP}}",
@@ -9,7 +10,8 @@
       "id": "F001",
       "name": "{{FEATURE_NAME}}",
       "priority": 1,
-      "status": "pending",
+      "status": "proposed",
+      "spec": "",
       "description": "{{FEATURE_DESCRIPTION}}",
       "acceptance_criteria": [
         "{{CRITERION_1}}",
@@ -25,6 +27,7 @@
   "constraints": {
     "implementation_order": "严格按 priority 顺序，有 dependency 的特性必须等依赖完成",
     "code_state_rule": "每个特性完成后代码必须可合并（测试全通过、无 TODO、有基本注释）",
-    "scope_rule": "out_of_scope 的内容不实现，即使很简单。需求变更必须先更新本文件"
+    "scope_rule": "out_of_scope 的内容不实现，即使很简单。需求变更必须先更新本文件",
+    "status_lifecycle": "proposed → building → done。proposed = 已 brainstorm 但未 plan；building = plan 已批准、execute/verify 进行中；done = archive 完成"
   }
 }
