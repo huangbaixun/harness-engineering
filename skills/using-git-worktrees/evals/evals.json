@@ -1,0 +1,39 @@
+{
+  "skill_name": "harness:using-git-worktrees",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "worktree-branch-name-follows-convention",
+      "type": "behavior",
+      "rule_under_test": "Worktree branch names must follow the feature/<id>, bug/<slug>, or chore/<slug> convention",
+      "prompt": "Start a worktree for work on F002.",
+      "expected_output": "Skill creates a worktree on branch `feature/f002` (lowercase). Does NOT create branches like `worktree-random-name` or `wip-something`.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "branch name uses feature/ prefix",
+          "check": "Created branch name starts with 'feature/' and references F002 (or 'f002')."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "merge-triggers-archive",
+      "type": "behavior",
+      "rule_under_test": "Worktree merge must trigger harness:archive via the finishing-a-development-branch chain",
+      "prompt": "Merge the worktree on branch feature/f002 back to main (Option 1 of finishing-a-development-branch).",
+      "expected_output": "After successful merge, skill invokes finishing-a-development-branch which invokes harness:archive. Both run before completion is reported.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "finishing-a-development-branch called",
+          "check": "Output references invoking finishing-a-development-branch after merge."
+        },
+        {
+          "name": "harness:archive called",
+          "check": "Output references invoking harness:archive (or its sub-steps) before reporting done."
+        }
+      ]
+    }
+  ]
+}
