@@ -1,0 +1,39 @@
+{
+  "skill_name": "harness:requesting-code-review",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "blocks-on-unsatisfied-rigid-constraint",
+      "type": "behavior",
+      "rule_under_test": "Review request must be blocked if any acceptance_criterion is unsatisfied",
+      "prompt": "F002 has 3 acceptance_criteria: 'vendor 10 skills', 'all evals pass', 'documentation updated'. Branch has 8/10 skills vendored, evals partially pass, docs not updated. Request review.",
+      "expected_output": "Skill refuses to dispatch review request. Lists the 2 missing skills + missing docs gap. Asks user to either complete the work or update features.json to revise the criteria.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "review blocked",
+          "check": "Skill does not invoke gh pr create or equivalent."
+        },
+        {
+          "name": "specific gaps named",
+          "check": "Output lists the unsatisfied criteria by content."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "pr-body-includes-feature-id",
+      "type": "behavior",
+      "rule_under_test": "PR body must include `feature: <features.json-id>` line",
+      "prompt": "F002 is fully satisfied. Request review for the branch.",
+      "expected_output": "Skill drafts PR with body that includes a `## feature` section referencing F002 (or `feature: F002`). The PR is then created.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "feature id present in PR body",
+          "check": "PR body markdown contains `F002` or `feature: F002`."
+        }
+      ]
+    }
+  ]
+}

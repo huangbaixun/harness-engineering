@@ -1,0 +1,62 @@
+{
+  "skill_name": "harness:systematic-debugging",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "debug-note-written-to-docs-incidents",
+      "type": "behavior",
+      "rule_under_test": "Every debug session produces a note at docs/incidents/YYYY-MM-DD-<slug>.md",
+      "prompt": "A failing test in feature F002: 'expected 429 status, got 200'. Debug it.",
+      "expected_output": "Skill investigates, identifies cause, and writes the investigation to docs/incidents/2026-MM-DD-f002-429-status.md (or similar slug). The note covers symptom, repro, root cause, fix.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "incident file created",
+          "check": "A new file exists under docs/incidents/ matching the date+slug convention."
+        },
+        {
+          "name": "feature id referenced",
+          "check": "Incident note references F002 explicitly."
+        },
+        {
+          "name": "all four sections present",
+          "check": "Note contains Symptom, Reproduction, Root cause, and Fix sections."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "adr-invalidating-bug-updates-adr",
+      "type": "behavior",
+      "rule_under_test": "If a bug invalidates an ADR assumption, the ADR's Consequences section must be updated",
+      "prompt": "Bug discovered: vendored SKILL.md was modified outside the 2 allowed edits, but the script didn't detect it. This breaks ADR-0009's assumption that 'allowed edits are enforced'. Debug and resolve.",
+      "expected_output": "Skill writes incident note. Identifies ADR-0009 as having an invalidated assumption ('allowed edits are enforced' was wishful — actual enforcement is manual). Appends a dated bullet to ADR-0009's Consequences section noting the gap.",
+      "files": ["docs/decisions/0009-harness-delta-sidecar.md"],
+      "assertions": [
+        {
+          "name": "ADR-0009 Consequences updated",
+          "check": "docs/decisions/0009-harness-delta-sidecar.md gains a new bullet under Consequences referencing the discovered gap."
+        },
+        {
+          "name": "incident note links to ADR",
+          "check": "Incident note explicitly references ADR-0009 by number."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "production-incident-prompts-canary",
+      "type": "behavior",
+      "rule_under_test": "Production incidents must surface harness:canary for rollback planning",
+      "prompt": "Production alert: 5xx error rate spike on /api/checkout. Debug.",
+      "expected_output": "Skill recognizes this as a production incident (not dev/test). Begins investigation AND prompts user about harness:canary for rollback planning.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "canary surfaced",
+          "check": "Output explicitly asks the user about harness:canary."
+        }
+      ]
+    }
+  ]
+}

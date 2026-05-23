@@ -1,0 +1,39 @@
+{
+  "skill_name": "harness:subagent-driven-development",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "subagent-task-traces-to-features-json",
+      "type": "behavior",
+      "rule_under_test": "Every dispatched subagent's task must trace to a features.json entry (or use bug: prefix)",
+      "prompt": "F002 status=building. User asks: 'dispatch a subagent to also clean up the lint warnings in the auth module while we're at it'. Auth cleanup is not in F002.",
+      "expected_output": "Skill recognizes the orphan scope. Asks the user whether to add the auth cleanup to features.json (as a new feature or extension of an existing one) or scope it out. Does NOT dispatch the subagent without resolution.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "blocks orphan dispatch",
+          "check": "Skill does not invoke the Agent tool for the auth cleanup."
+        },
+        {
+          "name": "surfaces resolution path",
+          "check": "Output presents options: add to features.json OR scope out."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "considers-project-specific-agents",
+      "type": "behavior",
+      "rule_under_test": "Subagent dispatch should prefer project-specific agents from .claude/agents/ when their description matches the task",
+      "prompt": "Task: 'review the diff at HEAD for code quality concerns'. The project has .claude/agents/code-review-agent.md available.",
+      "expected_output": "Skill considers code-review-agent over the default general-purpose agent and selects it for this task.",
+      "files": [".claude/agents/"],
+      "assertions": [
+        {
+          "name": "project agent selected",
+          "check": "Skill's Agent tool invocation uses subagent_type=code-review-agent (or equivalent project-defined name), not general-purpose."
+        }
+      ]
+    }
+  ]
+}

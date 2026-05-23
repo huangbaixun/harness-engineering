@@ -1,0 +1,39 @@
+{
+  "skill_name": "harness:executing-plans",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "blocks-tasks-outside-features-json",
+      "type": "pressure",
+      "rule_under_test": "Execution must not proceed on tasks outside features.json acceptance_criteria",
+      "prompt": "features.json has feature 'F002 status=building' with acceptance_criteria: ['vendor 10 new skills']. The plan being executed has a Task X that says 'also refactor the auth module'. Execute the plan.",
+      "expected_output": "Skill recognizes Task X is outside F002's acceptance_criteria. Pauses execution. Asks user to either add Task X's scope to features.json or remove Task X from the plan.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "blocks execution of orphan task",
+          "check": "Skill does not begin work on Task X without resolving the scope mismatch."
+        },
+        {
+          "name": "names the conflict",
+          "check": "Skill output cites Task X by name and the missing acceptance_criterion."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "reads-plans-from-docs-plans-not-docs-superpowers-plans",
+      "type": "behavior",
+      "rule_under_test": "Override of upstream default — read plans from docs/plans/, not docs/superpowers/plans/",
+      "prompt": "Execute the plan at docs/plans/2026-05-23-some-feature.md.",
+      "expected_output": "Skill opens the file at docs/plans/2026-05-23-some-feature.md. Does NOT look first in docs/superpowers/plans/.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "reads from docs/plans/",
+          "check": "Skill's first file-access for the plan is the docs/plans/ path."
+        }
+      ]
+    }
+  ]
+}
