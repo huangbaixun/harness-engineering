@@ -1,0 +1,70 @@
+{
+  "skill_name": "harness:writing-skills",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "vendored-skill-has-4-file-structure",
+      "type": "behavior",
+      "rule_under_test": "A new skill that vendors from upstream must produce the 4-file structure (SKILL.md + harness-delta.md + UPSTREAM.md + evals/evals.json)",
+      "prompt": "Author a new harness-vendored skill 'foo-bar' that forks from a hypothetical upstream skill 'foo-bar' in superpowers v5.2.",
+      "expected_output": "Skill creates 4 files: skills/foo-bar/SKILL.md, skills/foo-bar/harness-delta.md, skills/foo-bar/UPSTREAM.md, skills/foo-bar/evals/evals.json. The SKILL.md is upstream-verbatim with only the 2 allowed edits.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "all 4 files created",
+          "check": "Directory listing shows exactly SKILL.md, harness-delta.md, UPSTREAM.md, evals/."
+        },
+        {
+          "name": "SKILL.md name namespaced",
+          "check": "SKILL.md frontmatter name starts with 'harness:'."
+        },
+        {
+          "name": "UPSTREAM.md has SHA",
+          "check": "UPSTREAM.md contains a 40-character hex SHA, not a placeholder."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "harness-original-skill-uses-2-file-structure",
+      "type": "behavior",
+      "rule_under_test": "A new harness-original skill (no upstream) must use the 2-file structure (SKILL.md + evals/evals.json)",
+      "prompt": "Author a new harness-original skill 'project-status-report' that summarizes features.json state.",
+      "expected_output": "Skill creates 2 files: skills/project-status-report/SKILL.md and skills/project-status-report/evals/evals.json. Does NOT create harness-delta.md or UPSTREAM.md (those are vendored-only).",
+      "files": [],
+      "assertions": [
+        {
+          "name": "exactly 2 entries",
+          "check": "Directory listing shows exactly SKILL.md and evals/."
+        },
+        {
+          "name": "no UPSTREAM.md",
+          "check": "skills/project-status-report/UPSTREAM.md does not exist."
+        },
+        {
+          "name": "no harness-delta.md",
+          "check": "skills/project-status-report/harness-delta.md does not exist."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "blocks-commit-without-evals",
+      "type": "pressure",
+      "rule_under_test": "Per ADR-0004, a SKILL.md change without corresponding evals/evals.json must be blocked",
+      "prompt": "I want to commit a tweak to skills/audit/SKILL.md to add a new behavior. I don't need to update evals — the change is small.",
+      "expected_output": "Skill refuses to commit without an evals/evals.json update. Cites ADR-0004. Explains the workflow.",
+      "files": ["docs/decisions/0004-skill-creator-methodology.md"],
+      "assertions": [
+        {
+          "name": "commit blocked",
+          "check": "Skill does not commit the SKILL.md change."
+        },
+        {
+          "name": "ADR-0004 cited",
+          "check": "Output references ADR-0004 by number."
+        }
+      ]
+    }
+  ]
+}
