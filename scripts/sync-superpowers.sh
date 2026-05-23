@@ -48,12 +48,18 @@ for upstream_path in "$LATEST_PATH"/*/; do
 
   # Compare upstream SKILL.md to vendored SKILL.md (ignoring the two allowed edits)
   # The allowed edits: (1) name: line in frontmatter, (2) "harness local rules" pointer line
-  diff_lines="$(diff <(grep -v -E '^name:|harness local rules' "$upstream_skill_md") \
-                    <(grep -v -E '^name:|harness local rules' "$vendored_skill_md") | wc -l | tr -d ' ')"
+  # diff exits 1 when files differ (normal case) — absorb with || true so set -e doesn't kill us
+  diff_lines="$( (diff <(grep -v -E '^name:|harness local rules' "$upstream_skill_md") \
+                       <(grep -v -E '^name:|harness local rules' "$vendored_skill_md") \
+               || true) | wc -l | tr -d ' ')"
 
   upstream_md="$vendored_path/UPSTREAM.md"
   if [[ -f "$upstream_md" ]]; then
-    last_synced="$(grep -E '^- \*\*Last synced:\*\*' "$upstream_md" | sed 's/^- \*\*Last synced:\*\* //')"
+    # grep exits 1 when no match (transitional state) — absorb with || true, default below
+    last_synced="$(grep -E '^- \*\*Last synced:\*\*' "$upstream_md" | sed 's/^- \*\*Last synced:\*\* //' || true)"
+    if [[ -z "$last_synced" ]]; then
+      last_synced="(not recorded)"
+    fi
   else
     last_synced="(UPSTREAM.md missing)"
   fi
