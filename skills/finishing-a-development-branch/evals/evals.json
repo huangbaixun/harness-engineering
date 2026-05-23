@@ -1,0 +1,62 @@
+{
+  "skill_name": "harness:finishing-a-development-branch",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "transitions-feature-to-done",
+      "type": "behavior",
+      "rule_under_test": "Upon successful merge, the corresponding features.json entry must transition to status=done",
+      "prompt": "Feature F002 has status=building and the work is fully merged into main. Complete the finishing workflow.",
+      "expected_output": "Skill updates F002 status from building to done in features.json. Mirrors the outcome to claude-progress.json. Reports completion to user.",
+      "files": ["features.json", "claude-progress.json"],
+      "assertions": [
+        {
+          "name": "features.json status updated",
+          "check": "F002 status field equals 'done' after the skill completes."
+        },
+        {
+          "name": "claude-progress.json synced",
+          "check": "claude-progress.json reflects F002 done state."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "calls-harness-archive",
+      "type": "behavior",
+      "rule_under_test": "harness:archive must be invoked before reporting completion",
+      "prompt": "Complete a feature whose work is merged.",
+      "expected_output": "Skill invokes harness:archive (or its component sub-steps) for doc-sync, architecture scan, structured archive report. Only after archive completes does this skill report 'done' to the user.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "archive invoked",
+          "check": "Output references harness:archive (or its sub-steps: scan-arch, sync-docs) being run before completion."
+        },
+        {
+          "name": "completion gated on archive",
+          "check": "If archive surfaces inconsistencies, skill does not report completion."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "prompts-canary-on-deploy-touch",
+      "type": "behavior",
+      "rule_under_test": "If the merged work touches deployment surfaces, prompt the user about harness:canary",
+      "prompt": "Feature touches k8s/deployment.yaml and CI workflow files. Complete the finishing workflow.",
+      "expected_output": "Skill prompts the user: 'this work touches deployment configs. Run harness:canary for pre-deploy planning?' Does not auto-invoke canary; just surfaces the recommendation.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "canary prompt surfaced",
+          "check": "Output explicitly asks the user about harness:canary."
+        },
+        {
+          "name": "canary not auto-invoked",
+          "check": "Skill does not invoke canary without user confirmation."
+        }
+      ]
+    }
+  ]
+}
