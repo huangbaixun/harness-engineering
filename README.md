@@ -1,6 +1,6 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v1.10.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.0.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 
@@ -86,6 +86,16 @@ After installation, these Skills trigger automatically based on your intent -- n
 | **harness:archive** | Feature completed, ready to archive | Archives specs to `docs/archive/`, checks doc-code consistency, runs architecture health scan |
 | **harness:test-driven-development** | Any code writing (bound to 1% rule) | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
 | **harness:verification-before-completion** | Before declaring a task complete | 4-layer check (Functional / Quality / Architecture / Integration) |
+| **harness:brainstorming** | New feature / design task | Turns ideas into specs at `docs/specs/`, gates handoff to writing-plans by features.json/ADR linkage |
+| **harness:executing-plans** | Plan ready to run | Executes a plan from `docs/plans/` task-by-task, blocks on out-of-scope work |
+| **harness:subagent-driven-development** | Plan has independent tasks | Dispatches fresh subagent per task with two-stage review |
+| **harness:dispatching-parallel-agents** | 2+ independent parallel tasks | Parallel dispatch respecting layer dependencies + features.json grounding |
+| **harness:using-git-worktrees** | Need isolated workspace | Sets up worktree with `feature/<features.json-id>` naming convention |
+| **harness:systematic-debugging** | Bug / unexpected behavior | Writes notes to `docs/incidents/`, checks ADR invalidation, prompts canary for prod incidents |
+| **harness:receiving-code-review** | Got review feedback | Reconciles rigid-constraint feedback with features.json; arch feedback → ADR |
+| **harness:requesting-code-review** | Ready to request review | Pre-review checklist gate (rigid constraints satisfied); PR body includes `feature: <id>` |
+| **harness:finishing-a-development-branch** | Implementation complete | Owns `building → done` transition; mandatory `harness:archive` call; canary prompt for deploy-touching changes |
+| **harness:writing-skills** | Authoring/editing skills | Enforces ADR-0004 (evals) + ADR-0009 (4-file vs 2-file structure) |
 
 ---
 
