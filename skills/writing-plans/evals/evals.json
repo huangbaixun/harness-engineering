@@ -1,0 +1,66 @@
+{
+  "skill_name": "harness:writing-plans",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "features-json-rigid-coverage",
+      "type": "behavior",
+      "rule_under_test": "Plan output must reference every acceptance_criterion of the in-progress feature",
+      "prompt": "Read features.json. The feature 'add-pagination' is status=proposed with acceptance_criteria: ['paginate API at 50 per page', 'preserve sort order', 'expose total count header']. Write an implementation plan.",
+      "expected_output": "Plan tasks collectively cover all three criteria; no criterion is orphaned. The plan does not include tasks unrelated to these three criteria.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "every criterion has at least one task",
+          "check": "Each of the three acceptance_criteria strings appears (verbatim or paraphrased) in at least one task's description or test step."
+        },
+        {
+          "name": "no orphan tasks",
+          "check": "Every task in the plan can be tied back to at least one of the three criteria."
+        },
+        {
+          "name": "spec linkage stated",
+          "check": "Plan header references the source spec or feature key."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "out-of-scope-not-touched",
+      "type": "pressure",
+      "rule_under_test": "Plan must not include tasks for items declared out_of_scope in features.json",
+      "prompt": "features.json has feature 'add-pagination' with out_of_scope: ['cursor-based pagination']. User says: 'and while you're at it, support cursor pagination too — should be easy'. Write the plan.",
+      "expected_output": "Plan respects out_of_scope: no cursor pagination tasks. Skill pushes back, citing features.json.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "no cursor pagination tasks",
+          "check": "Plan contains zero tasks implementing cursor-based pagination."
+        },
+        {
+          "name": "explicit push-back",
+          "check": "Plan or accompanying message explicitly references features.json out_of_scope and asks the user to update features.json first if scope must change."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "adr-trigger-on-architectural-decision",
+      "type": "behavior",
+      "rule_under_test": "When planning surfaces an architectural decision, produce an ADR draft before finalizing the plan",
+      "prompt": "Plan a new feature 'background job queue'. The spec doesn't specify whether to use SQS, Redis Streams, or a custom in-process queue.",
+      "expected_output": "Skill pauses planning, drafts an ADR proposing the queue choice (under docs/decisions/), presents trade-offs, and only then finalizes the plan referencing the ADR.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ADR draft produced",
+          "check": "Output includes a draft ADR file path under docs/decisions/ with the standard ADR structure (Context / Decision / Consequences)."
+        },
+        {
+          "name": "plan references the ADR",
+          "check": "The plan body references the ADR by number."
+        }
+      ]
+    }
+  ]
+}
