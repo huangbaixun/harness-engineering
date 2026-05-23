@@ -172,6 +172,14 @@ To verify the plugin loaded successfully, start Claude Code and type "Help me in
 
 > When adding new Skills or Hook scripts, use `.claude/` as the standard configuration directory.
 
+### Repository Layout Note: `.claude/skills` and `.claude/commands`
+
+`.claude/skills` and `.claude/commands` are **symlinks** pointing to the canonical `skills/` and `commands/` directories at the repo root. They exist so Claude Code can load this plugin's own skills/commands locally for self-dogfooding while developing the plugin — without maintaining a duplicate copy that drifts out of sync.
+
+- **Always edit the root `skills/` and `commands/` versions.** The symlinks resolve automatically.
+- **Do not replace the symlinks with copies.** Doing so re-introduces the duplication this layout was created to eliminate.
+- **Windows contributors:** symlinks require either developer mode enabled or `git config --global core.symlinks true`. If your clone shows the symlinks as plain text files containing `../skills`, run `git config core.symlinks true && git checkout .claude/`.
+
 ---
 
 ## Code of Conduct
