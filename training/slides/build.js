@@ -172,7 +172,7 @@ function card(slide, x, y, w, h, fillColor = WHITE) {
 
   const questions = [
     "用过 ChatGPT 写过 / 改过自己工作中代码的，请举手",
-    "用过 Claude Code、Cursor、CodeBuddy 这类 agentic 编程工具的，请举手",
+    "用过 Claude Code、Cursor 这类 agentic 编程工具的，请举手",
     "曾经因为 AI 给了错代码，让你花了更多时间排查的，请举手",
   ];
 
