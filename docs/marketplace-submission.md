@@ -50,7 +50,7 @@ Install once, and your projects get:
 
 - **`harness:archive`** — *(New in v1.10.0)* Automated completion archival and doc sync. When a feature is done, archives specs to `docs/archive/` (preserving git history), checks doc-code consistency, runs a lightweight architecture health scan, and generates a structured archive report.
 
-- **`harness:plan`** — *(Enhanced in v1.10.0)* Now enforces `<action>/<verify>/<done>` triple structure for every task. Reads `rigid` vs `flexible` constraints from `features.json` — rigid items (acceptance criteria, forbidden patterns) must map to tasks; flexible items (technical notes) are advisory. Ensures 100% rigid constraint coverage before execution begins.
+- **`harness:writing-plans`** — *(Enhanced in v1.10.0)* Now enforces `<action>/<verify>/<done>` triple structure for every task. Reads `rigid` vs `flexible` constraints from `features.json` — rigid items (acceptance criteria, forbidden patterns) must map to tasks; flexible items (technical notes) are advisory. Ensures 100% rigid constraint coverage before execution begins.
 
 - **`/harness:assign`** — Sprint planning for AI-assisted teams. Analyzes your `features.json` dependency graph, calculates critical path, and generates a `sprint-kickoff.sh` with per-member task assignments that minimize file conflicts and maximize parallel execution.
 
@@ -98,7 +98,7 @@ harness, agent-engineering, devops, team, sprint, claude-code, hooks, memory, ai
 | `harness:evolve` | Ongoing optimization | CLAUDE.md trimming + hook adaptation |
 | `harness:archive` | Post-feature archival | Spec archival + doc sync + architecture health check |
 | `harness:canary` | Pre-deployment planning | Risk-scored canary runbook with staged rollout + rollback triggers |
-| `harness:router` | Meta-skill (1% rule) | Intent recognition, auto-routes to the correct skill |
+| `harness:using-harness` | Meta-skill (1% rule) | Intent recognition, auto-routes to the correct skill |
 | `/harness:assign` | Sprint kickoff | Dependency graph analysis + optimal owner assignment |
 | `/harness:review-pr` | Every PR | Quality + security + architecture review |
 | `/harness:dump` | At 50% context usage | Cross-session progress persistence |
