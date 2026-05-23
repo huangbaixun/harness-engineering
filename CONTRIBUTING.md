@@ -172,13 +172,23 @@ To verify the plugin loaded successfully, start Claude Code and type "Help me in
 
 > When adding new Skills or Hook scripts, use `.claude/` as the standard configuration directory.
 
-### Repository Layout Note: `.claude/skills` and `.claude/commands`
+### Self-Dogfooding: Load This Repo As a Plugin
 
-`.claude/skills` and `.claude/commands` are **symlinks** pointing to the canonical `skills/` and `commands/` directories at the repo root. They exist so Claude Code can load this plugin's own skills/commands locally for self-dogfooding while developing the plugin — without maintaining a duplicate copy that drifts out of sync.
+To use this plugin's own skills/commands while developing the plugin, load the repo via Claude Code's plugin loader:
 
-- **Always edit the root `skills/` and `commands/` versions.** The symlinks resolve automatically.
-- **Do not replace the symlinks with copies.** Doing so re-introduces the duplication this layout was created to eliminate.
-- **Windows contributors:** symlinks require either developer mode enabled or `git config --global core.symlinks true`. If your clone shows the symlinks as plain text files containing `../skills`, run `git config core.symlinks true && git checkout .claude/`.
+```bash
+claude --plugin-dir /absolute/path/to/harness-engineering
+```
+
+The plugin loader reads from the **repository root** — `skills/`, `commands/`, `agents/`, `hooks/hooks.json` (which routes to `scripts/`). **There is no need to mirror these into `.claude/`.** Earlier versions of this repo kept copies under `.claude/skills/`, `.claude/commands/`, and `.claude/hooks/`; those were removed because they duplicated the canonical sources and drifted out of sync.
+
+If you have a working clone with stale `.claude/skills/`, `.claude/commands/`, or `.claude/hooks/` directories, delete them:
+
+```bash
+rm -rf .claude/skills .claude/commands .claude/hooks .claude/agents
+```
+
+The only file that should live under `.claude/` in a working clone is `settings.local.json` (per-developer permissions allowlist), which is gitignored.
 
 ---
 

@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Per-developer local Claude Code config (permissions allowlist, etc.)
+# Note: this repo is loaded as a plugin via `claude --plugin-dir .`,
+# so the plugin loader reads from root skills/, commands/, agents/, hooks/, scripts/ —
+# NOT from .claude/. The .claude/ directory is only for the contributor's own
+# Claude Code session settings while developing the plugin.
+.claude/settings.local.json
+
+# Misc local artifacts
+.test-write
