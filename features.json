@@ -38,7 +38,7 @@
       "id": "F002",
       "name": "superpowers-vendor-skills",
       "priority": 2,
-      "status": "proposed",
+      "status": "building",
       "spec": "docs/specs/2026-05-23-superpowers-integration-design.md",
       "description": "Phase 2: vendor 10 new superpowers skills (brainstorming, executing-plans, subagent-driven-development, dispatching-parallel-agents, using-git-worktrees, systematic-debugging, receiving-code-review, requesting-code-review, finishing-a-development-branch, writing-skills) with the 4-file sidecar structure and ADR-0004 evals each.",
       "acceptance_criteria": [
@@ -49,7 +49,7 @@
         "Renaming the 4 existing forks (handled in F001)"
       ],
       "dependencies": ["F001"],
-      "technical_notes": "Plan: docs/plans/<TBD>-phase-2-vendor-new-skills.md (authored after F001 completes)",
+      "technical_notes": "Plan: docs/plans/2026-05-23-phase-2-vendor-new-skills.md",
       "related_files": []
     },
     {
