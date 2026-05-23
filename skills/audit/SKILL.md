@@ -2,7 +2,7 @@
 name: harness:audit
 description: >
   Health check and optimization for existing project Harness setups. Activate when the user mentions
-  "check Harness", "optimize CLAUDE.md", "optimize AGENTS.md", "Agent keeps making mistakes",
+  "check Harness", "optimize CLAUDE.md", "Agent keeps making mistakes",
   "Harness health", "audit Harness", "evaluate AI coding environment", "harness audit",
   "check Agent config", "why won't the Agent follow instructions", "improve Agent effectiveness",
   "add Harness to existing project", or "legacy optimization".
@@ -24,18 +24,13 @@ description: >
 Use an Explore subagent or directly scan the following files and directories:
 
 ```bash
-# Claude Code config directory
-TOOL_DIR=".claude"
-MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" || echo "CLAUDE.md")
-echo "Detected tool config directory: $TOOL_DIR, memory file: $MEMORY_FILE"
-
 # Check each of the six Harness layers
-echo "=== 1. Memory Layer ===" && cat "$MEMORY_FILE" 2>/dev/null | wc -l
-echo "=== 2. Rules Layer ===" && cat "$TOOL_DIR/settings.json" 2>/dev/null
-echo "=== 3. Skills Layer ===" && ls "$TOOL_DIR/skills/" "$TOOL_DIR/commands/" 2>/dev/null
-echo "=== 4. Agents Layer ===" && ls "$TOOL_DIR/agents/" 2>/dev/null
-echo "=== 5. Hooks Layer ===" && grep -r "hooks" "$TOOL_DIR/settings.json" 2>/dev/null
-echo "=== 6. Tools Layer ===" && grep -r "mcpServers" "$TOOL_DIR/settings.json" 2>/dev/null
+echo "=== 1. Memory Layer ===" && wc -l CLAUDE.md 2>/dev/null
+echo "=== 2. Rules Layer ===" && cat .claude/settings.json 2>/dev/null
+echo "=== 3. Skills Layer ===" && ls .claude/skills/ .claude/commands/ 2>/dev/null
+echo "=== 4. Agents Layer ===" && ls .claude/agents/ 2>/dev/null
+echo "=== 5. Hooks Layer ===" && grep -r "hooks" .claude/settings.json 2>/dev/null
+echo "=== 6. Tools Layer ===" && grep -r "mcpServers" .claude/settings.json 2>/dev/null
 echo "=== Documentation ===" && ls docs/ 2>/dev/null
 echo "=== ADR ===" && ls docs/decisions/ 2>/dev/null
 ```
@@ -63,7 +58,7 @@ Evaluate and score each dimension (0-3) based on the OpenAI Scorecard framework:
 
 Check the following common failure modes and generate a diagnostic report:
 
-**A. Memory File (AGENTS.md / CLAUDE.md) Diagnostics**
+**A. Memory File (CLAUDE.md) Diagnostics**
 
 ```
 Checklist:
@@ -72,7 +67,6 @@ Checklist:
 [ ] Contains vague, unverifiable rules (e.g., "write good code")? -> Replace with specific, verifiable rules
 [ ] Contains rules that should be enforced by Hooks but are in the memory file? -> Migrate to Hooks
 [ ] Contains outdated rules? -> Delete or flag
-[ ] Multiple files with inconsistent content? (AGENTS.md / CLAUDE.md should be in sync)
 ```
 
 **B. Hook Coverage Diagnostics**

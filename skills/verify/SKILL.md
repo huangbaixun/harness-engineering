@@ -55,7 +55,7 @@ No rationalizing with "commit first, fix later" or "this minor issue doesn't aff
    - Set the feature's status to "completed"
 
 3. If completed_features exceeds 10 entries:
-   - Trigger the archival mechanism (see AGENTS.md archival rules)
+   - Trigger the archival mechanism (see CLAUDE.md archival rules)
 ```
 
 ## Relationship with Stop Hooks

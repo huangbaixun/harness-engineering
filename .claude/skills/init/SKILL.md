@@ -24,13 +24,13 @@ After running this Skill, the following files will be generated in the project r
 |------|---------|----------|
 | `CLAUDE.md` | Agent memory layer, <=60 lines, architecture conventions + prohibited rules + test commands + Skill trigger rules | Yes |
 | `.claude/settings.json` | Permission control + Hook registration (including SessionStart) | Yes |
-| `$TOOL_DIR/hooks/session-start.sh` | SessionStart: restore cross-session progress, archive prompts | Yes |
-| `$TOOL_DIR/hooks/stop-typecheck.sh` | Stop Hook: type-checking gate | Yes |
-| `$TOOL_DIR/hooks/pre-protect-env.sh` | PreToolUse: prevent .env from being overwritten | Yes |
-| `$TOOL_DIR/hooks/post-format.sh` | PostToolUse: auto-format | Yes |
-| `$TOOL_DIR/skills/plan/` | Pre-implementation planning Skill (integrated from Superpowers) | Yes |
-| `$TOOL_DIR/skills/tdd/` | TDD workflow Skill (RED->GREEN->REFACTOR) | Yes |
-| `$TOOL_DIR/skills/verify/` | Pre-completion verification Skill | Yes |
+| `.claude/hooks/session-start.sh` | SessionStart: restore cross-session progress, archive prompts | Yes |
+| `.claude/hooks/stop-typecheck.sh` | Stop Hook: type-checking gate | Yes |
+| `.claude/hooks/pre-protect-env.sh` | PreToolUse: prevent .env from being overwritten | Yes |
+| `.claude/hooks/post-format.sh` | PostToolUse: auto-format | Yes |
+| `.claude/skills/plan/` | Pre-implementation planning Skill (integrated from Superpowers) | Yes |
+| `.claude/skills/tdd/` | TDD workflow Skill (RED->GREEN->REFACTOR) | Yes |
+| `.claude/skills/verify/` | Pre-completion verification Skill | Yes |
 | `init.sh` | Session startup script, run before each new session to restore context | Yes |
 | `docs/architecture.md` | Architecture diagram, Agent spatial awareness document, 100-150 lines | Yes |
 | `docs/decisions/README.md` | ADR index | Yes |
@@ -47,46 +47,38 @@ After running this Skill, the following files will be generated in the project r
 **Before asking any questions**, scan the project root for existing state:
 
 ```bash
-# Step 1: Set the Claude Code config directory
-TOOL_DIR=".claude"
-echo "Config directory: $TOOL_DIR"
-
-# Step 2: Detect memory file (priority: AGENTS.md > tool-specific file)
-MEMORY_FILE=$([ -f "AGENTS.md" ] && echo "AGENTS.md" \
-           || echo "CLAUDE.md")
-
-# Step 3: Check whether key files already exist
-ls "$MEMORY_FILE" "$TOOL_DIR/settings.json" "$TOOL_DIR/hooks/" init.sh 2>/dev/null
-[ -f "$MEMORY_FILE" ] && wc -l "$MEMORY_FILE"
+# Check whether key files already exist
+ls CLAUDE.md .claude/settings.json .claude/hooks/ init.sh 2>/dev/null
+[ -f CLAUDE.md ] && wc -l CLAUDE.md
 ```
 
 Based on the detection results, follow one of three paths:
 
 | Scenario | Criteria | Action |
 |----------|----------|--------|
-| **Brand-new project** | Memory file does not exist | Proceed normally through Phases 1-6, generating from scratch |
-| **Existing project (has memory file)** | Memory file exists with meaningful content | Enter "Existing Project Mode" (see below) |
-| **Corrupted / empty file** | Memory file exists but is empty or <5 lines | Notify user, treat as brand-new project |
+| **Brand-new project** | `CLAUDE.md` does not exist | Proceed normally through Phases 1-6, generating from scratch |
+| **Existing project** | `CLAUDE.md` exists with meaningful content | Enter "Existing Project Mode" (see below) |
+| **Corrupted / empty file** | `CLAUDE.md` exists but is empty or <5 lines | Notify user, treat as brand-new project |
 
 #### Existing Project Mode: Flow When a Memory File Already Exists
 
-1. **Read and evaluate the existing memory file** (AGENTS.md / CLAUDE.md)
+1. **Read and evaluate the existing CLAUDE.md**
    - Is the line count <=60? How much does it exceed?
    - Does it have YAML frontmatter or structured sections?
    - Does it contain specific, verifiable rules (test commands, prohibitions)?
    - Does it contain vague, ineffective rules ("write good code", "keep things clean")?
 
 2. **Report the evaluation to the user and explicitly ask their intent**:
-   > "Detected an existing memory file `$MEMORY_FILE` (currently X lines). I can:
+   > "Detected an existing `CLAUDE.md` (currently X lines). I can:
    > A) **Incremental addition** — keep existing content, fill in missing structure (Hooks, docs/, etc.)
    > B) **Optimize and consolidate** — streamline existing rules to <=60 lines while filling in structure
-   > C) **Full rebuild** — back up the existing file as `$MEMORY_FILE.bak` and regenerate
+   > C) **Full rebuild** — back up the existing file as `CLAUDE.md.bak` and regenerate
    > Which approach do you prefer?"
 
 3. **Mandatory backup before execution**:
    ```bash
-   cp "$MEMORY_FILE" "${MEMORY_FILE}.bak"
-   echo "Backed up to ${MEMORY_FILE}.bak"
+   cp CLAUDE.md CLAUDE.md.bak
+   echo "Backed up to CLAUDE.md.bak"
    ```
 
 4. **Execute based on selection**:
@@ -94,7 +86,7 @@ Based on the detection results, follow one of three paths:
    - **Optimize and consolidate**: Invoke the memory file streamlining logic from `harness:evolve`, then fill in structure
    - **Full rebuild**: Regenerate using templates, migrating valuable rules (test commands, etc.) from the original into the new file
 
-> Similarly, check whether `$TOOL_DIR/settings.json`, `init.sh`, and `docs/architecture.md` already exist.
+> Similarly, check whether `.claude/settings.json`, `init.sh`, and `docs/architecture.md` already exist.
 > Do not overwrite existing files — only replace after the user explicitly confirms.
 
 ---
@@ -115,16 +107,14 @@ A Harness is not a single config file — it is six cooperating layers. Understa
 
 | Layer | Component | Core Responsibility |
 |-------|-----------|---------------------|
-| 1. Memory | `AGENTS.md` (universal) / `CLAUDE.md` | Static knowledge: architecture conventions, prohibited rules, test commands |
-| 2. Rules | `$TOOL_DIR/settings.json` | Deterministic behavior: permissions, model, output config |
-| 3. Skills | `$TOOL_DIR/skills/` + `$TOOL_DIR/commands/` | On-demand knowledge and manually triggered workflows |
-| 4. Agents | `$TOOL_DIR/agents/` | Context-isolated specialized Subagents |
+| 1. Memory | `CLAUDE.md` | Static knowledge: architecture conventions, prohibited rules, test commands |
+| 2. Rules | `.claude/settings.json` | Deterministic behavior: permissions, model, output config |
+| 3. Skills | `.claude/skills/` + `.claude/commands/` | On-demand knowledge and manually triggered workflows |
+| 4. Agents | `.claude/agents/` | Context-isolated specialized Subagents |
 | 5. Hooks | Hooks (configured in settings.json) | Deterministic enforcement: does not depend on model judgment |
 | 6. Tools | MCP Servers | Capability extension: external service integration |
 
-> `$TOOL_DIR` = `.claude/`, exported by init.sh at session startup.
-
-**Three-part synergy principle**: AGENTS.md rules alone are occasionally ignored; Hooks alone cannot handle judgment-based tasks; settings.json alone lacks context. All three working together is what makes the system truly effective.
+**Three-part synergy principle**: CLAUDE.md rules alone are occasionally ignored; Hooks alone cannot handle judgment-based tasks; settings.json alone lacks context. All three working together is what makes the system truly effective.
 
 ### Phase 3: Generate Files by Tech Stack
 
@@ -139,17 +129,15 @@ Read the corresponding template directory to generate files. Template locations 
 
 ```
 project-root/
-├── AGENTS.md                     <- Universal memory file (<= 60 lines), read by all tools
-├── CLAUDE.md                     <- 2-line wrapper -> points to AGENTS.md (includes workflow Skill trigger rules)
-├── init.sh                       <- Session startup script (exports $TOOL_DIR)
+├── CLAUDE.md                     <- Project memory file (<= 60 lines, single source of truth)
+├── init.sh                       <- Session startup script
 ├── .claude/                      <- Claude Code config directory
 │   ├── settings.json             <- Permissions + Hook registration (including SessionStart Hook)
-│   └── hooks/                    <- Hook scripts (each hook provides .cmd + extensionless + .sh variants)
-│       ├── session-start{,.cmd,.sh}  <- SessionStart: restore cross-session memory
-│       ├── stop-typecheck{,.cmd,.sh} <- Stop Hook (language-adapted)
-│       ├── pre-protect-env{,.cmd,.sh}<- PreToolUse: protect sensitive files
-│       └── post-format{,.cmd,.sh}    <- PostToolUse: auto-format
-├── $TOOL_DIR/
+│   ├── hooks/                    <- Hook scripts (each hook provides .cmd + extensionless + .sh variants)
+│   │   ├── session-start{,.cmd,.sh}  <- SessionStart: restore cross-session memory
+│   │   ├── stop-typecheck{,.cmd,.sh} <- Stop Hook (language-adapted)
+│   │   ├── pre-protect-env{,.cmd,.sh}<- PreToolUse: protect sensitive files
+│   │   └── post-format{,.cmd,.sh}    <- PostToolUse: auto-format
 │   └── skills/
 │       ├── plan/                 <- Pre-implementation planning (triggered when >30 min / 3+ files)
 │       ├── tdd/                  <- TDD workflow (RED->GREEN->REFACTOR)
@@ -161,13 +149,13 @@ project-root/
 │   └── claude-progress.json      <- Agent progress tracking (empty skeleton)
 ```
 
-> **Note**: `AGENTS.md` is the single source of truth. `CLAUDE.md` is only 2 lines, directing users to `AGENTS.md`.
+> **Note**: `CLAUDE.md` is the single source of truth for project rules.
 
 `init.sh` template is at: `${CLAUDE_PLUGIN_ROOT}/docs/templates/generic/init.sh.template`
 
-#### AGENTS.md Writing Principles
+#### CLAUDE.md Writing Principles
 
-AGENTS.md is the Agent's "worldview" — it defines the Agent's foundational understanding of the project, read by all AI tools.
+CLAUDE.md is the Agent's "worldview" — it defines the Agent's foundational understanding of the project.
 
 **Good rules**: Specific, verifiable, corresponding to real past Agent failures
 - "Never delete migration files"
@@ -178,7 +166,7 @@ AGENTS.md is the Agent's "worldview" — it defines the Agent's foundational und
 - "Write high-quality code"
 - "Keep code clean"
 
-**<=60-line principle**: ETH Zurich research shows that overly long AI-auto-generated memory files degrade performance and consume 20% more tokens. Only hand-written, concise files are truly effective. Move excess content into `docs/` subdirectories and link to them from AGENTS.md.
+**<=60-line principle**: ETH Zurich research shows that overly long AI-auto-generated memory files degrade performance and consume 20% more tokens. Only hand-written, concise files are truly effective. Move excess content into `docs/` subdirectories and link to them from CLAUDE.md.
 
 #### architecture.md Writing Principles
 
@@ -271,7 +259,7 @@ Valid `status` values: `planned` -> `in_progress` -> `done` | `cancelled`
 
 Warning: **Without an archiving mechanism, after 6 months each session will consume an extra ~8000 tokens** (the `completed` list grows unboundedly).
 
-Write the following rules into AGENTS.md during initialization:
+Write the following rules into CLAUDE.md during initialization:
 
 ```markdown
 ## Progress File Archiving Rules
