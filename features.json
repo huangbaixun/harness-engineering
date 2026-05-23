@@ -10,7 +10,7 @@
       "id": "F001",
       "name": "superpowers-vendor-foundation",
       "priority": 1,
-      "status": "building",
+      "status": "done",
       "spec": "docs/specs/2026-05-23-superpowers-integration-design.md",
       "description": "Phase 0 + Phase 1 of the superpowers integration: ADRs, schema migration, sync script, new docs dirs, and rename the 4 existing forks (router/plan/tdd/verify) to upstream names.",
       "acceptance_criteria": [
