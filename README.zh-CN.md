@@ -1,6 +1,6 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v1.10.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.0.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 
@@ -86,6 +86,16 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:writin
 | **harness:archive** | 特性完成后归档 | Spec 归档至 `docs/archive/`、文档一致性检查、架构快检 |
 | **harness:test-driven-development** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
 | **harness:verification-before-completion** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
+| **harness:brainstorming** | 新功能 / 设计任务 | 把想法落到 `docs/specs/` 的设计 spec，按 features.json/ADR 关联门禁后再交给 writing-plans |
+| **harness:executing-plans** | plan 已写、准备执行 | 从 `docs/plans/` 读 plan 一任务一任务执行，遇到 out_of_scope 阻塞 |
+| **harness:subagent-driven-development** | 计划含独立任务 | 每任务派发新 subagent，两阶段 review |
+| **harness:dispatching-parallel-agents** | 2+ 个独立并行任务 | 并行派发时尊重架构层依赖 + features.json 归属 |
+| **harness:using-git-worktrees** | 需要隔离工作区 | 按 `feature/<features.json-id>` 命名约定创建 worktree |
+| **harness:systematic-debugging** | 出现 bug / 异常行为 | 调试笔记落 `docs/incidents/`，检查 ADR 假设是否被破坏，生产事故提示 canary |
+| **harness:receiving-code-review** | 收到 review 反馈 | 涉及 rigid 约束的反馈与 features.json 对账；架构反馈 → ADR |
+| **harness:requesting-code-review** | 准备请评审 | 评审前自检（rigid 约束已满足）；PR 描述含 `feature: <id>` |
+| **harness:finishing-a-development-branch** | 实现完成 | 拥有 `building → done` 状态转换；强制调 `harness:archive`；触碰部署面则提示 canary |
+| **harness:writing-skills** | 写/改 skill | 强制 ADR-0004（evals）+ ADR-0009（4 文件 vs 2 文件结构） |
 
 ---
 
