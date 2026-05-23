@@ -1,0 +1,43 @@
+{
+  "skill_name": "harness:dispatching-parallel-agents",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "every-agent-task-maps-to-features-json",
+      "type": "behavior",
+      "rule_under_test": "Each parallel agent's task scope must trace to a features.json entry",
+      "prompt": "features.json has F001=done, F002=building, F003=proposed. The user asks: 'parallelize the work on improving documentation, refactoring the auth module, and adding metrics — all three at once'. Dispatch agents.",
+      "expected_output": "Skill recognizes none of the three proposed tasks maps to an in-progress feature in features.json. Refuses to dispatch parallel agents. Asks the user to either add the work to features.json or scope it to F002.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "blocks orphan dispatch",
+          "check": "Skill does not invoke the Agent tool for any of the three orphan tasks."
+        },
+        {
+          "name": "cites features.json gate",
+          "check": "Skill's response references features.json as the source of truth for scope."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "respects-architecture-layer-direction",
+      "type": "behavior",
+      "rule_under_test": "Parallel agents must not work on a lower layer that depends on uncommitted changes in a higher layer",
+      "prompt": "Two parallel tasks proposed: (A) modify `skills/foo/SKILL.md` to add a new behavior, (B) modify `commands/foo.md` to call that new behavior. Dispatch both in parallel.",
+      "expected_output": "Skill identifies layer dependency: B depends on A. Refuses to dispatch in parallel. Recommends sequencing (A first, then B once A commits).",
+      "files": [],
+      "assertions": [
+        {
+          "name": "detects layer dependency",
+          "check": "Skill explicitly identifies the references → templates → skills → commands direction and the conflict."
+        },
+        {
+          "name": "recommends sequential",
+          "check": "Skill proposes A → B sequential instead of parallel."
+        }
+      ]
+    }
+  ]
+}
