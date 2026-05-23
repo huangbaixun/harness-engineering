@@ -1,0 +1,62 @@
+{
+  "skill_name": "harness:brainstorming",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "feature-spec-creates-features-json-entry",
+      "type": "behavior",
+      "rule_under_test": "type=feature spec must add a corresponding entry to features.json before handing off to writing-plans",
+      "prompt": "Brainstorm a new feature: 'add API rate limiting at 100 req/sec per IP'. After the design is approved, save the spec.",
+      "expected_output": "Spec saved to docs/specs/ with type=feature. A new entry appears in features.json with spec: field pointing back to the spec file. Skill confirms features.json was updated before offering writing-plans handoff.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "spec front-matter present",
+          "check": "The created spec file's front-matter includes type=feature, status=proposed, features: [<key>]."
+        },
+        {
+          "name": "features.json updated",
+          "check": "features.json gains a new entry whose spec: field equals the path of the just-created spec."
+        },
+        {
+          "name": "blocks transition if entry missing",
+          "check": "If features.json is not updated, skill refuses to invoke writing-plans and reports the gap."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "adr-proposal-creates-adr",
+      "type": "behavior",
+      "rule_under_test": "type=adr-proposal spec must produce an ADR file under docs/decisions/ before handing off",
+      "prompt": "Brainstorm: should we use SQS or Redis Streams for the background job queue? Decide and document.",
+      "expected_output": "Skill identifies this as an architectural decision (type=adr-proposal). Writes ADR to docs/decisions/NNNN-job-queue-choice.md with Context/Decision/Consequences. Spec front-matter's adr: field references the new ADR number.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ADR file produced",
+          "check": "A new file under docs/decisions/ exists with proper ADR structure (Status, Context, Decision, Consequences)."
+        },
+        {
+          "name": "spec adr: field populated",
+          "check": "Spec front-matter has adr: [NNNN] referencing the new ADR file's number."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "spec-path-uses-docs-specs-not-docs-superpowers-specs",
+      "type": "behavior",
+      "rule_under_test": "Override of upstream default — spec output goes to docs/specs/, not docs/superpowers/specs/",
+      "prompt": "Brainstorm any small feature and save the spec.",
+      "expected_output": "Spec file is created at docs/specs/YYYY-MM-DD-<topic>-design.md. Skill does NOT write to docs/superpowers/specs/.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "spec written to docs/specs/",
+          "check": "The created file's path starts with docs/specs/, not docs/superpowers/specs/."
+        }
+      ]
+    }
+  ]
+}
