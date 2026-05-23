@@ -38,7 +38,7 @@
       "id": "F002",
       "name": "superpowers-vendor-skills",
       "priority": 2,
-      "status": "building",
+      "status": "done",
       "spec": "docs/specs/2026-05-23-superpowers-integration-design.md",
       "description": "Phase 2: vendor 10 new superpowers skills (brainstorming, executing-plans, subagent-driven-development, dispatching-parallel-agents, using-git-worktrees, systematic-debugging, receiving-code-review, requesting-code-review, finishing-a-development-branch, writing-skills) with the 4-file sidecar structure and ADR-0004 evals each.",
       "acceptance_criteria": [
