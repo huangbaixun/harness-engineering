@@ -28,9 +28,9 @@ After running this Skill, the following files will be generated in the project r
 | `.claude/hooks/stop-typecheck.sh` | Stop Hook: type-checking gate | Yes |
 | `.claude/hooks/pre-protect-env.sh` | PreToolUse: prevent .env from being overwritten | Yes |
 | `.claude/hooks/post-format.sh` | PostToolUse: auto-format | Yes |
-| `.claude/skills/plan/` | Pre-implementation planning Skill (integrated from Superpowers) | Yes |
-| `.claude/skills/tdd/` | TDD workflow Skill (RED->GREEN->REFACTOR) | Yes |
-| `.claude/skills/verify/` | Pre-completion verification Skill | Yes |
+| `.claude/skills/writing-plans/` | Pre-implementation planning Skill (integrated from Superpowers) | Yes |
+| `.claude/skills/test-driven-development/` | TDD workflow Skill (RED->GREEN->REFACTOR) | Yes |
+| `.claude/skills/verification-before-completion/` | Pre-completion verification Skill | Yes |
 | `init.sh` | Session startup script, run before each new session to restore context | Yes |
 | `docs/architecture.md` | Architecture diagram, Agent spatial awareness document, 100-150 lines | Yes |
 | `docs/decisions/README.md` | ADR index | Yes |
@@ -139,9 +139,9 @@ project-root/
 │   │   ├── pre-protect-env{,.cmd,.sh}<- PreToolUse: protect sensitive files
 │   │   └── post-format{,.cmd,.sh}    <- PostToolUse: auto-format
 │   └── skills/
-│       ├── plan/                 <- Pre-implementation planning (triggered when >30 min / 3+ files)
-│       ├── tdd/                  <- TDD workflow (RED->GREEN->REFACTOR)
-│       └── verify/               <- Pre-completion verification (triggered before declaring done)
+│       ├── writing-plans/        <- Pre-implementation planning (triggered when >30 min / 3+ files)
+│       ├── test-driven-development/ <- TDD workflow (RED->GREEN->REFACTOR)
+│       └── verification-before-completion/ <- Pre-completion verification (triggered before declaring done)
 ├── docs/
 │   ├── architecture.md           <- Architecture diagram (100-150 lines)
 │   ├── decisions/

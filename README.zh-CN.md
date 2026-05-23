@@ -57,9 +57,9 @@ claude plugins add harness-engineering
 | `.claude/settings.json` | 权限控制 + Hook 注册（含 SessionStart） |
 | `.claude/hooks/session-start.sh` | SessionStart Hook：会话开启时恢复进度上下文 |
 | `.claude/hooks/` | 类型检查、.env 保护、自动格式化 |
-| `.claude/skills/plan/` | 实现前规划 Skill（>30 分钟或 3+ 文件时触发） |
-| `.claude/skills/tdd/` | TDD Skill（RED→GREEN→REFACTOR 强制循环） |
-| `.claude/skills/verify/` | 完成前验证 Skill（声明 done 前四层检查） |
+| `.claude/skills/writing-plans/` | 实现前规划 Skill（>30 分钟或 3+ 文件时触发） |
+| `.claude/skills/test-driven-development/` | TDD Skill（RED→GREEN→REFACTOR 强制循环） |
+| `.claude/skills/verification-before-completion/` | 完成前验证 Skill（声明 done 前四层检查） |
 | `docs/architecture.md` | 架构图，Agent 的空间感知文档 |
 | `docs/claude-progress.json` | 跨会话进度追踪 |
 
@@ -157,7 +157,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:writin
 
 本 plugin 基于 [Harness Engineering 完整实践手册](references/HarnessEngineering.md) 构建——综合 Anthropic、OpenAI、InfoQ、Hacker News 的一手实践，涵盖长周期任务驾驭架设计、多 Agent 架构、垃圾回收体系等核心模式。
 
-v1.9.2 整合了 [obra/superpowers](https://github.com/obra/superpowers) 的工作流设计思路：writing-plans（实现前规划门禁）、tdd（RED→GREEN→REFACTOR 强制循环）、verification（四层完成检查）三个 Skill 直接来源于该项目的核心实践。
+v1.9.2 整合了 [obra/superpowers](https://github.com/obra/superpowers) 的工作流设计思路：writing-plans（实现前规划门禁）、test-driven-development（RED→GREEN→REFACTOR 强制循环）、verification-before-completion（四层完成检查）三个 Skill 直接来源于该项目的核心实践。
 
 多人协作设计参考 [团队并行开发指南](references/team-parallel-development.md)，含 features.json 并行字段设计、Git Worktree 隔离和 Sprint 分配算法。
 

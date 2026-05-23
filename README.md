@@ -57,9 +57,9 @@ After initialization, your project gets:
 | `.claude/settings.json` | Permission control + Hook registration (incl. SessionStart) |
 | `.claude/hooks/session-start.sh` | SessionStart Hook: restores progress context on session start |
 | `.claude/hooks/` | Type-check, .env protection, auto-format hooks |
-| `.claude/skills/plan/` | Pre-implementation planning Skill (triggers for >30 min or 3+ file tasks) |
-| `.claude/skills/tdd/` | TDD Skill (enforced RED->GREEN->REFACTOR cycle) |
-| `.claude/skills/verify/` | Pre-completion verification Skill (4-layer check before marking done) |
+| `.claude/skills/writing-plans/` | Pre-implementation planning Skill (triggers for >30 min or 3+ file tasks) |
+| `.claude/skills/test-driven-development/` | TDD Skill (enforced RED->GREEN->REFACTOR cycle) |
+| `.claude/skills/verification-before-completion/` | Pre-completion verification Skill (4-layer check before marking done) |
 | `docs/architecture.md` | Architecture diagram -- the agent's spatial awareness doc |
 | `docs/claude-progress.json` | Cross-session progress tracking |
 
@@ -171,7 +171,7 @@ This plugin is fully self-bootstrapped (dogfooding) -- Harness Engineering conve
 
 This plugin is built on the [Harness Engineering Practice Manual](references/HarnessEngineering.md) -- synthesizing first-hand practices from Anthropic, OpenAI, InfoQ, and Hacker News, covering long-cycle task harness design, multi-agent architecture, garbage collection systems, and other core patterns.
 
-v1.9.2 integrated workflow design ideas from [obra/superpowers](https://github.com/obra/superpowers): the writing-plans (pre-implementation planning gate), tdd (enforced RED->GREEN->REFACTOR cycle), and verification (4-layer completion check) Skills are directly inspired by that project's core practices, deeply integrated with Harness's SessionStart Hook and claude-progress.json cross-session memory system to form a complete "plan -> implement -> verify -> remember" loop.
+v1.9.2 integrated workflow design ideas from [obra/superpowers](https://github.com/obra/superpowers): the writing-plans (pre-implementation planning gate), test-driven-development (enforced RED->GREEN->REFACTOR cycle), and verification-before-completion (4-layer completion check) Skills are directly inspired by that project's core practices, deeply integrated with Harness's SessionStart Hook and claude-progress.json cross-session memory system to form a complete "plan -> implement -> verify -> remember" loop.
 
 Multi-person collaboration design references the [Team Parallel Development Guide](references/team-parallel-development.md), including features.json parallel field design, Git Worktree isolation, and sprint assignment algorithms.
 

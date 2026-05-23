@@ -46,7 +46,7 @@
 
 ## 三、本项目（harness-engineering v1.10.0）可借鉴建议
 
-当前已经 fork 了 superpowers 并建立了 `harness:init / plan / tdd / verify / audit` 命名空间、features.json、三智能体 GAN 架构、PreToolUse/Stop Hook 体系。下面按借鉴来源 → 对接阶段 → 要解决的问题组织。
+当前已经 fork 了 superpowers 并建立了 `harness:init / writing-plans / test-driven-development / verification-before-completion / audit` 命名空间、features.json、三智能体 GAN 架构、PreToolUse/Stop Hook 体系。下面按借鉴来源 → 对接阶段 → 要解决的问题组织。
 
 ### 1. 借 OpenSpec 的"活规格归档" → 增强 `harness:writing-plans` + 新增 `harness:archive`
 
@@ -82,7 +82,7 @@
 
 ### 9. 借 Superpowers 的 `dispatching-parallel-agents` skill → 独立抽离到 `.harness/skills/dispatch`
 
-当前 features.json 的并行是隐式的，显式化成一个可复用 skill，让其他 harness:* 命令（比如 audit、archive）也能并行化。解决：并行能力目前和 tdd 流程耦合，迁移到其他阶段需要重新造轮子。
+当前 features.json 的并行是隐式的，显式化成一个可复用 skill，让其他 harness:* 命令（比如 audit、archive）也能并行化。解决：并行能力目前和 test-driven-development 流程耦合，迁移到其他阶段需要重新造轮子。
 
 ### 10. 借 GSD 的 STATE.md → 增强你现有的 claude-progress.json
 
