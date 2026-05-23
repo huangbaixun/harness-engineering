@@ -1,0 +1,47 @@
+{
+  "skill_name": "harness:receiving-code-review",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "rigid-constraint-feedback-reconciles-features-json",
+      "type": "behavior",
+      "rule_under_test": "Review feedback touching a rigid constraint must either update features.json or be explicitly rejected with rationale",
+      "prompt": "F002 acceptance_criteria includes 'rate limit = 100 req/sec per IP'. Reviewer comments: 'should be 50 req/sec instead — 100 is too lax'. Process this feedback.",
+      "expected_output": "Skill recognizes the conflict with rigid constraint. Surfaces two options: (A) accept and update features.json to 50 req/sec + apply code change, or (B) reject with rationale explaining why 100 stands. Neither silently applies nor silently ignores.",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "identifies rigid conflict",
+          "check": "Output explicitly references the existing acceptance_criterion."
+        },
+        {
+          "name": "surfaces accept/reject choice",
+          "check": "Output presents the two options with clear consequences."
+        },
+        {
+          "name": "no silent application",
+          "check": "Code change is not applied without features.json update OR explicit rejection."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "architectural-feedback-triggers-adr",
+      "type": "behavior",
+      "rule_under_test": "Architectural-change feedback must produce or update an ADR before merge",
+      "prompt": "Reviewer comments: 'this PR adds a new dependency on Redis — we previously decided to avoid Redis (see ADR-0003). Should we revisit that decision?'",
+      "expected_output": "Skill identifies this as an architectural change touching ADR-0003. Refuses to merge until either ADR-0003 is updated (with new Consequences entry) or a net-new ADR documents the Redis addition. Surfaces the path forward to user.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "ADR work surfaced",
+          "check": "Output references ADR-0003 by number and explains what ADR update is needed."
+        },
+        {
+          "name": "blocks merge",
+          "check": "Skill does not allow merge until ADR work is done."
+        }
+      ]
+    }
+  ]
+}
