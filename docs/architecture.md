@@ -2,72 +2,115 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. It consists of three core Skills along with a set of supporting Commands, Hooks, and References.
+This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.0.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v5.1.0), plus a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
 ```
 harness-engineering-plugin/
-├── CLAUDE.md                       ← Project memory file (< 60 lines, single source of truth)
+├── CLAUDE.md                       ← Project memory file (≤ 60 lines, single source of truth)
+├── features.json                   ← Root features.json (dogfood; tracks plugin's own work per ADR-0003)
 ├── .claude-plugin/
 │   └── plugin.json                 ← Claude Code plugin manifest
-├── skills/                         ← Skills
-│   ├── init/               ← New project Harness initialization
-│   │   └── SKILL.md
-│   ├── audit/              ← Existing project health check and optimization
-│   │   └── SKILL.md
-│   └── evolve/             ← Continuous iterative improvement
-│       └── SKILL.md
-├── commands/                       ← Slash Commands (universal)
-│   ├── assign.md          ← /harness:assign (team feature assignment)
-│   ├── init.md
-│   ├── audit.md
-│   ├── review-pr.md
-│   ├── dump.md
-│   ├── sync-docs.md
-│   ├── scan-arch.md
-│   └── trim.md
-├── hooks/                          ← Hook template scripts (universal)
-│   ├── stop-typecheck.sh
-│   ├── pre-protect-env.sh
-│   ├── post-format.sh
-│   ├── stop-commit-progress.sh
-│   └── post-observe.sh
+├── skills/
+│   ├── # harness-original (6) — 2-file structure (SKILL.md + evals/evals.json)
+│   ├── using-harness/              ← Routing/meta skill (mandatory invocation table for all 19 skills)
+│   ├── archive/                    ← Completion archiving and documentation sync
+│   ├── audit/                      ← Existing project health check and optimization
+│   ├── canary/                     ← Pre-deployment canary planning
+│   ├── evolve/                     ← Continuous iterative improvement
+│   ├── init/                       ← New project Harness initialization
+│   ├── # vendored from superpowers v5.1.0 (13) — 4-file structure
+│   ├── brainstorming/              ← Spec authoring (writes to docs/specs/, gated by features.json)
+│   ├── dispatching-parallel-agents/← Parallel work dispatch
+│   ├── executing-plans/            ← Plan execution (reads from docs/plans/)
+│   ├── finishing-a-development-branch/ ← Merge/PR finalization (owns building → done transition)
+│   ├── receiving-code-review/      ← Code review reception
+│   ├── requesting-code-review/     ← Code review dispatch (PR creation)
+│   ├── subagent-driven-development/← Subagent-per-task workflow
+│   ├── systematic-debugging/       ← Bug investigation (writes to docs/incidents/)
+│   ├── test-driven-development/    ← TDD workflow
+│   ├── using-git-worktrees/        ← Worktree-based isolation
+│   ├── verification-before-completion/ ← 4-layer completion check
+│   ├── writing-plans/              ← Plan authoring (writes to docs/plans/)
+│   └── writing-skills/             ← Skill authoring (enforces ADR-0004 + ADR-0009)
+├── commands/                       ← Slash commands
+│   ├── assign.md                   ← /harness:assign (team feature assignment)
+│   ├── audit.md, canary.md, init.md ← Entry points for the matching harness:<name> skills
+│   ├── dump.md                     ← /harness:dump (context dump utility)
+│   ├── review-pr.md                ← Thin wrapper over harness:requesting-code-review + receiving-code-review
+│   ├── scan-arch.md, sync-docs.md  ← Sub-steps invoked by harness:archive
+│   ├── scan-entropy.md, trim.md    ← Sub-steps invoked by harness:evolve
+├── hooks/                          ← Hook template scripts (silent on success)
+│   ├── stop-typecheck.sh, pre-protect-env.sh, post-format.sh
+│   ├── stop-commit-progress.sh, post-observe.sh, session-start.sh
 ├── docs/
 │   ├── architecture.md             ← This file
 │   ├── decisions/                  ← ADR (Architecture Decision Records)
-│   │   ├── README.md
-│   │   ├── 0001-skill-based-architecture.md
-│   │   ├── 0002-multi-language-templates.md
-│   │   ├── 0003-dogfooding-harness.md
-│   │   ├── 0004-skill-creator-methodology.md
-│   │   ├── 0005-tool-agnostic-agents-md.md  ← Superseded by 0007
-│   │   └── 0007-claude-code-only.md         ← Current architecture decision
-│   ├── design/
-│   │   └── skill-interaction-flow.md
-│   └── templates/                  ← Multi-language project templates
-│       ├── typescript/
-│       ├── python/
-│       ├── go/
-│       └── generic/                ← Language-agnostic generic templates
+│   │   ├── 0001 .. 0007 (existing)
+│   │   ├── 0008-vendor-superpowers-v5.md       ← v2.0.0: vendor strategy
+│   │   └── 0009-harness-delta-sidecar.md       ← v2.0.0: 4-file sidecar convention
+│   ├── design/                     ← Design notes
+│   ├── plans/                      ← Implementation plans (output of harness:writing-plans)
+│   ├── specs/                      ← Design specs (output of harness:brainstorming)
+│   ├── incidents/                  ← Debug notes (output of harness:systematic-debugging)
+│   └── templates/                  ← Multi-language project templates (typescript / python / go / generic)
 ├── references/                     ← Reference documents (loaded on demand)
-│   ├── harness-engineering-handbook.md
-│   ├── hook-patterns.md
-│   ├── anti-patterns.md
-│   └── team-parallel-development.md ← Multi-person collaboration and features.json team design
-└── scripts/                        ← Helper scripts
-    ├── self-test.sh
-    ├── health-score.py
-    └── generate-harness.sh
+├── scripts/
+│   ├── self-test.sh, health-score.py, generate-harness.sh
+│   └── sync-superpowers.sh         ← v2.0.0: upstream reconciliation helper (read-only diff report)
+└── evals/                          ← Project-level evals (top-level evals.json is the registry)
 ```
 
-## Core Skill Responsibilities
+## Vendored skill anatomy (4-file structure per ADR-0009)
 
-| Skill | Trigger Scenario | Input | Output |
-|-------|-----------------|-------|--------|
-| **harness:init** | Setting up Harness for a new project from scratch | Tech stack info, project description | CLAUDE.md + Hooks + docs/ + .claude/settings.json |
-| **harness:audit** | Evaluating and optimizing an existing project | Existing codebase | Health report + optimization recommendations + fix PR |
-| **harness:evolve** | Continuous iterative improvement | Failure logs, model updates | Harness simplification/enhancement suggestions + automated maintenance |
+Each of the 13 vendored skills contains exactly:
+
+```
+skills/<name>/
+├── SKILL.md            # superpowers v5.1.0 content verbatim, only 2 allowed edits applied:
+│                       #   1. frontmatter `name:` → `harness:<name>`
+│                       #   2. pointer line inserted: "> harness local rules: read harness-delta.md"
+├── harness-delta.md    # local rules (features.json / ADR / docs / Stop Hook integrations)
+├── UPSTREAM.md         # provenance (source SHA, fork date, last-sync date, intentional divergences)
+└── evals/evals.json    # ADR-0004 evals validating harness-delta behavior
+```
+
+The 6 harness-original skills (`using-harness`, `archive`, `audit`, `canary`, `evolve`, `init`) use a 2-file structure (`SKILL.md` + `evals/evals.json`) — no `harness-delta.md` or `UPSTREAM.md` since there is no upstream to track.
+
+## Skill triggers (abbreviated — see using-harness/SKILL.md for the full mandatory invocation table)
+
+| Trigger | Skill |
+|---|---|
+| Session start (loaded automatically) | `harness:using-harness` |
+| New project Harness setup | `harness:init` |
+| Existing project audit | `harness:audit` |
+| Pre-deployment planning | `harness:canary` |
+| Drift cleanup / "CLAUDE.md too long" | `harness:evolve` |
+| Task completion / archive | `harness:archive` |
+| Any creative/design task | `harness:brainstorming` |
+| Multi-step task before code | `harness:writing-plans` |
+| Implementing / fixing bugs | `harness:test-driven-development` |
+| Before claiming done | `harness:verification-before-completion` |
+| Bug / unexpected behavior | `harness:systematic-debugging` |
+| Parallel independent tasks | `harness:dispatching-parallel-agents` |
+| Subagent-per-task execution | `harness:subagent-driven-development` |
+| Plan execution | `harness:executing-plans` |
+| Need isolated workspace | `harness:using-git-worktrees` |
+| Asking for code review | `harness:requesting-code-review` |
+| Receiving code review | `harness:receiving-code-review` |
+| Implementation done; integration | `harness:finishing-a-development-branch` |
+| Creating or editing a skill | `harness:writing-skills` |
+
+## Commands → Skills relationship
+
+| Command | Relationship to skills |
+|---|---|
+| `audit.md`, `canary.md`, `init.md` | Entry point for the matching `harness:<name>` skill |
+| `review-pr.md` | Thin wrapper that invokes `harness:requesting-code-review` + `harness:receiving-code-review` |
+| `scan-arch.md`, `sync-docs.md` | Sub-steps used inside `harness:archive` |
+| `scan-entropy.md`, `trim.md` | Sub-steps used inside `harness:evolve` |
+| `assign.md`, `dump.md` | Independent utility commands (no 1:1 skill mapping) |
 
 ## Layer Dependency Rules
 
@@ -81,3 +124,7 @@ Prohibited:
 - Commands must not directly reference references (must go through skills)
 - Templates must not reference skills (templates are static resources consumed by skills)
 - Hooks are standalone deterministic scripts with no dependency on skills or commands
+
+## Upstream sync workflow
+
+`scripts/sync-superpowers.sh` compares each vendored skill's `UPSTREAM.md` SHA against the currently installed superpowers cache and emits a per-skill diff summary. The script is read-only; it never auto-applies changes. Reconciliation cadence is once per superpowers minor release; each diff is reviewed individually per ADR-0009.

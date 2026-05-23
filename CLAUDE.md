@@ -31,6 +31,8 @@ Any new or modified Skill must go through the skill-creator workflow — no exce
 - Never generate a CLAUDE.md template exceeding 60 lines
 - Never let Hook templates produce output on success
 - Never exceed 500 lines in a single Skill file
+- Never vendor a superpowers skill without `harness-delta.md`, `UPSTREAM.md`, and `evals/evals.json` (see ADR-0009)
+- Never modify a vendored `SKILL.md` body outside the 2 allowed edits (frontmatter `name:` + pointer line)
 
 ## Further Context
 - Architecture diagram: docs/architecture.md
@@ -39,3 +41,4 @@ Any new or modified Skill must go through the skill-creator workflow — no exce
 - Methodology reference manual: references/HarnessEngineering.md (primary source)
 - Concept quick reference: references/harness-engineering-handbook.md
 - Architecture decision (Claude Code only): docs/decisions/0007-claude-code-only.md
+- Architecture decisions (superpowers vendor strategy): docs/decisions/0008-vendor-superpowers-v5.md + docs/decisions/0009-harness-delta-sidecar.md

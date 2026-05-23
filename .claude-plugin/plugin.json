@@ -1,7 +1,7 @@
 {
   "name": "harness",
-  "version": "1.11.0",
-  "description": "AI Agent Harness Engineering plugin. Initialize new projects, audit existing harness health, plan with structured triple-format tasks, verify completion with rigid/flexible constraints, and archive specs — all in one install.",
+  "version": "2.0.0",
+  "description": "AI Agent Harness Engineering plugin. 19 skills under the harness: namespace covering planning, TDD, brainstorming, debugging, code review, worktree isolation, and verification — built on superpowers v5.1.0 with a harness-delta sidecar layer that integrates features.json, ADRs, and project-local docs.",
   "homepage": "https://github.com/huangbaixun/harness-engineering",
   "repository": "https://github.com/huangbaixun/harness-engineering",
   "author": {
