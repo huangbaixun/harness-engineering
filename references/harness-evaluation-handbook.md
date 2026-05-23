@@ -723,10 +723,10 @@ HEval 直接落到 Harness Engineering 第 2 原则上：**永远不要让创建
 
 ### D7 生态与文档
 
-- **0**：仅在单一工具上工作，路径硬编码，无文档。
-- **2**：单工具但文档完备；或多工具但路径仍硬编码。
+- **0**：路径硬编码，无文档。
+- **2**：文档存在但分散；未上架任何 marketplace。
 - **4**：上架 ≥1 marketplace；文档分层（README / handbook / ADR）；架构图 + ADR 体系完整。
-- **5**：跨 ≥3 工具兼容；marketplace 有 ≥3 自然增长 install；社区贡献者 ≥10；提供"扩展自身"的 skill（writing-skills 或等价物）。
+- **5**：marketplace 有 ≥3 自然增长 install；社区贡献者 ≥10；提供"扩展自身"的 skill（writing-skills 或等价物）。
 
 ---
 
