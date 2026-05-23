@@ -67,7 +67,7 @@ claude plugins add harness-engineering
 
 **第三步：持续受益**
 
-SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan / harness:tdd / harness:verify 三个工作流 Skill 在实现阶段自动介入，确保规划→实现→验证完整闭环。Commands 支持随时触发审计、PR 审查和代码熵增检测。
+SessionStart Hook 每次会话开启自动恢复进度上下文。harness:writing-plans / harness:test-driven-development / harness:verification-before-completion 三个工作流 Skill 在实现阶段自动介入，确保规划→实现→验证完整闭环。Commands 支持随时触发审计、PR 审查和代码熵增检测。
 
 ---
 
@@ -80,12 +80,12 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:plan /
 | **harness:init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（CLAUDE.md + Hooks + 模板） |
 | **harness:audit** | 「Agent 老是犯同样的错」/ 存量项目审计 | 七维度健康评分 + 优先级修复方案 |
 | **harness:evolve** | 「CLAUDE.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
-| **harness:router** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
-| **harness:plan** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为可验证任务块，`<action>/<verify>/<done>` 三段式结构 |
+| **harness:using-harness** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
+| **harness:writing-plans** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为可验证任务块，`<action>/<verify>/<done>` 三段式结构 |
 | **harness:canary** | 准备部署 / 发布规划 | 基于风险评分的灰度发布 Runbook，含分阶段流量切换、回滚触发条件、可观测性清单 |
 | **harness:archive** | 特性完成后归档 | Spec 归档至 `docs/archive/`、文档一致性检查、架构快检 |
-| **harness:tdd** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
-| **harness:verify** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
+| **harness:test-driven-development** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
+| **harness:verification-before-completion** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
 
 ---
 

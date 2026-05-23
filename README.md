@@ -67,7 +67,7 @@ Verify readiness: `bash init.sh` -- you should see "Harness ready" on success.
 
 **Step 3: Ongoing benefits**
 
-The SessionStart Hook automatically restores progress context at the start of every session. The harness:plan / harness:tdd / harness:verify workflow Skills engage automatically during implementation, ensuring a complete plan -> implement -> verify loop. Commands let you trigger audits, PR reviews, and entropy scans on demand.
+The SessionStart Hook automatically restores progress context at the start of every session. The harness:writing-plans / harness:test-driven-development / harness:verification-before-completion workflow Skills engage automatically during implementation, ensuring a complete plan -> implement -> verify loop. Commands let you trigger audits, PR reviews, and entropy scans on demand.
 
 ---
 
@@ -80,12 +80,12 @@ After installation, these Skills trigger automatically based on your intent -- n
 | **harness:init** | New project / "set up my Harness" | Generates complete 6-layer Harness structure (CLAUDE.md + Hooks + templates) |
 | **harness:audit** | "Agent keeps making the same mistakes" / legacy project audit | 7-dimension health score + prioritized fix plan |
 | **harness:evolve** | "CLAUDE.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
-| **harness:router** | Every scenario (1% rule, loaded each session) | Intent recognition, ensures the right Skill is triggered |
-| **harness:plan** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
+| **harness:using-harness** | Every scenario (1% rule, loaded each session) | Intent recognition, ensures the right Skill is triggered |
+| **harness:writing-plans** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
 | **harness:canary** | Ready to deploy / release planning | Risk-scored canary deployment runbook with staged rollout, rollback triggers, observability checklists |
 | **harness:archive** | Feature completed, ready to archive | Archives specs to `docs/archive/`, checks doc-code consistency, runs architecture health scan |
-| **harness:tdd** | Any code writing (bound to 1% rule) | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
-| **harness:verify** | Before declaring a task complete | 4-layer check (Functional / Quality / Architecture / Integration) |
+| **harness:test-driven-development** | Any code writing (bound to 1% rule) | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
+| **harness:verification-before-completion** | Before declaring a task complete | 4-layer check (Functional / Quality / Architecture / Integration) |
 
 ---
 
@@ -196,15 +196,15 @@ harness-engineering-plugin/
 ├── .claude-plugin/
 │   └── plugin.json                       <- Claude Code plugin manifest
 ├── skills/                               <- Unified harness: namespace
-│   ├── router/SKILL.md                   harness:router meta-Skill (1% rule)
+│   ├── using-harness/SKILL.md            harness:using-harness meta-Skill (1% rule)
 │   ├── init/SKILL.md                     harness:init project initialization
 │   ├── audit/SKILL.md                    harness:audit legacy audit
 │   ├── evolve/SKILL.md                   harness:evolve continuous evolution
 │   ├── archive/SKILL.md                  harness:archive completion archival
 │   ├── canary/SKILL.md                   harness:canary deployment runbook
-│   ├── plan/SKILL.md                     harness:plan pre-implementation planning
-│   ├── tdd/SKILL.md                      harness:tdd TDD workflow
-│   └── verify/SKILL.md                   harness:verify pre-completion verification
+│   ├── writing-plans/SKILL.md            harness:writing-plans pre-implementation planning
+│   ├── test-driven-development/SKILL.md  harness:test-driven-development TDD workflow
+│   └── verification-before-completion/SKILL.md  harness:verification-before-completion pre-completion verification
 ├── commands/
 │   ├── assign.md                <- /harness:assign (team sprint assignment)
 │   ├── canary.md                <- /harness:canary (deployment runbook)
