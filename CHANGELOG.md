@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.11.0 (2026-05-23)
+
+**Breaking: Claude Code only — multi-tool compatibility layer removed**
+
+- **Removed AGENTS.md as the canonical memory file**: `CLAUDE.md` once again becomes the single source of truth. The `AGENTS.md` + `CLAUDE.md` wrapper + `CODEBUDDY.md` wrapper pattern (introduced in v1.8.0) is removed.
+- **Removed `$TOOL_DIR` / `$TOOL_NAME` indirection** from `init.sh.template` and `AGENTS.md.template` (template itself deleted). Templates now hardcode `.claude` / "Claude Code".
+- **Documentation, training materials, and references** updated to reflect Claude-Code-only positioning: README × 2, CONTRIBUTING, architecture, marketplace submission, harness evaluation handbook (D7 dimension re-framed from "vendor-neutral / 跨工具" to "marketplace / 文档", total score 100→90), HarnessEngineering methodology doc, and the 90-minute training materials.
+- **ADR 0005 superseded** by new ADR 0007 ("Claude Code Only"). ADR 0006 (Harness 评价体系) catalogued in the index.
+- **Workshop sample** `training/sample-board/board-with-harness/AGENTS.md` renamed to `CLAUDE.md`; all training narrative re-pitched around CLAUDE.md instead of AGENTS.md as a cross-tool standard.
+
+Migration: existing user projects with their own `AGENTS.md` are not touched by this plugin. New projects generated via `harness:init` will only produce `CLAUDE.md`.
+
 ## v1.10.1 (2026-04-18)
 
 **Marketplace preparation + CodeBuddy removal**
