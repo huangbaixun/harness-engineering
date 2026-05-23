@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.0.0 (2026-05-23)
+
+**Breaking: superpowers v5.1.0 vendor integration**
+
+- **All 19 skills now under the `harness:` namespace.** End state: 13 vendored from `obra/superpowers` v5.1.0 (each with a `harness-delta.md` + `UPSTREAM.md` + `evals/evals.json` sidecar per ADR-0009) + 6 harness-original.
+- **4 forks renamed back to upstream names** (replaces v1.10.0's short-name renames):
+  - `harness:plan` → `harness:writing-plans`
+  - `harness:tdd` → `harness:test-driven-development`
+  - `harness:verify` → `harness:verification-before-completion`
+  - `harness:router` → `harness:using-harness` (kept as harness-original; absorbs the upstream `using-superpowers` role)
+- **10 new vendored skills:** `brainstorming`, `dispatching-parallel-agents`, `executing-plans`, `finishing-a-development-branch`, `receiving-code-review`, `requesting-code-review`, `subagent-driven-development`, `systematic-debugging`, `using-git-worktrees`, `writing-skills`. Each ships with a harness-delta integrating features.json / ADR / docs per spec §7.
+- **features.json schema migrated to v2.0** — status enum is now `proposed → building → done` (was `pending` / `in_progress` / `completed`); new optional `spec:` field for back-references to design specs in `docs/specs/`. Top-level `schema_version: "2.0"` declared.
+- **New ADRs:**
+  - ADR-0008 — "Vendor superpowers v5.1.0" — supersedes the implicit fork strategy embedded in v1.9.x–v1.11.x.
+  - ADR-0009 — "harness-delta sidecar 4-file convention" — defines the per-skill anatomy.
+- **New directories:**
+  - `docs/specs/` — design specs (output of `harness:brainstorming`). Replaces the pre-v2.0.0 default `docs/superpowers/specs/`; existing artifact migrated.
+  - `docs/incidents/` — debug notes (output of `harness:systematic-debugging`).
+- **Root `features.json` introduced** — this plugin now dogfoods its own conventions per ADR-0003.
+- **`scripts/sync-superpowers.sh` added** — read-only upstream reconciliation helper; emits per-skill diff summary against the currently installed superpowers cache. See ADR-0008 §"Implementation".
+- **`commands/review-pr.md` rewritten** as a thin wrapper over `harness:requesting-code-review` + `harness:receiving-code-review`. Other commands retained.
+- **CLAUDE.md** gains 2 prohibited-practice rules enforcing the vendor discipline (file still ≤ 60 lines).
+
+Migration: Old slash command names (`/harness:plan`, `/harness:tdd`, `/harness:verify`, `/harness:router`) no longer resolve. Use the full upstream names listed above. Existing user projects with their own features.json files using the old status enum will be flagged by `harness:audit` as a hint (back-compatible — new schema fields are optional; old status values still parse but should be migrated).
+
 ## v1.11.0 (2026-05-23)
 
 **Breaking: Claude Code only — multi-tool compatibility layer removed**
