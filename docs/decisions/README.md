@@ -9,3 +9,5 @@
 | 0005 | 工具无关架构 — AGENTS.md 作为通用记忆文件 | Superseded by 0007 | 2026-04-08 |
 | 0006 | Harness 组件评价体系（HEval） | 已采纳（设计阶段） | 2026-05-03 |
 | 0007 | Claude Code Only — 移除工具无关兼容层 | 已采纳 | 2026-05-23 |
+| 0008 | Vendor superpowers v5.1.0 | 已采纳 | 2026-05-23 |
+| 0009 | harness-delta sidecar 4 文件结构约定 | 已采纳 | 2026-05-23 |
