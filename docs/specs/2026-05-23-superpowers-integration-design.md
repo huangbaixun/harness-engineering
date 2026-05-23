@@ -2,7 +2,7 @@
 date: 2026-05-23
 topic: superpowers-integration
 type: feature
-status: building
+status: done
 features:
   - superpowers-vendor-foundation
   - superpowers-vendor-skills
