@@ -10,3 +10,6 @@
 
 # Misc local artifacts
 .test-write
+
+# Telemetry log written by scripts/post-observe.sh (PostToolUse hook)
+docs/agent-telemetry.jsonl
