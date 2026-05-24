@@ -53,8 +53,10 @@ if [[ -n "$COMMAND" ]]; then
     echo "BLOCKED: destructive database operation detected" >&2; exit 2
   fi
 
-  # Force push prevention
-  if echo "$COMMAND" | grep -qE 'git\s+push\s+.*--force|git\s+push\s+-f\b'; then
+  # Force push prevention — allow --force-with-lease and --force-if-includes
+  # (POSIX ERE has no negative lookahead, so we require --force followed by
+  # a non-hyphen char or end-of-string; that excludes --force-<suffix> flags.)
+  if echo "$COMMAND" | grep -qE 'git\s+push\s+.*(--force([^-]|$)|-f([^a-zA-Z0-9_-]|$))'; then
     echo "BLOCKED: git force push detected — use --force-with-lease instead" >&2; exit 2
   fi
 
