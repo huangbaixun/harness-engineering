@@ -21,10 +21,14 @@
   ],
   "userConfig": {
     "team_name": {
+      "type": "string",
+      "title": "Team name",
       "description": "Team name (used in sprint reports and features.json labels, e.g. 'Backend Team')",
       "sensitive": false
     },
     "default_tech_stack": {
+      "type": "string",
+      "title": "Default tech stack",
       "description": "Default tech stack (typescript / python / go / java / generic) — auto-selects template during project init",
       "sensitive": false
     }
