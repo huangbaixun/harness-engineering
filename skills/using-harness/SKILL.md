@@ -16,6 +16,16 @@ description: >
 
 If there is even a 1% chance one of the skills below applies, **you must invoke it** — you have no discretion.
 
+## Instruction Priority
+
+This meta-skill overrides default system behavior, but **user instructions always take precedence**:
+
+1. **User's explicit instructions** (CLAUDE.md, direct requests like "skip brainstorming", "don't run tests") — highest priority
+2. **Harness skills** (the catalog below) — override default behavior where they conflict
+3. **Default system prompt** — lowest priority
+
+The 1% rule governs *agent discretion*, not *user overrides*. If the user explicitly opts out of a skill, respect that — the user is in control.
+
 ## Skill catalog
 
 ### Vendored from superpowers v5.1.0 (13)
@@ -47,7 +57,7 @@ If there is even a 1% chance one of the skills below applies, **you must invoke 
 
 ## Hard rules
 - Invoke the relevant skill **before** any response or action (including clarifying questions).
-- Never rationalize skipping a skill ("this is simple", "I remember this", "the skill is overkill").
+- Never rationalize skipping a skill *on your own* ("this is simple", "I remember this", "the skill is overkill") — but **do** respect explicit user overrides (see Instruction Priority above).
 - When the user explicitly types `/<skill>`, invoke it immediately.
 
 ## Cross-skill handoffs
