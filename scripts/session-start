@@ -4,12 +4,28 @@
 #
 # 整合自 obra/superpowers session-start 模式 + Harness Engineering 结构化交接机制
 # 触发时机：每次会话启动（startup / clear / compact）
-# 原则：成功完全静默；只有在关键状态文件缺失时才输出提示（不是错误）
+# 输出层次：
+#   ① 元技能注入（ADR-0010，无条件发出）— 强制 "1% rule" 协议
+#   ② 进度/特性摘要（仅当 docs/claude-progress.json 存在时）
+#   ③ 归档提示（仅当 completed_features ≥ 10 时）
+# 原则：用户可见错误保持静默；session-context 注入是预期输出,不是 noise
 
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 cd "${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
 PROGRESS_FILE="docs/claude-progress.json"
 FEATURES_FILE="docs/features.json"
+
+# ── 元技能注入 (ADR-0010) ────────────────────────────────────────────────────
+# 在 SessionStart 时把 using-harness 正文注入到 session 上下文,强制建立
+# "先查技能再行动" 的元协议。来源单一: skills/using-harness/SKILL.md (ADR-0009)
+META_SKILL="$PLUGIN_ROOT/skills/using-harness/SKILL.md"
+if [ -f "$META_SKILL" ]; then
+  echo "<EXTREMELY_IMPORTANT>"
+  awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$META_SKILL"
+  echo "</EXTREMELY_IMPORTANT>"
+  echo ""
+fi
 
 # ── 检查进度文件 ──────────────────────────────────────────────────────────────
 if [ -f "$PROGRESS_FILE" ]; then

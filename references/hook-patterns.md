@@ -8,7 +8,7 @@
 | PostToolUse | 工具完成后立即触发 | 自动格式化、遥测记录 |
 | Stop | 主 Agent 完成响应后 | 类型检查、测试覆盖率报告 |
 | UserPromptSubmit | 用户提交 Prompt 前 | 注入额外上下文、防注入检测 |
-| SessionStart | 会话开始时 | 环境检查、状态加载、问候消息 |
+| SessionStart | 会话开始时 | 环境检查、状态加载、问候消息、**元技能正文注入**（见下） |
 | SessionEnd | 会话结束时 | 保存进度、发送通知、清理临时文件 |
 | SubagentStop | Subagent 完成时 | 触发进度同步、记录子任务成本 |
 | FileChanged | 文件变化时 | 触发增量测试 |
@@ -84,6 +84,33 @@ exit 其他 → 失败，不反馈给 Agent（非阻塞，静默失败）
   }
 }
 ```
+
+## SessionStart 元技能注入模式（ADR-0010）
+
+**问题**: 仅"在 skills/ 目录摆一个元技能 SKILL.md"无法让 LLM 真的在每次对话开始时遵循它——CLAUDE.md 是被动文档,模型是否读取、何时读取均不可控。
+
+**机制**: Claude Code 把 SessionStart hook 的 stdout 作为 *additional session context* 注入到模型的首轮上下文中。利用这个通道,把元技能正文(策略/红旗信号/技能目录)在对话开始时无条件推送给模型,套上 `<EXTREMELY_IMPORTANT>` 哨兵强化优先级。
+
+**最小实现**:
+```bash
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+META_SKILL="$PLUGIN_ROOT/skills/using-harness/SKILL.md"
+if [ -f "$META_SKILL" ]; then
+  echo "<EXTREMELY_IMPORTANT>"
+  awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$META_SKILL"  # 剥离 YAML frontmatter
+  echo "</EXTREMELY_IMPORTANT>"
+fi
+```
+
+**关键约束**:
+- **单一来源**: 注入内容必须从 SKILL.md 文件读取,**不可内嵌到 hook 脚本**,否则会与 `/harness:using-harness` 命令读到的版本漂移(ADR-0009)。
+- **路径耦合**: hook 脚本硬编码 `skills/using-harness/SKILL.md` 路径。任何重命名/迁移必须在同一 commit 内同步更新 hook,且 `sync-superpowers.sh` 等工具不得移动该路径。
+- **正文克制**: 注入每次都消耗 token。元技能 SKILL.md 必须保持精简(< 100 行,只放协议/目录),严禁堆积说明文档。
+- **优先级声明**: 元技能内部必须显式声明 "用户显式指令 > 元技能 > 默认系统提示",否则会出现机械执行 1% rule、压过用户意图的反模式。
+
+**何时不该用**:
+- 普通业务项目无需自建元技能注入——这是给方法论框架/能力插件用的。
+- 单技能场景:写一个具体技能比建一个元技能更划算。
 
 ## 最小可用 Hook 集（Day 1）
 

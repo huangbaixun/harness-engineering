@@ -48,9 +48,13 @@ All other content is byte-for-byte upstream.
 - Agents must load two files per skill invocation
 - Discipline required: SKILL.md body must never be edited outside the two allowed changes
 
+**Load-bearing note (added per ADR-0010):**
+`using-harness` is no longer ornamental — its SKILL.md body is read by the SessionStart hook on every conversation start and injected as session context. Renaming the file or changing its path requires a coordinated update to `scripts/session-start` in the same commit, and the body must stay tight (the cost is paid every session).
+
 ## Implementation
 Phase 1 of `docs/plans/2026-05-23-phase-0-and-1-foundations-and-rename.md` applies this convention to the 4 renamed forks. Phase 2 (separate plan) applies it to the 10 new vendored skills.
 
 ## Related
 - ADR-0004 (skill-creator methodology)
 - ADR-0008 (vendor superpowers v5.1.0)
+- ADR-0010 (meta-skill SessionStart injection — makes `using-harness` load-bearing)

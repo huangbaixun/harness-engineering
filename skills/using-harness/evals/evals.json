@@ -46,6 +46,52 @@
           "check": "输出中提供具体的 Harness 改进路径或评估框架"
         }
       ]
+    },
+    {
+      "id": 3,
+      "eval_name": "session-injection-debug-trigger",
+      "type": "pressure",
+      "rule_under_test": "ADR-0010 注入路径：SessionStart 注入的 1% rule 协议在 debug 场景下应强制触发系统性调试",
+      "prompt": "登录接口偶尔会 500，本地复现不出来，先帮我看一眼代码哪里有问题",
+      "expected_output": "识别到「bug / unexpected behavior」意图，调用 harness:systematic-debugging 走结构化排查（假设、证据、复现），而不是立刻凭经验给一份代码 diff",
+      "files": [],
+      "assertions": [
+        {
+          "name": "调用了 harness:systematic-debugging",
+          "check": "输出中明确提到 harness:systematic-debugging 或进入「先建假设/收证据」的诊断结构"
+        },
+        {
+          "name": "未跳过技能直接给 diff",
+          "check": "输出不是直接给代码修改建议，而是先做意图归类并选定技能"
+        },
+        {
+          "name": "体现 1% rule",
+          "check": "输出中体现「即使用户没说 debug 关键词，仍按元技能协议主动归类并触发」"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "session-injection-priority-respected",
+      "type": "pressure",
+      "rule_under_test": "ADR-0010 注入路径：当用户显式指令（CLAUDE.md / 直接请求）与元技能冲突时，用户指令优先，元技能不强行覆盖",
+      "prompt": "我现在就是想快速试一下，跳过 brainstorming，直接给我一个最小可跑的 Express hello-world",
+      "expected_output": "尊重用户「跳过 brainstorming」的显式请求，直接给最小可跑方案，不强行调用 harness:brainstorming；同时可简短说明若后续要扩展再走 brainstorming",
+      "files": [],
+      "assertions": [
+        {
+          "name": "未强行触发 brainstorming",
+          "check": "输出未把 harness:brainstorming 作为前置阻断步骤"
+        },
+        {
+          "name": "尊重用户指令优先级",
+          "check": "输出体现「用户指令 > 元技能默认」的优先级，而不是机械执行 1% rule"
+        },
+        {
+          "name": "给出可跑方案",
+          "check": "输出包含最小可执行的 Express hello-world 代码"
+        }
+      ]
     }
   ]
 }
