@@ -1,5 +1,16 @@
 # 四大 Claude Code 框架对比与 harness-engineering 借鉴建议
 
+> ⚠️ **Superseded by HEval (2026-05-03)**
+>
+> 本文档的星级矩阵作为初版选型依据保留为 historical context，但**不再是权威评价方法**。
+> 对外引用 harness 选型对比、为 harness-engineering 制定借鉴优先级时，请使用：
+>
+> - 方法论：[references/harness-evaluation-handbook.md](./harness-evaluation-handbook.md)
+> - 决策：[docs/decisions/0006-harness-evaluation-system.md](../docs/decisions/0006-harness-evaluation-system.md)
+> - 报告：`eval/reports/<harness>@<version>/report.md`（首批报告产出后链接到此处）
+>
+> 旧维度到新 7 维度的映射见 handbook §13。
+
 ## 一、单独画像
 
 ### OpenSpec（Fission-AI）—— 活规格引擎
