@@ -1,14 +1,19 @@
 # Upstream provenance: using-git-worktrees
 
-- **Source:** superpowers v5.1.0
-- **Commit SHA:** f2cbfbefebbfef77321e4c9abc9e949826bea9d7
-- **Forked at:** 2026-05-23
-- **Last synced:** 2026-05-23
+- **Source:** superpowers v6.3.0
+- **Commit SHA:** b36e0829c6d0140e93cfef2ca599b1b07d4a7797
+- **Forked at:** 2026-05-23 (initial vendor at v5.1.0, SHA f2cbfbefebbfef77321e4c9abc9e949826bea9d7)
+- **Last synced:** 2026-08-22 (v5.1.0 → v6.3.0)
 
 ## Local divergences (intentional)
 - `name:` frontmatter is `harness:using-git-worktrees` (was `using-git-worktrees`) — required to namespace into the harness plugin.
-- A single pointer line inserted between frontmatter and the first H1, pointing readers to `harness-delta.md`.
-- One blank line inserted between the pointer blockquote and the first H1 for readability.
+- A single pointer line inserted between the frontmatter and the body, pointing readers to `harness-delta.md`.
+- One blank line on each side of the pointer blockquote for readability.
+
+Everything else in `SKILL.md` is byte-for-byte upstream. Companion files are byte-for-byte upstream with no edits at all.
+
+## Vendored companion files (upstream, unmodified)
+- (none — this skill is a single `SKILL.md` upstream)
 
 ## Upstream changes we deliberately did NOT adopt
-- (none yet — initial vendor at v5.1.0)
+- (none — this sync took v6.3.0 in full)

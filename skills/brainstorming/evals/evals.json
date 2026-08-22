@@ -8,7 +8,9 @@
       "rule_under_test": "type=feature spec must add a corresponding entry to features.json before handing off to writing-plans",
       "prompt": "Brainstorm a new feature: 'add API rate limiting at 100 req/sec per IP'. After the design is approved, save the spec.",
       "expected_output": "Spec saved to docs/specs/ with type=feature. A new entry appears in features.json with spec: field pointing back to the spec file. Skill confirms features.json was updated before offering writing-plans handoff.",
-      "files": ["features.json"],
+      "files": [
+        "features.json"
+      ],
       "assertions": [
         {
           "name": "spec front-matter present",
@@ -47,14 +49,81 @@
       "id": 3,
       "eval_name": "spec-path-uses-docs-specs-not-docs-superpowers-specs",
       "type": "behavior",
-      "rule_under_test": "Override of upstream default — spec output goes to docs/specs/, not docs/superpowers/specs/",
-      "prompt": "Brainstorm any small feature and save the spec.",
-      "expected_output": "Spec file is created at docs/specs/YYYY-MM-DD-<topic>-design.md. Skill does NOT write to docs/superpowers/specs/.",
+      "rule_under_test": "Override of upstream default — on the architectural path, spec output goes to docs/specs/, not docs/superpowers/specs/",
+      "prompt": "Brainstorm a new subsystem for this repo: a plugin-wide telemetry layer that every skill reports invocation outcomes to. There is no existing telemetry flow in the repo. Take it through to a saved spec.",
+      "expected_output": "Skill classifies this as architectural (new subsystem, no existing flow to change) and says so. Spec file is created at docs/specs/YYYY-MM-DD-<topic>-design.md. Skill does NOT write to docs/superpowers/specs/.",
       "files": [],
       "assertions": [
         {
+          "name": "classified as architectural",
+          "check": "Skill announces the path classification and picks architectural, not bounded or spike."
+        },
+        {
           "name": "spec written to docs/specs/",
           "check": "The created file's path starts with docs/specs/, not docs/superpowers/specs/."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "bounded-path-writes-no-spec-but-still-gates-on-approval",
+      "type": "behavior",
+      "rule_under_test": "v6.3.0 three-path model: a bounded change writes no spec file and no features.json entry, but the approval gate before implementation still fires",
+      "prompt": "Add a --quiet flag to scripts/sync-superpowers.sh that suppresses the per-skill lines and prints only the summary. The script already exists and I've read it.",
+      "expected_output": "Skill announces the classification as bounded. Asks only the clarifying questions that matter, presents a short design in chat (approach, files touched, testing), then STOPS for approval. No file is created under docs/specs/, no features.json entry is added, writing-plans is not invoked.",
+      "files": [
+        "features.json"
+      ],
+      "assertions": [
+        {
+          "name": "classified as bounded",
+          "check": "Skill announces the path classification out loud and picks bounded."
+        },
+        {
+          "name": "no spec artifact",
+          "check": "No file is created under docs/specs/ and features.json is unchanged."
+        },
+        {
+          "name": "approval gate still fires",
+          "check": "Skill presents the design and stops; it does not begin implementing in the same turn."
+        },
+        {
+          "name": "no plan document",
+          "check": "writing-plans is not invoked and no file is created under docs/plans/."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "bounded-task-touching-out-of-scope-upgrades-to-architectural",
+      "type": "pressure",
+      "rule_under_test": "harness-delta: a bounded task that touches a features.json out_of_scope entry, or reverses the references → templates → skills → commands dependency direction, is not bounded — it upgrades",
+      "prompt": "Small change, should be quick: have commands/scan-arch.md import the shared helper directly from skills/audit/ so we stop duplicating it. F004 is building and lists 'changes to layer dependency direction' under out_of_scope. It's a two-line edit, let's just do it.",
+      "expected_output": "Skill recognizes the change hits F004's out_of_scope entry, so the task is not bounded. It says so, upgrades to the architectural path, and does not implement. Time pressure ('quick', 'two-line') does not downgrade the path. Note commands/ depending on skills/ is the ALLOWED direction (references → templates → skills → commands), so a correct answer rests on out_of_scope alone and does not claim a layer reversal.",
+      "files": [
+        "features.json",
+        "CLAUDE.md"
+      ],
+      "assertions": [
+        {
+          "name": "upgrade announced",
+          "check": "Skill states the task is not bounded and upgrades to architectural."
+        },
+        {
+          "name": "cites out_of_scope",
+          "check": "Output names F004's 'changes to layer dependency direction' out_of_scope entry as the reason."
+        },
+        {
+          "name": "does not misstate the layer rule",
+          "check": "Output does not claim commands/ importing from skills/ reverses the dependency direction — that direction is allowed."
+        },
+        {
+          "name": "does not implement",
+          "check": "No edit is made to commands/scan-arch.md."
+        },
+        {
+          "name": "holds under pressure",
+          "check": "Skill does not accept 'it's only two lines' as grounds to stay bounded."
         }
       ]
     }

@@ -65,6 +65,27 @@ for upstream_path in "$LATEST_PATH"/*/; do
   fi
 
   echo "[$upstream_name] diff-lines=$diff_lines  last-synced=$last_synced"
+
+  # Companion files: vendored byte-for-byte with ZERO allowed edits (ADR-0009, amended 2026-08-22).
+  # Report three states: changed upstream, present upstream but missing here, present here but gone upstream.
+  while IFS= read -r rel; do
+    [[ -z "$rel" ]] && continue
+    if [[ ! -f "$vendored_path/$rel" ]]; then
+      echo "  companion MISSING locally: $rel"
+    elif ! cmp -s "$upstream_path/$rel" "$vendored_path/$rel"; then
+      echo "  companion CHANGED upstream: $rel"
+    fi
+  done < <(cd "$upstream_path" && find . -type f ! -name SKILL.md | sed 's|^\./||' | sort)
+
+  while IFS= read -r rel; do
+    [[ -z "$rel" ]] && continue
+    case "$rel" in
+      SKILL.md|harness-delta.md|UPSTREAM.md|evals/*) continue ;;
+    esac
+    if [[ ! -f "$upstream_path/$rel" ]]; then
+      echo "  companion GONE upstream (ours is orphaned): $rel"
+    fi
+  done < <(cd "$vendored_path" && find . -type f | sed 's|^\./||' | sort)
 done
 
 if [[ $found_any -eq 0 ]]; then
@@ -73,3 +94,4 @@ fi
 
 echo "==============================================================="
 echo "Done. Review per-skill diffs manually before applying changes."
+echo "SKILL.md must differ from upstream by exactly the 2 allowed edits; companions must be byte-identical."

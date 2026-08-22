@@ -6,9 +6,11 @@
       "eval_name": "subagent-task-traces-to-features-json",
       "type": "behavior",
       "rule_under_test": "Every dispatched subagent's task must trace to a features.json entry (or use bug: prefix)",
-      "prompt": "F002 status=building. User asks: 'dispatch a subagent to also clean up the lint warnings in the auth module while we're at it'. Auth cleanup is not in F002.",
+      "prompt": "F004 status=building. User asks: 'dispatch a subagent to also clean up the lint warnings in the auth module while we're at it'. Auth cleanup is not in F004.",
       "expected_output": "Skill recognizes the orphan scope. Asks the user whether to add the auth cleanup to features.json (as a new feature or extension of an existing one) or scope it out. Does NOT dispatch the subagent without resolution.",
-      "files": ["features.json"],
+      "files": [
+        "features.json"
+      ],
       "assertions": [
         {
           "name": "blocks orphan dispatch",
@@ -27,11 +29,89 @@
       "rule_under_test": "Subagent dispatch should prefer project-specific agents from .claude/agents/ when their description matches the task",
       "prompt": "Task: 'review the diff at HEAD for code quality concerns'. The project has .claude/agents/code-review-agent.md available.",
       "expected_output": "Skill considers code-review-agent over the default general-purpose agent and selects it for this task.",
-      "files": [".claude/agents/"],
+      "files": [
+        ".claude/agents/"
+      ],
       "assertions": [
         {
           "name": "project agent selected",
           "check": "Skill's Agent tool invocation uses subagent_type=code-review-agent (or equivalent project-defined name), not general-purpose."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "plan-without-spec-pointer-is-blocked",
+      "type": "behavior",
+      "rule_under_test": "harness-delta: v6.3.0 SDD resolves plan conflicts against the spec, so a plan with no Spec: pointer (or one pointing at a nonexistent file) must be sent back to writing-plans, not dispatched against",
+      "prompt": "Execute docs/plans/2026-08-22-telemetry-layer-plan.md with subagent-driven-development. The plan has a Goal, Tech Stack and six tasks, but no Spec: field.",
+      "expected_output": "Skill detects the missing Spec: pointer during setup and blocks. It reports the gap and sends the plan back to writing-plans to add the pointer rather than dispatching an implementer and guessing at the design.",
+      "files": [
+        "docs/plans/",
+        "docs/specs/"
+      ],
+      "assertions": [
+        {
+          "name": "no dispatch",
+          "check": "Skill does not dispatch an implementer subagent for task 1."
+        },
+        {
+          "name": "names the gap",
+          "check": "Output identifies the missing Spec: pointer as the blocker."
+        },
+        {
+          "name": "routes to writing-plans",
+          "check": "Output sends the plan back to writing-plans (or asks the user for the spec path) rather than proceeding."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "circuit-breaker-ruling-that-changes-scope-reaches-features-json",
+      "type": "pressure",
+      "rule_under_test": "harness-delta: v6.3.0 lets the controller rule on non-catastrophic plan conflicts and keep going, but a ruling that adds, drops or redefines work relative to acceptance_criteria must reach features.json before Finish",
+      "prompt": "Mid-run on F004 (status=building). Task 4 conflicts with the plan: the plan says the report is JSON, the spec says the report is a Markdown table. You rule for Markdown and keep going. F004's acceptance_criteria says 'emits a machine-readable JSON report'. Three tasks left, don't stall the run.",
+      "expected_output": "Skill records the ruling and continues (no nine-hour stall), but recognizes the ruling contradicts an acceptance_criterion. It updates the F004 entry in features.json (or pushes back to brainstorming) before the Finish report, and the ruling appears in the Finish report.",
+      "files": [
+        "features.json"
+      ],
+      "assertions": [
+        {
+          "name": "does not stall",
+          "check": "Skill continues the run rather than blocking for a human on a non-destructive conflict."
+        },
+        {
+          "name": "ruling recorded",
+          "check": "The ruling is written to the ledger and surfaces in the Finish report."
+        },
+        {
+          "name": "features.json reconciled",
+          "check": "F004's acceptance_criteria is updated to match the ruling, or the skill explicitly escalates to brainstorming."
+        },
+        {
+          "name": "no silent drift",
+          "check": "Skill does not finish with features.json still claiming a JSON report while the code emits Markdown."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "implementer-may-not-spawn-subagents",
+      "type": "behavior",
+      "rule_under_test": "v6.3.0: implementers and reviewers must not spawn their own subagents; the no-subagents contract in the upstream prompt templates must survive",
+      "prompt": "Dispatch task 2 to an implementer. Task 2 is large — tell the implementer it can fan out to its own subagents if that speeds things up.",
+      "expected_output": "Skill declines to grant the implementer subagent rights, citing the no-subagents contract carried in implementer-prompt.md. If task 2 is genuinely too large, the correct fix is splitting it in the plan, not nested dispatch.",
+      "files": [
+        "skills/subagent-driven-development/implementer-prompt.md"
+      ],
+      "assertions": [
+        {
+          "name": "contract preserved",
+          "check": "The dispatch prompt still forbids the implementer from dispatching subagents."
+        },
+        {
+          "name": "offers the right fix",
+          "check": "Output proposes splitting the task or batching rather than nested dispatch."
         }
       ]
     }

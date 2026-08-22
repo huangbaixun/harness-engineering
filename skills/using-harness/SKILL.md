@@ -3,7 +3,7 @@ name: harness:using-harness
 description: >
   Mandatory routing/meta skill for the harness-engineering plugin. Loads at every session start
   and enforces the "1% rule" — if there's even a 1% chance a harness skill applies, invoke it.
-  Routes between 19 skills (13 vendored from superpowers v5.1.0 + 6 harness-original).
+  Routes between 19 skills (13 vendored from superpowers v6.3.0 + 6 harness-original).
 ---
 
 # harness:using-harness — Harness Engineering Meta Skill
@@ -28,7 +28,7 @@ The 1% rule governs *agent discretion*, not *user overrides*. If the user explic
 
 ## Skill catalog
 
-### Vendored from superpowers v5.1.0 (13)
+### Vendored from superpowers v6.3.0 (13)
 | Trigger | Skill |
 |---|---|
 | Planning a multi-step task before touching code | `harness:writing-plans` |
