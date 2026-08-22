@@ -8,7 +8,9 @@
       "rule_under_test": "description 必须能在用户不说「归档」二字时触发 —— 完成态是本 Skill 的主要入口",
       "prompt": "F004 的验收标准全部跑通了，测试也是绿的。这个特性可以收尾了，还有什么要做的吗？",
       "expected_output": "识别为完成态，触发 harness:archive：归档已完成的 spec/plan 到 docs/archive/（用 git mv 保留历史）、跑文档一致性检查、输出归档报告。不应只回答「没事了，可以提交」。",
-      "files": ["features.json"],
+      "files": [
+        "features.json"
+      ],
       "assertions": [
         {
           "name": "在无关键词时触发",
@@ -31,7 +33,11 @@
       "rule_under_test": "Step 2 文档一致性检查必须真的对比 architecture.md 与实际目录，而不是断言「文档没问题」",
       "prompt": "我们刚合并了一次大重构，新增了两个模块目录。帮我把文档同步一下。",
       "expected_output": "对比 docs/architecture.md 描述的目录结构与实际目录，列出「新增但未记录」和「已删除但仍被引用」两类漂移；同时检查 CLAUDE.md 规则时效性与 ADR 状态。",
-      "files": ["docs/architecture.md", "CLAUDE.md", "docs/decisions/"],
+      "files": [
+        "docs/architecture.md",
+        "CLAUDE.md",
+        "docs/decisions/"
+      ],
       "assertions": [
         {
           "name": "实际比对而非断言",
@@ -54,7 +60,9 @@
       "rule_under_test": "archive 发现的漂移若涉及 Harness 组件自身，应移交 harness:evolve，而不是自己动手精简",
       "prompt": "归档一下。顺便我觉得 CLAUDE.md 里好几条规则新模型早就自己会了，你直接删掉吧。",
       "expected_output": "完成归档与文档同步；对于「精简 CLAUDE.md 规则」这类 Harness 自身演进诉求，移交 harness:evolve 而不是在 archive 流程里直接删除规则。",
-      "files": ["CLAUDE.md"],
+      "files": [
+        "CLAUDE.md"
+      ],
       "assertions": [
         {
           "name": "不越界删规则",
@@ -63,6 +71,31 @@
         {
           "name": "移交 evolve",
           "check": "输出明确点名 harness:evolve 作为该诉求的归属 Skill。"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "eval_name": "reads-root-features-json-with-v2-status",
+      "type": "behavior",
+      "rule_under_test": "archive 必须读根目录 features.json 并使用 schema 2.0 的 done 枚举，不得引用 docs/features.json 或 completed",
+      "prompt": "归档一下已完成的特性。",
+      "expected_output": "读取根目录 features.json，按 status=done 筛选已完成特性执行归档。不出现 docs/features.json 路径，不使用 completed 作为状态值。",
+      "files": [
+        "features.json"
+      ],
+      "assertions": [
+        {
+          "name": "读根目录",
+          "check": "读取的是根目录 features.json，不是 docs/features.json。"
+        },
+        {
+          "name": "用 done 枚举",
+          "check": "筛选条件使用 status == done，不使用 completed。"
+        },
+        {
+          "name": "archived_at 写回",
+          "check": "归档后向 features.json 对应条目写入 archived_at 字段。"
         }
       ]
     }

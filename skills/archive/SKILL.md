@@ -30,7 +30,7 @@ description: >
 
 ### Step 1: Archive Completed Specs
 
-Check `docs/features.json` for features with `status: "completed"`:
+Check `features.json` (repo root; fall back to `docs/features.json` for legacy projects) for features with `status: "done"`:
 
 ```
 For each completed feature:
@@ -42,7 +42,7 @@ For each completed feature:
      completed_by: {{SESSION_ID}}
      feature_id: F-xxx
      ---
-  3. Update docs/features.json: add the archived_at field
+  3. Update features.json: add the archived_at field
 ```
 
 **Directory convention**: The archive directory is always `docs/archive/`. Create it if it does not exist. Use `git mv` instead of copy+delete to ensure `git log --follow` can trace the full history.
