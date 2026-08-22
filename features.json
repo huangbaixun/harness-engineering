@@ -4,7 +4,6 @@
   "product": "harness-engineering",
   "last_updated": "2026-05-23",
   "updated_by": "huangbaixun",
-
   "features": [
     {
       "id": "F001",
@@ -48,7 +47,9 @@
       "out_of_scope": [
         "Renaming the 4 existing forks (handled in F001)"
       ],
-      "dependencies": ["F001"],
+      "dependencies": [
+        "F001"
+      ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-2-vendor-new-skills.md",
       "related_files": []
     },
@@ -67,14 +68,84 @@
         "Repo-wide verification gates from spec §10 Phase 4 all pass"
       ],
       "out_of_scope": [],
-      "dependencies": ["F001", "F002"],
+      "dependencies": [
+        "F001",
+        "F002"
+      ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-3-and-4-docs-and-verify.md",
       "related_files": []
+    },
+    {
+      "id": "F004",
+      "name": "features-json-schema-drift-alignment",
+      "priority": 1,
+      "status": "proposed",
+      "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
+      "description": "对齐三处 v1→v2 features.json schema 迁移残留。F005 的前置：同步的一端是 GitHub，另一端是读写 features.json 的代码，读端坏着同步就是空转。",
+      "acceptance_criteria": [
+        "scripts/session-start 三元组读根目录 features.json，且状态枚举为 proposed/building/done；特性摘要段在本仓库实际产生输出",
+        "skills/archive/SKILL.md 不再引用 docs/features.json 与 status: completed",
+        "commands/assign.md 不再引用 docs/features.json、planned/ready/in_progress 或 depends_on/blocks/owner 等 v1 字段",
+        "仓库全局 grep 对 'docs/features.json' 零命中（历史 CHANGELOG 与 docs/plans/ 除外）",
+        "仓库全局 grep 对 v1 状态枚举零命中（同上除外）",
+        "三处改动各自有 eval 覆盖，且 SKILL.md 变更走 ADR-0004 流程"
+      ],
+      "out_of_scope": [
+        "features.json schema 本身的 2.1 升级（属于 F005）",
+        "assign.md 的归属来源改造（owner→assignee）—— 移交 F005，因 assignee 由 F005 引入"
+      ],
+      "dependencies": [],
+      "technical_notes": "session-start 是 load-bearing hook（ADR-0010），改动需与 skills/using-harness/SKILL.md 保持协调。archive 与 assign 的 SKILL.md/command 正文改动受 CLAUDE.md 强制 eval 流程约束。",
+      "related_files": [
+        "scripts/session-start",
+        "scripts/session-start.sh",
+        "skills/archive/SKILL.md",
+        "commands/assign.md"
+      ]
+    },
+    {
+      "id": "F005",
+      "name": "features-json-github-issue-sync",
+      "priority": 2,
+      "status": "proposed",
+      "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
+      "description": "features.json 与 GitHub/GHE Issue 双向同步。字段级单写所有权消除冲突面；SessionStart 拉、Stop 推两个 hook 触点；编辑热路径零网络。",
+      "acceptance_criteria": [
+        "未配置 github.enabled 时零网络调用，hook 整段跳过",
+        "断网时 brainstorming→plan→TDD→verify→finishing 闸门链完整可用，无闸门被阻断",
+        "连续两次 Stop 不产生第二次 PATCH（GET 比对托管区块后条件写入）",
+        "Issue body 中 harness:begin/end 托管区块外的内容字节不变",
+        "不带 harness/track 标签的 Issue 不被拉入 features.json",
+        "不带 harness/ 前缀的 label 不被修改或删除",
+        "超出单会话推送上限时明确报出剩余条数，无静默截断",
+        "Stop hook 在任何失败下均 exit 0，且失败时输出恰好一行警告",
+        "schema 2.1 新增字段全部可选，2.0 文件不加字段仍可正常工作",
+        "commands/assign.md 以 GitHub 单写的 assignee 作为归属来源，不再引用 v2.0 中不存在的 owner 字段"
+      ],
+      "out_of_scope": [
+        "Projects v2（看板/迭代/自定义字段）",
+        "Issue 评论的双向同步或读取",
+        "PR ↔ feature 关联",
+        "自动关闭或删除 Issue",
+        "多远端同时同步",
+        "任何形式的凭据管理（完全复用 gh auth）",
+        "冲突合并 UI"
+      ],
+      "dependencies": [
+        "F004"
+      ],
+      "technical_notes": "ADR-0011 定义字段所有权与 schema 2.1。认证复用 gh CLI；本机 github.com 与 catl.ghe.com 均已认证，两端 token 均具 repo scope。GHE 的 installed_version 未探到，故方案刻意不依赖 Projects v2。hook 脚本按本仓库三元组约定交付（bare + .sh + .cmd）。",
+      "related_files": [
+        "features.json",
+        "hooks/hooks.json",
+        "scripts/session-start",
+        "docs/templates/generic/features.json.template",
+        "commands/assign.md"
+      ]
     }
   ],
-
   "constraints": {
-    "implementation_order": "F001 → F002 → F003. F002 cannot start until F001 grep gate passes. F003 cannot start until F002 evals all pass.",
+    "implementation_order": "F001 → F002 → F003 → F004 → F005. F005 不能在 F004 完成前开始：同步依赖 features.json 读端正确。",
     "code_state_rule": "Each feature transitions proposed → building → done. The transition to done occurs only after the corresponding plan's verification step passes.",
     "scope_rule": "Out-of-scope items are tracked under their respective features; do not pull them forward.",
     "status_lifecycle": "proposed → building → done"

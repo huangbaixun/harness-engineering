@@ -12,3 +12,4 @@
 | 0008 | Vendor superpowers v5.1.0 | 已采纳 | 2026-05-23 |
 | 0009 | harness-delta sidecar 4 文件结构约定 | 已采纳（2026-08-22 修订：4 文件 + 上游 companion 文件） | 2026-05-23 |
 | 0010 | 元技能 SessionStart 注入 | 已采纳 | 2026-05-25 |
+| 0011 | features.json 字段所有权与 schema 2.1 | 提议中 | 2026-08-22 |
