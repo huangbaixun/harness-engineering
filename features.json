@@ -96,7 +96,9 @@
         "features.json schema 本身的 2.1 升级（属于 F005）",
         "assign.md 的归属来源改造（owner→assignee）—— 移交 F005，因 assignee 由 F005 引入",
         "layer 字段的 schema 等价物设计 —— 无 v2.0 对应物，需单独决策",
-        "为已有用户项目提供 docs/→根目录 的一键迁移工具（ADR-0012 明确不承诺）"
+        "为已有用户项目提供 docs/→根目录 的一键迁移工具（ADR-0012 明确不承诺）",
+        "references/team-parallel-development.md 的 owner/files_owned/worktree 方法论 schema —— 与已推迟到 F005 的 owner/layer 决策重叠，需一并处理",
+        "schema 2.0 缺少 cancelled 状态的补齐 —— ADR-0011 提议以 delivery_state: wontfix 承载，随 F005 交付"
       ],
       "dependencies": [],
       "technical_notes": "session-start 是 load-bearing hook（ADR-0010），改动需与 skills/using-harness/SKILL.md 保持协调。archive 与 assign 的 SKILL.md/command 正文改动受 CLAUDE.md 强制 eval 流程约束。 执行中浮现 ADR-0012（规范位置）：原「三处残留」判断不成立，根因是位置规范从未裁定，实际影响约 13 个文件。零命中类 grep 门禁因回退路径永久保留而失效，验收标准已据此改写。",

@@ -95,6 +95,33 @@
           "check": "输出中不包含「60行不够」「可以适当放宽」等妥协表述"
         }
       ]
+    },
+    {
+      "id": 4,
+      "eval_name": "generates-schema-2.0-features-json",
+      "type": "behavior",
+      "rule_under_test": "init 生成的 features.json 必须是 schema 2.0（根目录、proposed/building/done、name/dependencies/related_files），不得沿用 v1 示例字段",
+      "prompt": "帮我初始化一个新的 Python FastAPI 项目的 Harness 环境。",
+      "expected_output": "在仓库根目录创建 features.json，schema_version 2.0，特性条目使用 name/status/dependencies/related_files/acceptance_criteria，状态取值 proposed/building/done。不出现 title/owner/depends_on/blocks/files_owned/worktree 或 planned/in_progress/cancelled。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "建在根目录",
+          "check": "features.json 创建于仓库根目录，不是 docs/features.json。"
+        },
+        {
+          "name": "schema_version 2.0",
+          "check": "文件含 schema_version 字段且值为 2.0（或更高）。"
+        },
+        {
+          "name": "字段名为 v2.0",
+          "check": "特性条目使用 name 而非 title、dependencies 而非 depends_on、related_files 而非 files_owned；不含 blocks/worktree/owner。"
+        },
+        {
+          "name": "状态枚举为 v2.0",
+          "check": "status 取值属于 proposed/building/done，不出现 planned/in_progress/cancelled。"
+        }
+      ]
     }
   ]
 }

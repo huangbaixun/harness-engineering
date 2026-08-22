@@ -36,17 +36,17 @@
     },
     {
       "id": 2,
-      "eval_name": "files-owned-conflict-detection",
+      "eval_name": "related-files-conflict-detection",
       "type": "functional",
-      "prompt": "我们团队 2 人：simon 和 alice，都是 fullstack。当前有 F-010（files_owned: [\"src/auth/\"]）和 F-011（files_owned: [\"src/auth/middleware.ts\"]）同时处于 planned 状态。请运行 /harness:assign。",
+      "prompt": "我们团队 2 人：simon 和 alice，都是 fullstack。当前有 F-010（related_files: [\"src/auth/\"]）和 F-011（related_files: [\"src/auth/middleware.ts\"]）同时处于 planned 状态。请运行 /harness:assign。",
       "context_files": [
         "features.json"
       ],
-      "expected_output": "检测到 F-010 和 F-011 的 files_owned 存在路径前缀重叠（src/auth/），标记为冲突，不允许同时分配给两个不同成员，提示人类决策",
+      "expected_output": "检测到 F-010 和 F-011 的 related_files 存在路径前缀重叠（src/auth/），标记为冲突，不允许同时分配给两个不同成员，提示人类决策",
       "assertions": [
         {
           "name": "检测到文件冲突",
-          "check": "响应中明确指出 F-010 和 F-011 存在 files_owned 重叠冲突"
+          "check": "响应中明确指出 F-010 和 F-011 存在 related_files 重叠冲突"
         },
         {
           "name": "冲突任务不被同时分配",
@@ -54,7 +54,7 @@
         },
         {
           "name": "提示人类决策",
-          "check": "响应提示用户手动决策冲突 feature 的处理方式（串行化 / 重新切割 files_owned）"
+          "check": "响应提示用户手动决策冲突 feature 的处理方式（串行化 / 重新切割 related_files）"
         }
       ]
     },
@@ -103,6 +103,43 @@
         {
           "name": "给出行动建议",
           "check": "响应建议等待现有任务完成后再运行 /harness:assign 分配新任务"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "reads-root-features-json-with-v2-schema",
+      "type": "behavior",
+      "rule_under_test": "assign 必须以根目录 features.json 为主路径（ADR-0012），并使用 schema 2.0 的 proposed/building/done 与 dependencies 字段",
+      "prompt": "帮我把这个 Sprint 的特性分派一下，团队三个人。",
+      "expected_output": "读取根目录 features.json（docs/ 仅作回退）。未分配池按 status=proposed 筛选，进行中按 status=building。依赖图由 dependencies 构建，blocks 作为本地推导的反向边。不引用 planned/ready/in_progress、depends_on/blocks/files_owned 等 v1 字段。",
+      "context_files": [
+        "features.json"
+      ],
+      "assertions": [
+        {
+          "name": "根目录为主路径",
+          "check": "首选读取的是根目录 features.json，而非 docs/features.json。"
+        },
+        {
+          "name": "proposed 作未分配池",
+          "check": "未分配池的筛选条件是 status == proposed，不是 planned 或 ready。"
+        },
+        {
+          "name": "building 作进行中",
+          "check": "进行中的筛选条件是 status == building，不是 in_progress。"
+        },
+        {
+          "name": "dependencies 构图",
+          "check": "依赖图由 dependencies 字段构建；未假设存在 blocks 字段。"
+        },
+        {
+          "name": "related_files 判冲突",
+          "check": "文件冲突判定使用 related_files，不使用 v2.0 中不存在的 files_owned。"
+        },
+        {
+          "name": "owner/layer 不臆造",
+          "check": "不从 features.json 读取 owner 或 layer（v2.0 无此字段），而是向用户询问或标注为待 F005 解决。"
         }
       ]
     }
