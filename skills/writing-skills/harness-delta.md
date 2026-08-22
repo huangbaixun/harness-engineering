@@ -1,7 +1,7 @@
 # harness-delta: writing-skills
 
 ## Upstream
-superpowers v5.1.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -35,7 +35,24 @@ Every SKILL.md must have YAML frontmatter with at least:
 
 ### File size limits
 - CLAUDE.md ≤ 60 lines (project rule)
-- Individual SKILL.md ≤ 500 lines (project rule, per CLAUDE.md "Prohibited Practices")
+- Individual SKILL.md ≤ 500 lines (project rule, per CLAUDE.md "Prohibited Practices") — applies to **harness-original** skills only.
+  Vendored SKILL.md files are byte-for-byte upstream (ADR-0009), so their length is upstream's call, not ours: trimming one
+  would be an edit outside the 2 allowed and would make every future sync a manual merge. As of the v6.3.0 sync,
+  `writing-skills` (681 lines) and `subagent-driven-development` (570) exceed the cap by upstream's choice.
+
+### Terminology: SDO, not CSO (renamed in v6.3.0)
+Upstream renamed "Claude Search Optimization (CSO)" to **"Skill Discovery Optimization (SDO)"** and de-branded the surrounding
+prose from "Claude" to "agent". Use SDO in new harness docs, evals, and commit messages. The substance is unchanged:
+`description:` states triggering conditions only and never summarizes the workflow.
+
+### Match the form to the failure before writing guidance (new in v6.3.0)
+v6.3.0 added a section requiring you to classify the *baseline failure* before choosing a guidance form — prohibition +
+rationalization table for discipline failures, positive recipe/contract for wrong-shaped output, a structural REQUIRED slot
+for omissions, a conditional for context-dependent behavior. It also requires behavior-shaping wording to be **micro-tested
+against a no-guidance control** (5+ reps, every flagged match read by hand) before the full pressure scenarios.
+
+In this repo that sits *inside* step 3 of the ADR-0004 loop, it does not replace it: micro-tests verify wording, `evals/evals.json`
+with-skill-vs-baseline runs remain the commit gate.
 
 ### docs / spec linkage
 None directly; this is a meta-skill.

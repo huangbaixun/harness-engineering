@@ -1,7 +1,7 @@
 # harness-delta: requesting-code-review
 
 ## Upstream
-superpowers v5.1.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
