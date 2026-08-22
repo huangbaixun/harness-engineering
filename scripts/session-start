@@ -14,7 +14,16 @@ PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 cd "${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
 PROGRESS_FILE="docs/claude-progress.json"
-FEATURES_FILE="docs/features.json"
+
+# features.json 位置解析：schema 2.0 起本文件在仓库根目录；
+# docs/ 是 v1 的旧位置，保留以兼容尚未迁移的用户项目。
+resolve_features_file() {
+  if   [ -f "features.json" ];      then echo "features.json"
+  elif [ -f "docs/features.json" ]; then echo "docs/features.json"
+  else echo ""
+  fi
+}
+FEATURES_FILE="$(resolve_features_file)"
 
 # ── 元技能注入 (ADR-0010) ────────────────────────────────────────────────────
 # 在 SessionStart 时把 using-harness 正文注入到 session 上下文,强制建立
@@ -27,8 +36,11 @@ if [ -f "$META_SKILL" ]; then
   echo ""
 fi
 
-# ── 检查进度文件 ──────────────────────────────────────────────────────────────
-if [ -f "$PROGRESS_FILE" ]; then
+# ── 渲染启动摘要 ──────────────────────────────────────────────────────────────
+# progress 与 features 是两个独立文件，任一存在即渲染；各子块独立判定。
+if [ -f "$PROGRESS_FILE" ] || [ -n "$FEATURES_FILE" ]; then
+  IN_PROGRESS=""
+  if [ -f "$PROGRESS_FILE" ]; then
   # 读取关键状态字段并输出给 Agent（作为 session context）
   IN_PROGRESS=$(python3 -c "
 import json, sys
@@ -52,6 +64,7 @@ try:
 except Exception as e:
     pass
 " 2>/dev/null)
+  fi
 
   # ── features.json 摘要 ──────────────────────────────────────────────────────
   FEATURES_SUMMARY=""
@@ -60,16 +73,20 @@ except Exception as e:
 import json
 try:
     d = json.load(open('$FEATURES_FILE'))
+    # schema 2.0 枚举为 proposed/building/done；括号内为 v1 旧值，仅为兼容未迁移项目
+    V2_BUILDING = ('building', 'in_progress')
+    V2_PROPOSED = ('proposed', 'pending', 'ready', 'planned')
+    V2_DONE     = ('done', 'completed')
     feats = d.get('features', [])
-    pending = [f for f in feats if f.get('status') in ('pending', 'ready')]
-    ip = [f for f in feats if f.get('status') == 'in_progress']
-    done = [f for f in feats if f.get('status') in ('completed', 'done')]
+    ip      = [f for f in feats if f.get('status') in V2_BUILDING]
+    pending = [f for f in feats if f.get('status') in V2_PROPOSED]
+    done    = [f for f in feats if f.get('status') in V2_DONE]
     if ip:
-        print(f'  🔧 进行中特性：{ip[0][\"id\"]} {ip[0].get(\"name\",\"\")}')
+        print(f'  🔧 building：{ip[0][\"id\"]} {ip[0].get(\"name\",\"\")}')
     if pending:
         nxt = pending[0]
-        print(f'  📌 下一个特性：{nxt[\"id\"]} {nxt.get(\"name\",\"\")} (priority={nxt.get(\"priority\",\"?\")})')
-    print(f'  📊 特性统计：{len(done)} done / {len(ip)} in_progress / {len(pending)} pending')
+        print(f'  📌 下一个：{nxt[\"id\"]} {nxt.get(\"name\",\"\")} (priority={nxt.get(\"priority\",\"?\")})')
+    print(f'  📊 特性统计：{len(done)} done / {len(ip)} building / {len(pending)} proposed')
 except:
     pass
 " 2>/dev/null)
@@ -86,11 +103,14 @@ except:
   fi
   echo ""
   echo "  启动检查清单（按顺序执行，不要跳过）："
-  echo "  ① pwd 确认工作目录"
-  echo "  ② 读取 $PROGRESS_FILE 了解当前进度"
-  echo "  ③ 读取 $FEATURES_FILE 了解需求和验收标准"
-  echo "  ④ 运行项目测试命令确认基线（记录失败数量）"
-  echo "  ⑤ 确认 in_progress 特性，继续或标记完成后再取下一个"
+  # 编号动态生成：缺失的文件不占号，避免出现 ① ③ ④ 这种看起来像 bug 的断号
+  _n=0
+  _step() { _n=$((_n+1)); echo "  ${_n}. $1"; }
+  _step "pwd 确认工作目录"
+  [ -f "$PROGRESS_FILE" ] && _step "读取 $PROGRESS_FILE 了解当前进度"
+  [ -n "$FEATURES_FILE" ] && _step "读取 $FEATURES_FILE 了解需求和验收标准"
+  _step "运行项目测试命令确认基线（记录失败数量）"
+  _step "确认 building 特性，继续或标记 done 后再取下一个"
   echo "═══════════════════════════════════════"
 fi
 
