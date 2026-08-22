@@ -30,7 +30,7 @@ Any new or modified Skill must go through the skill-creator workflow — no exce
 - Never hardcode specific project names or team information in templates
 - Never generate a CLAUDE.md template exceeding 60 lines
 - Never let Hook templates produce output on success
-- Never exceed 500 lines in a single Skill file
+- Never exceed 500 lines in a harness-original Skill file (vendored SKILL.md files are upstream-verbatim; their length is upstream's call)
 - Never vendor a superpowers skill without `harness-delta.md`, `UPSTREAM.md`, and `evals/evals.json` (see ADR-0009)
 - Never modify a vendored `SKILL.md` body outside the 2 allowed edits (frontmatter `name:` + pointer line)
 

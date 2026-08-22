@@ -1,5 +1,33 @@
 # Changelog
 
+## v2.1.0 (2026-08-22)
+
+**Upstream sync: superpowers v5.1.0 → v6.3.0**
+
+All 13 vendored skills re-taken verbatim from `obra/superpowers` v6.3.0 (SHA `b36e082`). Each `SKILL.md` now differs from upstream by exactly the 2 edits ADR-0009 allows; `scripts/sync-superpowers.sh` reports `diff-lines=2` across the board.
+
+Notable upstream behavior changes now in effect:
+- **`brainstorming` classifies requests as spike / bounded / architectural.** Ceremony scales to the task — only the architectural path writes a spec file. The approval gate before implementation fires on all three paths and never scales down.
+- **`subagent-driven-development` reworked** (281 → 570 lines): one task review per task covering spec compliance *and* code quality (replacing the two sequential per-task reviews), a whole-branch review at the end, plans carrying a `Spec:` pointer, batched dispatch for small same-shape tasks, recorded circuit-breaker rulings instead of stalling on plan conflicts, and a no-nested-subagents contract for implementers and reviewers.
+- **`writing-skills`: "Claude Search Optimization (CSO)" is now "Skill Discovery Optimization (SDO)"**, plus new "Match the Form to the Failure" and wording micro-test sections.
+- **`writing-plans`** gains `Spec:`, `Global Constraints`, per-task `Interfaces` blocks, and a Task Right-Sizing section.
+- **`using-git-worktrees`** drops the legacy `~/.config/superpowers/worktrees/` path and renumbers its steps.
+- **`finishing-a-development-branch`** no longer reaches for `git worktree remove --force` when a tree holds uncommitted work — it stops and names the files.
+
+**Companion files now vendored (ADR-0009 amended).** The v5.1.0 vendor silently dropped the files upstream ships next to its skills, leaving live links in our `SKILL.md` bodies pointing at nothing. 26 companion files are now carried byte-for-byte: `brainstorming/{visual-companion.md, spec-document-reviewer-prompt.md, scripts/}`, `requesting-code-review/code-reviewer.md`, `systematic-debugging/{root-cause-tracing.md, defense-in-depth.md, condition-based-waiting.md, …}`, `subagent-driven-development/{implementer-prompt.md, task-reviewer-prompt.md, re-review-prompt.md, scripts/}`, `test-driven-development/writing-good-tests.md`, `writing-plans/plan-document-reviewer-prompt.md`, `writing-skills/{testing-skills-with-subagents.md, persuasion-principles.md, anthropic-best-practices.md, graphviz-conventions.dot, render-graphs.js, examples/}`. Companions take **zero** edits and are inventoried in each `UPSTREAM.md`.
+
+**Other changes:**
+- `harness-delta.md` updated for the skills whose upstream semantics moved: `brainstorming` (path-to-gate mapping table), `subagent-driven-development` (`Spec:` pointer gate, circuit-breaker rulings must reach features.json, corrected review-order hint), `writing-plans` (`Spec:` field + Global Constraints carry CLAUDE.md project rules), `writing-skills` (SDO rename, line-cap scoping, micro-tests sit inside ADR-0004 step 3, not instead of it).
+- `finishing-a-development-branch`'s `description:` reverted to upstream — the v5.1.0 vendor had extended it, which was outside the 2 allowed edits and undocumented.
+- **CLAUDE.md**: the ≤500-line SKILL.md cap now reads as harness-original-only. Upstream's `writing-skills` (681 lines) and `subagent-driven-development` (570) exceed it by upstream's choice, and trimming them would break the verbatim guarantee.
+- **`scripts/sync-superpowers.sh`** now also checks companion files, reporting three states: changed upstream, missing locally, orphaned here after upstream deleted it.
+- **Evals refreshed** for the three skills whose harness-delta semantics moved: `brainstorming` (3 → 5; bounded path writes no spec, out_of_scope/layer-reversal upgrades the path), `writing-skills` (3 → 5; companion vendoring, line-cap pressure test, SDO terminology), `subagent-driven-development` (2 → 5; missing `Spec:` pointer blocks, scope-changing rulings reconcile to features.json, no nested subagents).
+- **ADR-0009 amended** (2026-08-22) — "exactly four files" becomes "four harness files plus upstream companions".
+
+Not adopted: `using-superpowers` stays un-vendored (harness ships `using-harness`), so the `../using-superpowers/references/*` links in upstream bodies are inert here. Those files document Codex / Gemini CLI runtimes and ADR-0007 scopes this plugin to Claude Code; recorded per-skill under "deliberately did NOT adopt" rather than patched.
+
+Migration: none. No skill names, command names, or file paths changed.
+
 ## v2.0.0 (2026-05-23)
 
 **Breaking: superpowers v5.1.0 vendor integration**

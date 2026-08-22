@@ -2,7 +2,7 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.0.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v5.1.0), plus a set of supporting Commands, Hooks, and References.
+This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.1.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.3.0), plus a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
@@ -20,7 +20,7 @@ harness-engineering-plugin/
 │   ├── canary/                     ← Pre-deployment canary planning
 │   ├── evolve/                     ← Continuous iterative improvement
 │   ├── init/                       ← New project Harness initialization
-│   ├── # vendored from superpowers v5.1.0 (13) — 4-file structure
+│   ├── # vendored from superpowers v6.3.0 (13) — 4 harness files + upstream companions
 │   ├── brainstorming/              ← Spec authoring (writes to docs/specs/, gated by features.json)
 │   ├── dispatching-parallel-agents/← Parallel work dispatch
 │   ├── executing-plans/            ← Plan execution (reads from docs/plans/)
@@ -62,17 +62,19 @@ harness-engineering-plugin/
 └── evals/                          ← Project-level evals (top-level evals.json is the registry)
 ```
 
-## Vendored skill anatomy (4-file structure per ADR-0009)
+## Vendored skill anatomy (per ADR-0009, as amended 2026-08-22)
 
-Each of the 13 vendored skills contains exactly:
+Each of the 13 vendored skills contains 4 harness files plus whatever companion files upstream ships alongside that skill:
 
 ```
 skills/<name>/
-├── SKILL.md            # superpowers v5.1.0 content verbatim, only 2 allowed edits applied:
+├── SKILL.md            # superpowers v6.3.0 content verbatim, only 2 allowed edits applied:
 │                       #   1. frontmatter `name:` → `harness:<name>`
 │                       #   2. pointer line inserted: "> harness local rules: read harness-delta.md"
+├── <companions>        # upstream verbatim, ZERO edits — e.g. visual-companion.md, code-reviewer.md,
+│                       #   root-cause-tracing.md, *-prompt.md, scripts/, examples/
 ├── harness-delta.md    # local rules (features.json / ADR / docs / Stop Hook integrations)
-├── UPSTREAM.md         # provenance (source SHA, fork date, last-sync date, intentional divergences)
+├── UPSTREAM.md         # provenance (source SHA, fork date, last-sync date, divergences, companion inventory)
 └── evals/evals.json    # ADR-0004 evals validating harness-delta behavior
 ```
 
@@ -128,3 +130,5 @@ Prohibited:
 ## Upstream sync workflow
 
 `scripts/sync-superpowers.sh` compares each vendored skill's `UPSTREAM.md` SHA against the currently installed superpowers cache and emits a per-skill diff summary. The script is read-only; it never auto-applies changes. Reconciliation cadence is once per superpowers minor release; each diff is reviewed individually per ADR-0009.
+
+The script compares `SKILL.md` only. After applying a sync, verify the invariants directly: each vendored `SKILL.md` must differ from upstream by exactly the 2 allowed edits, and each companion file must be byte-identical (`cmp`). Last sync: **v5.1.0 → v6.3.0 on 2026-08-22**.
