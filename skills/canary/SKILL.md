@@ -51,7 +51,7 @@ Extract:
 
 **1b. Constraint check (if features.json exists)**
 ```bash
-cat docs/features.json
+cat features.json 2>/dev/null || cat docs/features.json
 ```
 
 Identify which features are being deployed and their constraint types:

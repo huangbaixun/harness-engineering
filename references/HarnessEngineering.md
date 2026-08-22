@@ -830,7 +830,7 @@ project-root/
   "session_startup_checklist": [
     "运行 pwd 确认工作目录",
     "读取本文件了解当前状态",
-    "读取 docs/features.json 了解完整需求和验收标准",
+    "读取 features.json 了解完整需求和验收标准",
     "运行 pnpm test 确认基线，记录失败数量",
     "确认 in_progress 特性，继续或标记完成后再取下一个"
   ],
@@ -1066,7 +1066,7 @@ docs/decisions/      → 为什么这样做（决策记录，人维护，Agent �
 启动检查清单（按顺序执行，不要跳过）：
 1. 运行 `pwd` 确认当前工作目录
 2. 读取 docs/claude-progress.json 了解当前进度
-3. 读取 docs/features.json 了解完整特性列表和验收标准
+3. 读取 features.json 了解完整特性列表和验收标准
 4. 运行 `pnpm test` 确认测试基线（记录失败数量）
 5. 确认 in_progress 特性，继续或标记完成后再取下一个
 
@@ -2248,7 +2248,7 @@ FEATURE_ID=$(cat docs/claude-progress.json | jq -r '.in_progress.id // empty')
 if [ -z "$FEATURE_ID" ]; then exit 0; fi
 
 # 检查该特性是否需要影子验证
-SHADOW_ENABLED=$(cat docs/features.json | \
+SHADOW_ENABLED=$(cat features.json | \
   jq --arg id "$FEATURE_ID" \
   '.features[] | select(.id == $id) | .shadow_validation.enabled // false')
 

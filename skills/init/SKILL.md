@@ -35,7 +35,7 @@ After running this Skill, the following files will be generated in the project r
 | `docs/architecture.md` | Architecture diagram, Agent spatial awareness document, 100-150 lines | Yes |
 | `docs/decisions/README.md` | ADR index | Yes |
 | `docs/claude-progress.json` | Progress tracking (Agent-writable, requires archiving mechanism) | Yes |
-| `docs/features.json` | Requirements list (Agent read-only, required for multi-person/multi-Agent setups) | Yes/Optional (depends on team size) |
+| `features.json` (repo root, per ADR-0012) | Requirements list (Agent read-only, required for multi-person/multi-Agent setups) | Yes/Optional (depends on team size) |
 | `docs/archive/` | Archive directory (prevents unbounded token growth) | Yes (generated alongside the above two) |
 
 > **User expectation**: After initialization, running `bash init.sh` should display a summary of the current project status, indicating the Harness foundation is ready.
@@ -231,7 +231,12 @@ Use JSON instead of Markdown: Agents respect structured data significantly more 
 - If the Agent discovers requirement changes or new requirements, record them in the `notes` field of `claude-progress.json` for human review before deciding whether to update features.json
 - Violating this principle leads to a trust crisis of "AI silently changing requirements"
 
-**Cancel, don't delete principle**: When a requirement is cancelled, change `status` to `"cancelled"` and fill in `cancelled_reason` — **never delete entries**.
+**Cancel, don't delete principle**: When a requirement is cancelled, record it rather than deleting the entry — **never delete entries**.
+
+> **Open gap:** schema 2.0's `status` lifecycle is `proposed → building → done`; it has no `cancelled`
+> value. ADR-0011 proposes `delivery_state: wontfix` as the home for this semantics, but that field
+> ships with F005. Until then, record the cancellation in `technical_notes` rather than inventing a
+> `status` value the schema does not define.
 - Deletion loses historical decision context; the Agent may re-propose the same direction in the future
 - Cancelled entries represent "reasons not to do this" — they are valuable constraint information
 
@@ -239,21 +244,25 @@ Use JSON instead of Markdown: Agents respect structured data significantly more 
 
 ```json
 {
-  "id": "F-003",
-  "title": "OAuth Login",
-  "status": "in_progress",
-  "priority": "high",
+  "id": "F003",
+  "name": "OAuth Login",
+  "status": "building",
+  "priority": 1,
+  "spec": "docs/specs/2026-08-22-oauth-login-design.md",
   "description": "Support GitHub / Google OAuth",
-  "owner": "agent-alice",
-  "depends_on": ["F-001"],
-  "blocks": ["F-005"],
-  "files_owned": ["src/auth/", "src/middleware/oauth.ts"],
-  "worktree": "feature/oauth",
-  "acceptance": "All OAuth tests pass, no hardcoded .env values"
+  "acceptance_criteria": [
+    "GitHub OAuth round-trip completes and issues a session",
+    "Google OAuth round-trip completes and issues a session",
+    "No credentials are read from hardcoded .env values"
+  ],
+  "out_of_scope": ["SAML / enterprise SSO"],
+  "dependencies": ["F001"],
+  "technical_notes": "",
+  "related_files": ["src/auth/", "src/middleware/oauth.ts"]
 }
 ```
 
-Valid `status` values: `planned` -> `in_progress` -> `done` | `cancelled`
+Valid `status` values (schema 2.0): `proposed` -> `building` -> `done`
 
 #### Token Growth and Archiving Mechanism
 
@@ -275,7 +284,7 @@ Also generate the archive directory skeleton:
 
 ```
 docs/
-├── features.json              <- Active requirements (planned + in_progress)
+├── features.json              <- Active requirements (proposed + building)
 ├── claude-progress.json       <- Current progress (in_progress + blockers)
 └── archive/                   <- Archive directory (Agent does not proactively read)
     ├── .gitkeep
