@@ -1,3 +1,16 @@
+---
+name: harness:canary
+description: >
+  Pre-deployment canary and rollout planning. Activate when the user mentions "deploy", "ship it",
+  "release", "roll out", "go live", "production", "deploy plan", "deployment runbook", "canary",
+  "staged rollout", "blue-green", "rollback plan", "feature flag rollout", "harness canary",
+  or invokes /harness:canary.
+  Also use this Skill without being asked whenever work that just passed verification is headed for
+  production, and treat it as mandatory when the change touches database migrations, authentication,
+  payment paths, or a new environment or region — the gap between "verified" and "safely in
+  production" is where incidents originate.
+---
+
 # harness:canary — Pre-Deployment Canary Planning
 
 > Generate a structured deployment runbook with risk-based canary stages, rollback triggers, and observability checklists.

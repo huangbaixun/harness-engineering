@@ -1,3 +1,16 @@
+---
+name: harness:archive
+description: >
+  Completion archiving and documentation sync at the end of a unit of work. Activate when the user
+  mentions "archive", "task is done", "feature complete", "wrap up", "end of sprint", "sprint cleanup",
+  "sync the docs", "docs are out of date", "documentation drift", "clean up finished specs",
+  "harness archive", or invokes /harness:archive.
+  Also use this Skill without being asked whenever harness:verification-before-completion has just
+  passed, whenever a feature's status is about to move to done, after a major refactor lands, or when
+  the session reports a growing pile of completed features — those are the moments handoff artifacts
+  and documentation silently fall out of sync with the code.
+---
+
 # harness:archive — Completion Archiving and Documentation Sync
 
 > **Source**: OpenSpec `/opsx:archive` + Handbook S K.6 "Documentation Sync Agent" + Handbook S 2.3 "Structured Handoff Artifacts"

@@ -2,11 +2,13 @@
   "description": "harness-engineering plugin eval 索引。各 Skill 的 eval 已按 skill-creator 格式拆分到对应目录。",
   "eval_strategy": "两类评测：functional（Skill 是否正确触发并完成任务）+ pressure（关键约束在用户施压时是否坚守）。参考 obra/superpowers Skill TDD 和 Anthropic skill-creator 方法论。",
   "per_skill_evals": {
-    "harness:init":    "skills/init/evals/evals.json    （3 evals：新项目初始化、已有CLAUDE.md检测、60行压力测试）",
-    "harness:audit":   "skills/audit/evals/evals.json   （1 eval：Agent 退化诊断）",
-    "harness:evolve":  "skills/evolve/evals/evals.json  （1 eval：模型升级后精简）",
+    "harness:init": "skills/init/evals/evals.json    （3 evals：新项目初始化、已有CLAUDE.md检测、60行压力测试）",
+    "harness:audit": "skills/audit/evals/evals.json   （1 eval：Agent 退化诊断）",
+    "harness:archive": "skills/archive/evals/evals.json （3 evals：无关键词触发、文档漂移双向检查、Harness 自身漂移移交 evolve）",
+    "harness:canary": "skills/canary/evals/evals.json  （3 evals：口语化上线触发、迁移场景强制不豁免、本地变更负例不误触发）",
+    "harness:evolve": "skills/evolve/evals/evals.json  （1 eval：模型升级后精简）",
     "harness:using-harness": "skills/using-harness/evals/evals.json   （2 evals：无关键词触发压力测试）",
-    "coding-agent":    "evals/agents/coding-agent.json           （3 evals：单特性/Blocker/两阶段Review压力测试）"
+    "coding-agent": "evals/agents/coding-agent.json           （3 evals：单特性/Blocker/两阶段Review压力测试）"
   },
   "skill_creator_compatibility": {
     "format": "skill-creator evals.json 格式（id, eval_name, prompt, expected_output, files, assertions[]）",
