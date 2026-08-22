@@ -130,7 +130,7 @@
 git pull origin main                      # 先拉最新，确保 owner 字段是最新状态
 # 检查 F-002 的 owner 是否仍为 unassigned
 # 如果是，编辑 features.json 把 owner 改为自己的名字
-git add docs/features.json
+git add features.json
 git commit -m "claim(F-002): alice 认领用户管理 UI"
 git push origin main                      # 立即推送，先到先得
 # 如果 push 被拒（别人抢先），则 pull 后重新检查

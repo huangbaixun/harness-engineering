@@ -83,24 +83,35 @@
       "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
       "description": "对齐三处 v1→v2 features.json schema 迁移残留。F005 的前置：同步的一端是 GitHub，另一端是读写 features.json 的代码，读端坏着同步就是空转。",
       "acceptance_criteria": [
-        "scripts/session-start 三元组读根目录 features.json，且状态枚举为 proposed/building/done；特性摘要段在本仓库实际产生输出",
-        "skills/archive/SKILL.md 不再引用 docs/features.json 与 status: completed",
-        "commands/assign.md 不再引用 docs/features.json、planned/ready/in_progress 或 depends_on/blocks/owner 等 v1 字段",
-        "仓库全局 grep 对 'docs/features.json' 零命中（历史 CHANGELOG 与 docs/plans/ 除外）",
-        "仓库全局 grep 对 v1 状态枚举零命中（同上除外）",
-        "三处改动各自有 eval 覆盖，且 SKILL.md 变更走 ADR-0004 流程"
+        "scripts/session-start 三元组读根目录 features.json（docs/ 为回退），状态枚举为 proposed/building/done；特性摘要段在本仓库实际产生输出",
+        "skills/archive/SKILL.md 不再以 docs/features.json 为主路径，不再用 status: completed 作为筛选值",
+        "commands/assign.md 不再引用 planned/ready/in_progress 或 depends_on/blocks/files_owned 等 v1 字段",
+        "docs/templates/ 三份模板与 init.sh.template 按 ADR-0012 在根目录创建 features.json，并使用 schema 2.0 枚举",
+        "agents/coding-agent.md、commands/evals/evals.json、skills/canary/SKILL.md、skills/init/SKILL.md、references/ 两份文档均以根目录为主路径",
+        "全仓库不存在【以 docs/features.json 为主路径】的读端；作为 legacy 回退出现是合法的（ADR-0012）",
+        "全仓库不存在裸 v1 状态枚举作为 features.json 筛选条件；v1 值仅可作为兼容分支出现且需注释说明",
+        "三处核心改动各有 eval 覆盖，SKILL.md 变更走 ADR-0004 流程"
       ],
       "out_of_scope": [
         "features.json schema 本身的 2.1 升级（属于 F005）",
-        "assign.md 的归属来源改造（owner→assignee）—— 移交 F005，因 assignee 由 F005 引入"
+        "assign.md 的归属来源改造（owner→assignee）—— 移交 F005，因 assignee 由 F005 引入",
+        "layer 字段的 schema 等价物设计 —— 无 v2.0 对应物，需单独决策",
+        "为已有用户项目提供 docs/→根目录 的一键迁移工具（ADR-0012 明确不承诺）"
       ],
       "dependencies": [],
-      "technical_notes": "session-start 是 load-bearing hook（ADR-0010），改动需与 skills/using-harness/SKILL.md 保持协调。archive 与 assign 的 SKILL.md/command 正文改动受 CLAUDE.md 强制 eval 流程约束。",
+      "technical_notes": "session-start 是 load-bearing hook（ADR-0010），改动需与 skills/using-harness/SKILL.md 保持协调。archive 与 assign 的 SKILL.md/command 正文改动受 CLAUDE.md 强制 eval 流程约束。 执行中浮现 ADR-0012（规范位置）：原「三处残留」判断不成立，根因是位置规范从未裁定，实际影响约 13 个文件。零命中类 grep 门禁因回退路径永久保留而失效，验收标准已据此改写。",
       "related_files": [
         "scripts/session-start",
         "scripts/session-start.sh",
         "skills/archive/SKILL.md",
-        "commands/assign.md"
+        "commands/assign.md",
+        "docs/templates/generic/init.sh.template",
+        "docs/templates/generic/CLAUDE.md.template",
+        "docs/templates/generic/claude-progress.json.template",
+        "agents/coding-agent.md",
+        "commands/evals/evals.json",
+        "skills/canary/SKILL.md",
+        "skills/init/SKILL.md"
       ]
     },
     {

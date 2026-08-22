@@ -7,7 +7,8 @@ set -euo pipefail
 
 PROJECT_NAME="{{PROJECT_NAME}}"
 PROGRESS_FILE="docs/claude-progress.json"
-FEATURES_FILE="docs/features.json"
+# ADR-0012: 规范位置为仓库根目录；docs/ 为兼容旧项目的回退
+FEATURES_FILE="$( [ -f features.json ] && echo features.json || echo docs/features.json )"
 
 echo "════════════════════════════════════"
 echo "  ${PROJECT_NAME} — Harness 就绪检查"
@@ -47,14 +48,18 @@ if [ -f "$FEATURES_FILE" ]; then
 import json
 
 try:
-    with open("docs/features.json") as f:
-        features = json.load(f)
-    pending = [f for f in features if f.get("status") == "pending"]
-    in_progress = [f for f in features if f.get("status") == "in_progress"]
-    done = [f for f in features if f.get("status") == "done"]
-    print(f"  进行中：{len(in_progress)} | 待处理：{len(pending)} | 已完成：{len(done)}")
-    for f in in_progress:
-        print(f"  → {f.get('id','?')}: {f.get('title','')}")
+    import os
+    path = "features.json" if os.path.exists("features.json") else "docs/features.json"
+    with open(path) as fh:
+        data = json.load(fh)
+    # schema 2.0: 顶层是对象，特性在 features 键下
+    features = data.get("features", data) if isinstance(data, dict) else data
+    building = [f for f in features if f.get("status") in ("building", "in_progress")]
+    proposed = [f for f in features if f.get("status") in ("proposed", "pending", "ready")]
+    done     = [f for f in features if f.get("status") in ("done", "completed")]
+    print(f"  building：{len(building)} | proposed：{len(proposed)} | done：{len(done)}")
+    for f in building:
+        print(f"  → {f.get('id','?')}: {f.get('name','')}")
 except Exception as e:
     print(f"  （特性文件读取失败：{e}）")
 PYEOF

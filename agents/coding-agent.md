@@ -26,7 +26,7 @@ Step 2: Read current progress
   → If there is a blocker with needs_human: true, stop immediately and report it, wait for human intervention
 
 Step 3: Read feature checklist
-  Read docs/features.json
+  Read features.json
   → Confirm the acceptance_criteria for the in_progress feature
   → Confirm out_of_scope items (these must absolutely not be implemented)
 

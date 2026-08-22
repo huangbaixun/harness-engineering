@@ -35,7 +35,7 @@ After running this Skill, the following files will be generated in the project r
 | `docs/architecture.md` | Architecture diagram, Agent spatial awareness document, 100-150 lines | Yes |
 | `docs/decisions/README.md` | ADR index | Yes |
 | `docs/claude-progress.json` | Progress tracking (Agent-writable, requires archiving mechanism) | Yes |
-| `docs/features.json` | Requirements list (Agent read-only, required for multi-person/multi-Agent setups) | Yes/Optional (depends on team size) |
+| `features.json` (repo root, per ADR-0012) | Requirements list (Agent read-only, required for multi-person/multi-Agent setups) | Yes/Optional (depends on team size) |
 | `docs/archive/` | Archive directory (prevents unbounded token growth) | Yes (generated alongside the above two) |
 
 > **User expectation**: After initialization, running `bash init.sh` should display a summary of the current project status, indicating the Harness foundation is ready.
