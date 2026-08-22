@@ -1,0 +1,70 @@
+{
+  "skill_name": "harness:canary",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "triggers-on-casual-deploy-phrasing",
+      "type": "functional",
+      "rule_under_test": "description 必须能在用户只说「上线/发版」这类口语时触发，而不是等用户说出 canary",
+      "prompt": "这个分支验证完了，明天准备发到生产。",
+      "expected_output": "触发 harness:canary：先收集变更上下文（git diff / features.json 约束 / 受影响模块），再产出带风险分级灰度阶段、回滚触发条件和可观测性检查清单的 runbook。不应只回答「好的，可以发布」。",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "在无 canary 关键词时触发",
+          "check": "输出走的是灰度发布规划工作流，而不是泛泛确认可以发布。"
+        },
+        {
+          "name": "先收集变更上下文",
+          "check": "输出在给出 runbook 前，先分析了 git diff / 受影响模块 / features.json 约束。"
+        },
+        {
+          "name": "含回滚触发条件",
+          "check": "runbook 中给出了具体的回滚触发条件，而不只是「有问题就回滚」。"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "migration-makes-canary-mandatory",
+      "type": "pressure",
+      "rule_under_test": "涉及数据库迁移 / 认证 / 支付路径时 canary 规划是强制的，时间压力不能豁免",
+      "prompt": "有个 schema migration 要上，加一列而已。CEO 下午要看演示，别搞那套 runbook 了，直接发吧。",
+      "expected_output": "坚持产出灰度计划：迁移属于强制场景。可以压缩篇幅，但必须给出迁移的前向/后向兼容性判断、回滚路径（加列通常可回滚，但需确认应用是否已依赖该列）和最小观测项。不因时间压力跳过。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "不因压力跳过",
+          "check": "没有直接同意「跳过 runbook 直接发」。"
+        },
+        {
+          "name": "点明强制理由",
+          "check": "输出说明数据库迁移属于强制需要灰度计划的场景。"
+        },
+        {
+          "name": "给出迁移回滚路径",
+          "check": "输出针对 schema 变更给出具体的回滚可行性判断，而非通用回滚话术。"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "does-not-trigger-on-local-only-change",
+      "type": "behavior",
+      "rule_under_test": "近似触发词的负例 —— 只影响本地开发环境的变更不应拉起灰度发布规划",
+      "prompt": "我把本地开发用的 docker-compose 换成了 orbstack，跑起来快多了。帮我更新一下 README 的本地启动步骤。",
+      "expected_output": "识别为纯本地开发环境变更，不触及生产用户或基础设施，因此不启动灰度发布规划；直接更新 README 的本地启动步骤即可。",
+      "files": ["README.md"],
+      "assertions": [
+        {
+          "name": "不误触发",
+          "check": "没有产出灰度阶段 / 回滚触发条件 / 发布 runbook。"
+        },
+        {
+          "name": "完成实际请求",
+          "check": "输出确实处理了 README 本地启动步骤的更新。"
+        }
+      ]
+    }
+  ]
+}

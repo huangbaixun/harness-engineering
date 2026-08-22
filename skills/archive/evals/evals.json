@@ -1,0 +1,70 @@
+{
+  "skill_name": "harness:archive",
+  "evals": [
+    {
+      "id": 1,
+      "eval_name": "triggers-without-the-word-archive",
+      "type": "functional",
+      "rule_under_test": "description 必须能在用户不说「归档」二字时触发 —— 完成态是本 Skill 的主要入口",
+      "prompt": "F004 的验收标准全部跑通了，测试也是绿的。这个特性可以收尾了，还有什么要做的吗？",
+      "expected_output": "识别为完成态，触发 harness:archive：归档已完成的 spec/plan 到 docs/archive/（用 git mv 保留历史）、跑文档一致性检查、输出归档报告。不应只回答「没事了，可以提交」。",
+      "files": ["features.json"],
+      "assertions": [
+        {
+          "name": "在无关键词时触发",
+          "check": "输出走的是归档工作流，而不是泛泛回答「可以收尾了」。"
+        },
+        {
+          "name": "使用 git mv",
+          "check": "归档动作明确使用 git mv 而非 copy+delete，理由是保留 git log --follow 可追溯性。"
+        },
+        {
+          "name": "产出归档报告",
+          "check": "输出包含归档报告，至少含「已归档」与「文档漂移」两节。"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "detects-documentation-drift",
+      "type": "functional",
+      "rule_under_test": "Step 2 文档一致性检查必须真的对比 architecture.md 与实际目录，而不是断言「文档没问题」",
+      "prompt": "我们刚合并了一次大重构，新增了两个模块目录。帮我把文档同步一下。",
+      "expected_output": "对比 docs/architecture.md 描述的目录结构与实际目录，列出「新增但未记录」和「已删除但仍被引用」两类漂移；同时检查 CLAUDE.md 规则时效性与 ADR 状态。",
+      "files": ["docs/architecture.md", "CLAUDE.md", "docs/decisions/"],
+      "assertions": [
+        {
+          "name": "实际比对而非断言",
+          "check": "输出引用了具体的目录名或文件路径作为漂移证据，而不是笼统说「文档已同步」。"
+        },
+        {
+          "name": "双向漂移都检查",
+          "check": "同时检查了「新增未记录」和「已删除仍被引用」两个方向。"
+        },
+        {
+          "name": "覆盖 ADR 状态",
+          "check": "输出包含对 docs/decisions/ 中已采纳 ADR 是否仍然成立的检查。"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "hands-harness-drift-to-evolve",
+      "type": "behavior",
+      "rule_under_test": "archive 发现的漂移若涉及 Harness 组件自身，应移交 harness:evolve，而不是自己动手精简",
+      "prompt": "归档一下。顺便我觉得 CLAUDE.md 里好几条规则新模型早就自己会了，你直接删掉吧。",
+      "expected_output": "完成归档与文档同步；对于「精简 CLAUDE.md 规则」这类 Harness 自身演进诉求，移交 harness:evolve 而不是在 archive 流程里直接删除规则。",
+      "files": ["CLAUDE.md"],
+      "assertions": [
+        {
+          "name": "不越界删规则",
+          "check": "archive 流程内没有直接删除 CLAUDE.md 的规则条目。"
+        },
+        {
+          "name": "移交 evolve",
+          "check": "输出明确点名 harness:evolve 作为该诉求的归属 Skill。"
+        }
+      ]
+    }
+  ]
+}
