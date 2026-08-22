@@ -2,7 +2,7 @@
   "schema_version": "2.0",
   "version": "1.0",
   "product": "harness-engineering",
-  "last_updated": "2026-05-23",
+  "last_updated": "2026-08-22",
   "updated_by": "huangbaixun",
   "features": [
     {
@@ -79,7 +79,7 @@
       "id": "F004",
       "name": "features-json-schema-drift-alignment",
       "priority": 1,
-      "status": "proposed",
+      "status": "done",
       "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
       "description": "对齐三处 v1→v2 features.json schema 迁移残留。F005 的前置：同步的一端是 GitHub，另一端是读写 features.json 的代码，读端坏着同步就是空转。",
       "acceptance_criteria": [
@@ -158,7 +158,7 @@
     }
   ],
   "constraints": {
-    "implementation_order": "F001 → F002 → F003 → F004 → F005. F005 不能在 F004 完成前开始：同步依赖 features.json 读端正确。",
+    "implementation_order": "F001 → F002 → F003 → F004 → F005. F005 不能在 F004 完成前开始：同步依赖 features.json 读端正确。F004 已完成（2026-08-22）。",
     "code_state_rule": "Each feature transitions proposed → building → done. The transition to done occurs only after the corresponding plan's verification step passes.",
     "scope_rule": "Out-of-scope items are tracked under their respective features; do not pull them forward.",
     "status_lifecycle": "proposed → building → done"

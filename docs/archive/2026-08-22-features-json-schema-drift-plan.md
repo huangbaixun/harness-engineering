@@ -1,3 +1,10 @@
+---
+archived_at: 2026-08-22T13:56:49Z
+feature_id: F004
+archived_by: harness:archive
+note: 本计划的 spec (docs/specs/2026-08-22-features-github-sync-design.md) 未随之归档 —— F005 仍在使用
+---
+
 # F004 features.json Schema 漂移对齐 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use harness:subagent-driven-development (recommended) or harness:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

@@ -49,11 +49,16 @@ harness-engineering-plugin/
 │   ├── decisions/                  ← ADR (Architecture Decision Records)
 │   │   ├── 0001 .. 0007 (existing)
 │   │   ├── 0008-vendor-superpowers-v5.md       ← v2.0.0: vendor strategy
-│   │   └── 0009-harness-delta-sidecar.md       ← v2.0.0: 4-file sidecar convention
-│   ├── design/                     ← Design notes
+│   │   ├── 0009-harness-delta-sidecar.md       ← v2.0.0: 4-file sidecar convention
+│   │   ├── 0010-meta-skill-session-injection.md
+│   │   ├── 0011-features-json-field-ownership.md   ← features.json 字段所有权 / schema 2.1
+│   │   └── 0012-features-json-canonical-location.md ← features.json 规范位置为仓库根目录
 │   ├── plans/                      ← Implementation plans (output of harness:writing-plans)
 │   ├── specs/                      ← Design specs (output of harness:brainstorming)
 │   ├── incidents/                  ← Debug notes (output of harness:systematic-debugging)
+│   ├── archive/                    ← Archived specs/plans of done features (output of harness:archive)
+│   ├── evals/                      ← Eval run records (skill/command eval reports)
+│   ├── superpowers/                ← Pre-v2.0.0 legacy location, retained for history
 │   └── templates/                  ← Multi-language project templates (typescript / python / go / generic)
 ├── references/                     ← Reference documents (loaded on demand)
 ├── scripts/
