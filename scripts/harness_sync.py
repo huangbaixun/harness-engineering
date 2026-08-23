@@ -238,13 +238,48 @@ def list_issues(cfg, slug, with_body=False):
     fields = "number,labels,assignees,milestone,state,title"
     if with_body:
         fields += ",body"
-    out = gh(["issue", "list", "--repo", slug, "--label",
-              cfg.get("label_prefix", "harness"), "--state", "all",
+    # 不用 `--label <prefix>` 过滤：gh 的 --label 是精确匹配，而真实 label 叫
+    # harness/done、harness/track…，裸前缀 "harness" 这个 label 并不存在，
+    # 用它过滤会永远返回空；多个 --label 又是 AND 语义，也不能枚举。
+    #
+    # 也不在这里按前缀本地筛：已经有 github_issue 指向的 Issue 必须始终可达，
+    # 否则有人在 GitHub 上拿掉 harness/ label，该 feature 就静默停止同步了。
+    # 前缀/track 筛选只用于**入站发现**（见 cmd_pull），不影响已建立的链接。
+    out = gh(["issue", "list", "--repo", slug, "--state", "all",
               "--limit", "500", "--json", fields], cfg)
     try:
-        return json.loads(out or "[]")
+        issues = json.loads(out or "[]")
     except json.JSONDecodeError:
         return []
+    return issues
+
+
+def list_labels(cfg, slug):
+    try:
+        out = gh(["label", "list", "--repo", slug, "--limit", "200", "--json", "name"], cfg)
+        return {l.get("name") for l in json.loads(out or "[]")}
+    except (GhError, json.JSONDecodeError):
+        return set()
+
+
+def ensure_labels(cfg, slug, wanted):
+    """创建缺失的 harness/ 前缀 label。
+
+    只创建带前缀的；非前缀 label 一律不碰 —— 连「P1 不存在就代建」都不做，
+    那是 GitHub 域，不归 harness 管（ADR-0011）。
+    没有这一步，首次接入的仓库上 `gh issue create --label harness/xxx` 会直接失败。
+    """
+    pre = cfg.get("label_prefix", "harness") + "/"
+    wanted = {w for w in wanted if w and w.startswith(pre)}
+    if not wanted:
+        return
+    existing = list_labels(cfg, slug)
+    for name in sorted(wanted - existing):
+        try:
+            gh(["label", "create", name, "--repo", slug,
+                "--description", "managed by harness (F005)", "--color", "0E8A16"], cfg)
+        except GhError:
+            pass          # label 建不出来不该阻断同步；后续 issue 操作会自然报错
 
 
 def cmd_push(dry_run=False, limit=20, root=".", require_lock=False):
@@ -269,7 +304,17 @@ def cmd_push(dry_run=False, limit=20, root=".", require_lock=False):
             release_lock()
 
 
+def _issue_number(create_output):
+    """从 `gh issue create` 的输出 URL 末段解析 Issue 编号。"""
+    for tok in reversed((create_output or "").strip().split()):
+        tail = tok.rstrip("/").rsplit("/", 1)[-1]
+        if tail.isdigit():
+            return int(tail)
+    return None
+
+
 def _push_locked(data, path, dry_run, limit):
+    features_dirty = [False]
     cfg = load_config(data)
     if cfg is None:
         return 0                      # 未配置 -> 零网络调用（验收 1）
@@ -285,13 +330,14 @@ def _push_locked(data, path, dry_run, limit):
         return 0
 
     issues = {i.get("number"): i for i in list_issues(cfg, slug, with_body=True)}
+    if not dry_run:
+        ensure_labels(cfg, slug,
+                      {status_label(cfg, f.get("status", "")) for f in dirty})
 
+    deferred = 0
     if limit is not None and len(dirty) > limit:
-        skipped = len(dirty) - limit
+        deferred = len(dirty) - limit
         dirty = dirty[:limit]
-        # 绝不静默截断（验收 7）
-        print(f"[harness-sync] 本次仅推送 {limit} 条，剩余 {skipped} 条未推送；"
-              f"再次运行以继续。", file=sys.stderr)
 
     pushed = 0
     for feat in dirty:
@@ -321,14 +367,29 @@ def _push_locked(data, path, dry_run, limit):
             if dry_run:
                 print(f"[dry-run] 将创建 Issue（{feat.get('id')} {feat.get('name')}）")
             else:
-                gh(["issue", "create", "--repo", slug, "--title", feat.get("name") or feat.get("id"),
-                    "--body", block, "--label", status_label(cfg, feat.get("status", ""))], cfg)
+                out = gh(["issue", "create", "--repo", slug, "--title", feat.get("name") or feat.get("id"),
+                          "--body", block, "--label", status_label(cfg, feat.get("status", ""))], cfg)
+                # 回写编号：github_issue 是持久锚点。缺了它，影子（可丢弃）一旦丢失
+                # 就会重复创建 Issue —— 直接推翻「对账无状态」这条核心性质。
+                new_num = _issue_number(out)
+                if new_num is not None:
+                    feat["github_issue"] = new_num
+                    features_dirty[0] = True
             pushed += 1
         if not dry_run:
             shadow[feat.get("id")] = harness_fingerprint(feat)
 
+    if deferred:
+        # 绝不静默截断（验收 7）。报实际写入数而非候选数 —— 候选可能因内容一致
+        # 而被跳过，说成「已推送」就是谎报。
+        print(f"[harness-sync] 本次检查 {limit} 条（实际写入 {pushed} 条），"
+              f"另有 {deferred} 条未检查；再次运行以继续。", file=sys.stderr)
     if not dry_run:
         save_shadow(shadow)
+        if features_dirty[0]:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+                f.write("\n")
     return 0
 
 

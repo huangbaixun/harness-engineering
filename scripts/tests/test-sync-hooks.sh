@@ -27,7 +27,7 @@ echo '[{"number":42,"title":"a","body":"x","labels":[],"assignees":[],"milestone
 RC=0
 ERR=$(CLAUDE_PROJECT_DIR="$D" CLAUDE_PLUGIN_ROOT="$ROOT" GH_MODE=offline GH_ISSUES_JSON="$D/issues.json" \
       bash scripts/stop-sync-issues 2>&1 >/dev/null) || RC=$?
-[ "$RC" = "0" ] || fail "离线时 Stop hook 退出码 $RC（须为 0，验收 8）"
+[ "$RC" = "0" ] || fail "离线时 Stop hook 退出码 ${RC}（须为 0，验收 8）"
 N=$(echo "$ERR" | grep -c . || true)
 [ "$N" -le 1 ] || fail "离线时输出 $N 行（须恰好 ≤1，验收 8）：$ERR"
 echo "  B 离线 → exit 0, ${N} 行"

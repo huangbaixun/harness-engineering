@@ -6,6 +6,7 @@ ROOT="$(pwd)"
 TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 export HARNESS_GH_BIN="$ROOT/scripts/tests/stubs/gh-stub"
 export GH_LOG="$TMP/gh.log"; : > "$GH_LOG"
+export GH_BODY_LOG="$TMP/gh.body"; : > "$GH_BODY_LOG"
 
 HUMAN_AFTER=$'\n\nPM 评审：注意并发\n末行'
 python3 - "$TMP" "$ROOT" <<'PY'
@@ -43,8 +44,8 @@ PY
 : > "$GH_LOG"
 ( cd "$TMP" && python3 "$ROOT/scripts/harness_sync.py" push >/dev/null 2>&1 ) || true
 [ "$(grep -c 'issue edit' "$GH_LOG")" = "1" ] || fail "变更后应恰好一次 edit，实际 $(grep -c 'issue edit' "$GH_LOG")"
-grep -q "PM 背景" "$GH_LOG" || fail "区块外内容（前）未随 body 一起提交（验收 4）"
-grep -q "末行" "$GH_LOG" || fail "区块外内容（后）丢失（验收 4）"
+grep -q "PM 背景" "$GH_BODY_LOG" || fail "区块外内容（前）未随 body 一起提交（验收 4）"
+grep -q "末行" "$GH_BODY_LOG" || fail "区块外内容（后）丢失（验收 4）"
 
 # label 命名空间：只允许 add harness/ 前缀（验收 6）
 if grep -oE '\-\-add-label [^ ]+' "$GH_LOG" | grep -vq 'harness/'; then
@@ -62,7 +63,8 @@ json.dump(d, open(p,"w"), ensure_ascii=False, indent=2)
 PY2
 : > "$GH_LOG"
 OUT=$( cd "$TMP" && python3 "$ROOT/scripts/harness_sync.py" push --limit 0 2>&1 ) || true
-echo "$OUT" | grep -qE "剩余|remaining" || fail "超限未报出剩余条数（验收 7）：$OUT"
+echo "${OUT}" | grep -qE "未检查|remaining" || fail "超限未报出剩余条数（验收 7）：${OUT}"
+echo "${OUT}" | grep -qE "实际写入" || fail "超限消息未报实际写入数（谎报风险）：${OUT}"
 grep -q "issue edit" "$GH_LOG" && fail "limit=0 却仍推送"
 
 echo PASS

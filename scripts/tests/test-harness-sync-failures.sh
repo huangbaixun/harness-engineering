@@ -5,6 +5,7 @@ cd "$(dirname "$0")/../.."
 ROOT="$(pwd)"; TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
 export HARNESS_GH_BIN="$ROOT/scripts/tests/stubs/gh-stub"
 export GH_LOG="$TMP/gh.log"
+export GH_BODY_LOG="$TMP/gh.body"
 fail(){ echo "FAIL: $1"; exit 1; }
 
 mk(){ cat > "$1/features.json" <<'JSON'
@@ -23,7 +24,7 @@ run(){ # run <mode> <cmd...>  -> 打印 stderr，断言 exit 0
   local err; local rc=0
   err=$( cd "$d" && GH_MODE="$1" GH_ISSUES_JSON="$d/issues.json" \
          python3 "$ROOT/scripts/harness_sync.py" "${@:2}" 2>&1 >/dev/null ) || rc=$?
-  [ "$rc" = "0" ] || fail "$1 模式退出码 $rc（应为 0，验收 2/8）"
+  [ "$rc" = "0" ] || fail "$1 模式退出码 ${rc}（应为 0，验收 2/8）"
   echo "$err" | grep -qi "traceback" && fail "$1 模式抛出 Python 栈"
   local n; n=$(echo "$err" | grep -c . || true)
   [ "$n" -le 1 ] || fail "$1 模式输出 $n 行（应恰好 ≤1 行，验收 8）：$err"
@@ -70,9 +71,9 @@ echo "  locked → rc=0, 立即返回 (${ELAPSED}s), 零 gh 调用"
 
 # 9. 托管区块被人删除 -> 重建且只重建一次，不重复追加
 d="$TMP/noblock"; mkdir -p "$d"; mk "$d"
-: > "$GH_LOG"
+: > "$GH_LOG"; : > "$GH_BODY_LOG"
 ( cd "$d" && GH_ISSUES_JSON="$d/issues.json" python3 "$ROOT/scripts/harness_sync.py" push >/dev/null 2>&1 ) || true
-[ "$(grep -oc 'harness:begin' "$GH_LOG" 2>/dev/null || echo 0)" != "2" ] || fail "区块被重复追加"
-grep -q "旧内容" "$GH_LOG" || fail "重建区块时丢失了人写的原内容"
+[ "$(grep -c 'harness:begin' "$GH_BODY_LOG" 2>/dev/null || echo 0)" = "1" ] || fail "区块未恰好重建一次"
+grep -q "旧内容" "$GH_BODY_LOG" || fail "重建区块时丢失了人写的原内容"
 echo "  block-deleted → 重建且保留原内容"
 echo PASS
