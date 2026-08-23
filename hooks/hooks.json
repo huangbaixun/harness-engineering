@@ -26,6 +26,14 @@
             "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-commit-progress\" \"$@\"' --"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-sync-issues\" \"$@\"' --"
+          }
+        ]
       }
     ],
     "PreToolUse": [

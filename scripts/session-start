@@ -36,6 +36,18 @@ if [ -f "$META_SKILL" ]; then
   echo ""
 fi
 
+# ── GitHub/GHE 拉取（F005，opt-in）─────────────────────────────────────────
+# 未配置 github.enabled 时 harness_sync.py 立即返回，零网络、零开销。
+# 硬超时保证：网络再慢也不拖住会话启动；超时即用本地数据继续。
+SYNC_SCRIPT="$PLUGIN_ROOT/scripts/harness_sync.py"
+if [ -f "$SYNC_SCRIPT" ] && command -v python3 >/dev/null 2>&1; then
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 5 python3 "$SYNC_SCRIPT" pull --timeout 5 2>&1 >/dev/null | head -1 >&2
+  else
+    python3 "$SYNC_SCRIPT" pull --timeout 5 2>&1 >/dev/null | head -1 >&2
+  fi
+fi
+
 # ── 渲染启动摘要 ──────────────────────────────────────────────────────────────
 # progress 与 features 是两个独立文件，任一存在即渲染；各子块独立判定。
 if [ -f "$PROGRESS_FILE" ] || [ -n "$FEATURES_FILE" ]; then

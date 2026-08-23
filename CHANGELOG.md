@@ -1,5 +1,47 @@
 # Changelog
 
+## v2.2.0 (2026-08-23)
+
+**features.json ↔ GitHub/GHE Issue 双向同步（F005）+ schema 漂移对齐（F004）**
+
+设计见 `docs/specs/2026-08-22-features-github-sync-design.md`，架构决策见
+ADR-0011（字段所有权 / schema 2.1）与 ADR-0012（features.json 规范位置）。
+
+**核心性质：冲突面 = 空集。** 每个字段恰好一个写方 —— rigid 约束
+（acceptance_criteria / out_of_scope / status）归 harness，产品决策
+（priority / assignee / milestone / delivery_state）归 GitHub。由此对账退化为
+无状态纯函数，不需要时间戳、content hash 或三方合并，也不需要冲突合并 UI。
+
+- **`status` 拆为两个正交维度**：`status`（harness 单写，工程进度）与
+  `delivery_state`（GitHub 单写，产品决策）。`status=done` + `delivery_state=wontfix`
+  （做完了但决定不发）在单字段下无法表达。
+- **两个 hook 触点**：SessionStart 拉（硬超时 5s）、Stop 推。编辑热路径零网络，
+  闸门链断网完整可跑。
+- **推送幂等**：PATCH 前先比对托管区块，内容一致则不写。每次 PATCH 都会通知所有
+  watcher，一个会话推 5 次就是 5 封邮件轰炸 PM —— 幂等不是优化而是可用性前提。
+- **托管区块**：Issue body 仅 `harness:begin/end` 之间由 harness 管理，
+  区块外的人类讨论逐字节保全。
+- **入站路径**：带 `harness/track` 的 Issue 收为 `proposed` stub，由 brainstorming
+  补齐结构 —— PM 在 GHE 提的需求能真正流进闸门链。不带该标签的日常 bug 单不被卷入。
+- **label 命名空间隔离**：只增删 `harness/` 前缀；`P0/P1/P2` 与 `state/*` 只读。
+- **opt-in**：未配置 `github.enabled` 时零网络、零开销。模板默认 `enabled: false`。
+- **凭据零接触**：全部走 `gh auth`，仓库、配置、环境变量中不出现 token。
+
+**新增：** `scripts/harness_sync.py`（pull/push/status）、Stop hook 三元组
+`stop-sync-issues`、`/harness:sync-issues` 命令、`scripts/tests/` 五套离线测试
+（gh 经 `$HARNESS_GH_BIN` 注入桩）。
+
+**F004 —— schema 漂移对齐（前置）：** 原以为是三处 v1→v2 残留，实为两套约定并存
+且从未裁定规范；实际影响 13 个文件。ADR-0012 裁定根目录为规范、`docs/` 为永久回退。
+其中 `scripts/session-start` 的特性摘要段此前**从未生效过**（路径错、枚举错，
+且整段被 `claude-progress.json` 是否存在卡死），`skills/init/SKILL.md` 展示给用户的
+样板是完整 v1 schema —— 每个新项目都会照它建错。
+
+**兼容性：** schema 2.1 新增字段全部可选，2.0 文件不加字段照常工作且不被同步逻辑
+改动。Python 兼容下调至 3.7+（macOS 系统自带 3.9，插件不能要求用户升级解释器）。
+
+Migration：无。未配置 `github` 块的项目行为完全不变。
+
 ## v2.1.0 (2026-08-22)
 
 **Upstream sync: superpowers v5.1.0 → v6.3.0**

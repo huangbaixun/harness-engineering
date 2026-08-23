@@ -63,7 +63,10 @@ harness-engineering-plugin/
 ├── references/                     ← Reference documents (loaded on demand)
 ├── scripts/
 │   ├── self-test.sh, health-score.py, generate-harness.sh
-│   └── sync-superpowers.sh         ← v2.0.0: upstream reconciliation helper (read-only diff report)
+│   ├── sync-superpowers.sh         ← v2.0.0: upstream reconciliation helper (read-only diff report)
+│   ├── harness_sync.py             ← v2.2.0: features.json ↔ GitHub/GHE Issue 同步核心 (pull/push/status)
+│   ├── stop-sync-issues{,.sh,.cmd} ← v2.2.0: Stop hook — 推送（任何失败 exit 0）
+│   └── tests/                      ← hook 与同步核心的离线测试（gh 经 $HARNESS_GH_BIN 注入桩）
 └── evals/                          ← Project-level evals (top-level evals.json is the registry)
 ```
 

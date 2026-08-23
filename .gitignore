@@ -13,3 +13,6 @@
 
 # Telemetry log written by scripts/post-observe.sh (PostToolUse hook)
 docs/agent-telemetry.jsonl
+
+# 同步机器状态（F005）：影子副本与并发锁。丢失无害 —— 退化为一次全量对账
+.harness/
