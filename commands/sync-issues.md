@@ -22,7 +22,7 @@ description: features.json ↔ GitHub/GHE Issue 手动对账。hook 负责日常
 ```
 
 `host` / `repo` 可省略，缺省从 `git remote get-url origin` 推断。
-认证复用 `gh auth`，本插件不接触任何凭据；GHE 需先 `gh auth login --hostname <host>`。
+认证复用 `gh auth`，本插件不接触任何凭据；GHE 需先 `gh auth login --hostname <host>`；同步时主机经 `GH_HOST` 传给 gh。
 
 ## 用法
 
@@ -82,4 +82,6 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/harness_sync.py" pull
 | `触发 API 限流` | 稍后重试；或用 `--limit` 分批 |
 | `目标 Issue 不存在` | 人工确认：清空该 feature 的 `github_issue` 重建，或恢复 Issue |
 | `网络不可达` | 无需处理，下次会话自动重试 |
+| `gh 调用参数有误` | 插件 bug，重试不会自愈，请提交 issue 并附提示中的 gh 原文 |
+| `同步失败，已跳过` | 未能归类的 gh 错误，同上，请附 gh 原文 |
 | 同步似乎没发生 | 检查 `github.enabled` 是否为 `true`；未配置时全链路静默跳过 |

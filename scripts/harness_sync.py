@@ -156,16 +156,24 @@ def _classify(stderr: str) -> str:
         return "notfound"
     if "connect" in s or "network" in s or "dial tcp" in s or "timeout" in s:
         return "offline"
+    # 用法错误不可自愈，提示成「稍后重试」会让人一直不去查真实原因
+    if "unknown flag" in s or "unknown command" in s or "unknown shorthand" in s:
+        return "usage"
     return "unknown"
 
 
 def gh(args, cfg, timeout=30, check=True):
     cmd = [gh_bin()] + list(args)
     host = (cfg or {}).get("host")
+    env = None
     if host and host not in ("github.com",):
-        cmd += ["--hostname", host]
+        # gh 的 --hostname 只有 auth 系子命令认；issue / label 一律靠 GH_HOST
+        # 环境变量选主机。曾经写成 cmd += ["--hostname", host]，导致所有 GHE
+        # 项目的每一次 gh 调用都以 "unknown flag" 失败，且被 _classify 误判为
+        # 网络问题而静默重试 —— github.com 走白名单分支，永远暴露不出来。
+        env = dict(os.environ, GH_HOST=host)
     try:
-        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, env=env)
     except FileNotFoundError:
         raise GhError("nogh", "gh CLI 未安装")
     except subprocess.TimeoutExpired:
@@ -526,7 +534,11 @@ def main(argv=None):
             "ratelimit": "触发 API 限流，稍后重试",
             "notfound": "目标 Issue 不存在，可能已被删除；请人工确认后清空 github_issue 或恢复 Issue",
             "nogh": "未找到 gh CLI，同步已跳过",
-        }.get(e.kind, "网络不可达，同步已跳过；下次会话自动重试")
+            "usage": "gh 调用参数有误，重试不会自愈，请提交 bug",
+            "offline": "网络不可达，同步已跳过；下次会话自动重试",
+            # 兜底不再冒充「网络不可达」：那句话在说「等等就好」，会让人不去查
+            # 真实原因。分不出类就照实说分不出，并把 gh 原文带出来。
+        }.get(e.kind, "同步失败，已跳过；若反复出现请附下方 gh 原文提交 bug")
         print(f"[harness-sync] {hint}（{e.detail}）", file=sys.stderr)
         return 0                      # 永不阻断（验收 2、8）
 

@@ -1,5 +1,40 @@
 # Changelog
 
+## v2.2.1 (2026-08-23)
+
+**修复：GHE 主机路由 —— 所有非 github.com 项目的同步 100% 失败且被谎报为网络问题**
+
+由 aiops（catl.ghe.com）接入时实测暴露。
+
+- **根因**：`gh()` 给**每个** gh 子命令都追加 `--hostname`，但该 flag 只有 `gh auth`
+  系子命令认。`gh issue` / `gh label` 一律报 `unknown flag: --hostname` 并退出 1，
+  于是 `list_issues` / `list_labels` / `ensure_labels` / `issue create` / `issue edit`
+  无一例外失败。改为在继承 `os.environ` 的基础上叠加 `GH_HOST`（继承是必需的：
+  覆盖式 env 会让子进程丢掉 PATH 与凭据缓存路径）。
+- **为什么藏了一整个版本**：`host` 命中 `github.com` 白名单时走的是不加 flag 的分支，
+  **在 github.com 上做多少次真实试跑都覆盖不到 GHE 分支**。v2.2.0 的「真实试跑」正是
+  只跑了 github.com。
+- **比失败本身更糟的是分类**：`unknown flag` 落入 `_classify` 兜底，被显示成
+  「网络不可达，同步已跳过；下次会话自动重试」。那句话在语义上是安抚 —— 它让人停止排查。
+  用户开了 `github.enabled` 后只会看到一行假的网络提示，永远不成功，也永远看不出真实原因。
+
+**连带收紧的两处（同一因，不只治标）：**
+
+- `_classify` 新增 `usage` 类（`unknown flag` / `unknown command` / `unknown shorthand`）
+  → 「gh 调用参数有误，重试不会自愈，请提交 bug」。
+- **兜底不再冒充网络问题**。未识别的 stderr 改为照实说分不出类，并原样带出 gh 原文。
+  否则任何不可自愈的故障都会被包装成可自愈的样子而永久静默 —— 这个 bug 一半的寿命来自这里。
+
+**测试（约束下沉到桩，而非写进 checklist）：** `stubs/gh-stub` 现在像真 gh 一样，
+对非 auth 子命令的 `--hostname` 直接报 `unknown flag` 并退出 1 —— 任何离线测试踩到
+这条路径都立刻红，不依赖谁记得去跑 GHE 真实试跑（CI 里也跑不了，GHE 不可达）。
+新增 `scripts/tests/test-harness-sync-ghe-host.sh`（单元断言命令行无 `--hostname`、
+`GH_HOST` 正确、env 继承 PATH；GHE 端到端 push 成功；usage 与兜底均不谎报网络），
+`test-harness-sync-failures.sh` 失败矩阵加 `usage` 一行。测试套 8 → 9，全绿；
+反验证：补丁回退后新测试立刻转红。
+
+**无 schema / 契约变更**，features.json 与 Issue 格式不受影响。
+
 ## v2.2.0 (2026-08-23)
 
 **features.json ↔ GitHub/GHE Issue 双向同步（F005）+ schema 漂移对齐（F004）**

@@ -36,6 +36,7 @@ run offline   push
 run auth      push
 run ratelimit push
 run notfound  push
+run usage     push
 
 # 5. features.json 语法错 -> 静默跳过，不报 JSON 错（非同步职责）
 d="$TMP/badjson"; mkdir -p "$d"; echo '{ not json' > "$d/features.json"

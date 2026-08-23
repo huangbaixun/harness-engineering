@@ -7,6 +7,19 @@
     case "$_a" in --body) _skip=1; _log="$_log --body";; *) _log="$_log $_a";; esac
   done
   echo "${_log# }"; } >> "${GH_LOG:-/dev/null}"
+
+# 真实 gh 的 --hostname 只有 auth 系子命令认；issue/label 一律 unknown flag。
+# 桩必须照做，否则「给每个子命令都加 --hostname」这类 bug 在离线测试里永不暴露。
+if [ "$1" != "auth" ]; then
+  _skip=0
+  for _a in "$@"; do
+    [ "$_skip" = "1" ] && { _skip=0; continue; }
+    [ "$_a" = "--body" ] && { _skip=1; continue; }
+    [ "$_a" = "--hostname" ] && { echo "unknown flag: --hostname" >&2; exit 1; }
+  done
+fi
+# 主机路由只能经环境变量抵达，记下来供断言
+[ -n "${GH_HOST:-}" ] && echo "GH_HOST=$GH_HOST" >> "${GH_ENV_LOG:-/dev/null}"
 case "$1 $2" in
   "label list")
       cat "${GH_LABELS_JSON:-/dev/null}" 2>/dev/null || echo '[]' ;;
@@ -31,6 +44,8 @@ print(json.dumps([i for i in d if any((l.get('name')=='' or l.get('name'))==want
         auth)    echo "HTTP 401: Bad credentials" >&2; exit 1 ;;
         ratelimit) echo "HTTP 403: API rate limit exceeded" >&2; exit 1 ;;
         notfound)  echo "HTTP 404: Not Found" >&2; exit 1 ;;
+        usage)   echo "unknown flag: --hostname" >&2; exit 1 ;;
+        weird)   echo "something nobody classified" >&2; exit 1 ;;
         *) echo "https://example.com/o/r/issues/999" ;;
       esac ;;
   *) echo "{}" ;;

@@ -200,9 +200,27 @@ brainstorming → plan → TDD → verify → finishing 整条链离线可跑。
 | features.json 语法错误 | 静默跳过同步。报 JSON 错误不是同步的职责，hook 绝不因此崩 |
 | 两个会话同时 Stop | `.harness/` 下原子锁（mkdir）。**拿不到锁就跳过**，绝不等待 |
 | 首次接入大批量 | 走 `--adopt` 交互确认，不走 hook 自动路径 |
+| gh 用法错误（`unknown flag` 等） | 单列一类 —— 重试不自愈，提示提交 bug。**绝不并入离线类** |
 
 限流一条按 `writing-skills` 的「No silent caps」规则设计：一旦限制了覆盖范围就必须说出来，
 静默截断会被读成「全都同步好了」，而实际没有。
+
+**分类的兜底必须是「不知道」，不能是「网络问题」。** 「网络不可达，下次自动重试」在语义上
+是一句安抚 —— 它让人停止排查。若把未识别的错误默认归入这一类，任何不可自愈的故障都会被
+包装成可自愈的样子而永久静默。GHE 主机路由 bug（见下）正是这样藏了一个版本：真实原因是
+`unknown flag: --hostname`，用户看到的却是「网络问题，等等就好」。故兜底改为照实说分不出类，
+并原样带出 gh 的 stderr。
+
+### 5.1 主机路由：GH_HOST，不是 `--hostname`
+
+`gh` 的 `--hostname` **只有 `gh auth` 系子命令认**，`gh issue` / `gh label` 一律报
+`unknown flag`。非 github.com 主机只能经 `GH_HOST` 环境变量选定，且必须在继承
+`os.environ` 的基础上叠加（否则子进程丢掉 PATH 与凭据缓存路径）。
+
+这个 bug 的暴露路径值得记一笔：`host` 命中 `github.com` 白名单时不走加 flag 的分支，
+**因此在 github.com 上做多少次真实试跑都覆盖不到它**。结论不是「补一条 GHE 真实试跑」——
+GHE 主机在 CI 里不可达；而是把约束下沉到桩：`stubs/gh-stub` 现在像真 gh 一样，对非 auth
+子命令的 `--hostname` 直接报 `unknown flag` 并退出 1。任何离线测试踩到这条路径都会立刻红。
 
 Stop hook 一律 `exit 0` —— Claude Code 里 Stop hook 非零退出会阻断会话结束，
 同步失败绝不该让人卡在会话里。按 CLAUDE.md「失败可见」原则，失败时输出**一行**警告；
