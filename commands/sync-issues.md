@@ -60,6 +60,15 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/harness_sync.py" pull
 2. 对**已存在**的 Issue，人工在对应 feature 上填 `"github_issue": <编号>`
 3. 再跑 `push`；此时只有 `github_issue` 为 null 的才会新建
 
+**首次 pull 会清空本地已填的 GitHub 单写字段。** 单写所有权是无条件的：
+`assignee` / `milestone` / `delivery_state` 一律以 Issue 为准 —— Issue 上为空，
+本地值就被**清空**。接入前若已在 features.json 里手填过这几项（例如从排期表抄来的
+milestone 日期），它们既不会被推上去，也会在第一次 pull 时消失。
+
+要保留，先在 Issue 上设好（`gh issue edit <n> --milestone ... --add-assignee ...`）
+再 pull。或者接受它们本就属于 GitHub 域：若 features.json 里另有字段指向排期表，
+被清掉的只是一份副本，事实源仍然唯一。
+
 ## 字段所有权（ADR-0011）
 
 | harness 单写 | GitHub 单写 | 不同步 |
@@ -69,7 +78,8 @@ python3 "${CLAUDE_PLUGIN_ROOT}/scripts/harness_sync.py" pull
 | out_of_scope / spec | assignee | |
 | dependencies / status | milestone | |
 
-改 GitHub 单写字段请去 Issue 上改，本地改动会被下次 pull 覆盖；
+改 GitHub 单写字段请去 Issue 上改，本地改动会被下次 pull 覆盖（含被覆盖为空）；
+唯一例外是 `priority`：仅当 Issue 带 `P0`/`P1`/`P2` 标签时才回流，无标签则保留本地值；
 改 harness 单写字段请改 features.json，Issue 上的托管区块会被下次 push 覆盖。
 
 **托管区块外的内容永不被触碰** —— PM 评审、讨论记录写在 `<!-- harness:end -->` 之后即可。
