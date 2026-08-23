@@ -2,7 +2,7 @@
 archived_at: 2026-08-22T13:56:49Z
 feature_id: F004
 archived_by: harness:archive
-note: 本计划的 spec (docs/specs/2026-08-22-features-github-sync-design.md) 未随之归档 —— F005 仍在使用
+note: 本计划的 spec (docs/specs/2026-08-22-features-github-sync-design.md) 未随之归档 —— F004/F005 均已完成，但该 spec 是已发布代码的活文档（scripts/harness_sync.py 与 commands/sync-issues.md 指向它），故保留在 docs/specs/
 ---
 
 # F004 features.json Schema 漂移对齐 Implementation Plan

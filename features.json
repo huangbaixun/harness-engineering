@@ -143,7 +143,7 @@
       "id": "F005",
       "name": "features-json-github-issue-sync",
       "priority": 2,
-      "status": "building",
+      "status": "done",
       "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
       "description": "features.json 与 GitHub/GHE Issue 双向同步。字段级单写所有权消除冲突面；SessionStart 拉、Stop 推两个 hook 触点；编辑热路径零网络。",
       "acceptance_criteria": [
@@ -182,10 +182,37 @@
       "delivery_state": null,
       "assignee": null,
       "milestone": null
+    },
+    {
+      "id": "F006",
+      "name": "archive-skill-shared-and-living-doc-handling",
+      "priority": 3,
+      "status": "proposed",
+      "spec": "",
+      "description": "harness:archive 的 Step 1「按特性逐个搬运设计文档」有两个盲区，F004 与 F005 收尾时各踩到一次。",
+      "acceptance_criteria": [
+        "archive 遇到被多个特性共用的 spec 时，仅当所有引用特性均为 done 才考虑归档",
+        "archive 区分执行产物（plan，执行完即可归档）与活文档（被已发布代码或用户文档引用的 spec，应保留）",
+        "archive 在归档前检查入边，并在报告中列出因归档而需要修复的链接",
+        "上述行为有 eval 覆盖，SKILL.md 变更走 ADR-0004 流程"
+      ],
+      "out_of_scope": [
+        "F001–F003 的历史归档积压（需同步修 0008/0009/sync-superpowers.sh 三处链接，属独立任务）"
+      ],
+      "dependencies": [],
+      "technical_notes": "缺口来源：F004 收尾时共用 spec 会切断 F005 的回指；F005 收尾时该 spec 已被 harness_sync.py 与 commands/sync-issues.md 引用，成为活文档。两次都靠人工判断绕开，说明规则应该写进 skill。",
+      "related_files": [
+        "skills/archive/SKILL.md",
+        "skills/archive/evals/evals.json"
+      ],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     }
   ],
   "constraints": {
-    "implementation_order": "F001 → F002 → F003 → F004 → F005. F005 不能在 F004 完成前开始：同步依赖 features.json 读端正确。F004 已完成（2026-08-22）。",
+    "implementation_order": "F001 → F002 → F003 → F004 → F005，全部完成（F005 于 2026-08-23）。",
     "code_state_rule": "Each feature transitions proposed → building → done. The transition to done occurs only after the corresponding plan's verification step passes.",
     "scope_rule": "Out-of-scope items are tracked under their respective features; do not pull them forward.",
     "status_lifecycle": "proposed → building → done"

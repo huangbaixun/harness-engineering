@@ -1,3 +1,10 @@
+---
+archived_at: 2026-08-23T00:55:29Z
+feature_id: F005
+archived_by: harness:archive
+note: spec 未随之归档 —— docs/specs/2026-08-22-features-github-sync-design.md 是已发布代码的活文档（scripts/harness_sync.py 与 commands/sync-issues.md 均指向它）
+---
+
 # F005 features.json ↔ GitHub/GHE Issue 双向同步 Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use harness:subagent-driven-development (recommended) or harness:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
