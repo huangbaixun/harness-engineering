@@ -5,9 +5,9 @@
   "last_updated": "2026-08-23",
   "updated_by": "huangbaixun",
   "github": {
-    "enabled": false,
-    "host": "",
-    "repo": "",
+    "enabled": true,
+    "host": "github.com",
+    "repo": "huangbaixun/harness-engineering",
     "label_prefix": "harness",
     "track_label": "harness/track"
   },
@@ -39,8 +39,8 @@
         "docs/templates/generic/features.json.template",
         "scripts/sync-superpowers.sh"
       ],
-      "github_issue": null,
-      "delivery_state": null,
+      "github_issue": 2,
+      "delivery_state": "shipped",
       "assignee": null,
       "milestone": null
     },
@@ -63,15 +63,15 @@
       ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-2-vendor-new-skills.md",
       "related_files": [],
-      "github_issue": null,
-      "delivery_state": null,
+      "github_issue": 3,
+      "delivery_state": "shipped",
       "assignee": null,
       "milestone": null
     },
     {
       "id": "F003",
       "name": "superpowers-docs-refresh",
-      "priority": 3,
+      "priority": 0,
       "status": "done",
       "spec": "docs/specs/2026-05-23-superpowers-integration-design.md",
       "description": "Phase 3 + 4: update architecture.md, READMEs, CLAUDE.md (≤60 lines), rewrite commands/review-pr.md as wrapper, bump version to 2.0.0, write CHANGELOG, then run verification (grep gate, evals, init-template, audit).",
@@ -89,9 +89,9 @@
       ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-3-and-4-docs-and-verify.md",
       "related_files": [],
-      "github_issue": null,
-      "delivery_state": null,
-      "assignee": null,
+      "github_issue": 4,
+      "delivery_state": "shipped",
+      "assignee": "huangbaixun",
       "milestone": null
     },
     {
@@ -134,8 +134,8 @@
         "skills/canary/SKILL.md",
         "skills/init/SKILL.md"
       ],
-      "github_issue": null,
-      "delivery_state": null,
+      "github_issue": 5,
+      "delivery_state": "shipped",
       "assignee": null,
       "milestone": null
     },
@@ -178,8 +178,8 @@
         "docs/templates/generic/features.json.template",
         "commands/assign.md"
       ],
-      "github_issue": null,
-      "delivery_state": null,
+      "github_issue": 6,
+      "delivery_state": "shipped",
       "assignee": null,
       "milestone": null
     },
@@ -205,8 +205,8 @@
         "skills/archive/SKILL.md",
         "skills/archive/evals/evals.json"
       ],
-      "github_issue": null,
-      "delivery_state": null,
+      "github_issue": 7,
+      "delivery_state": "triage",
       "assignee": null,
       "milestone": null
     }
