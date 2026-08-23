@@ -15,14 +15,16 @@ cat features.json 2>/dev/null || cat docs/features.json
 
 Extract from the JSON:
 
-<!-- TODO(F005): `owner` 与 `layer` 在 features.json schema 2.0 中不存在。
-     归属来源将改为 GitHub 单写的 `assignee`（见 ADR-0011 / F005）；
-     `layer` 暂无 schema 等价物，需单独决策。在此之前，两者由本命令
-     在交互中向用户询问，不从 features.json 读取。 -->
+<!-- 归属来源（F005 已落地）：`assignee` 是 GitHub 单写字段（ADR-0011），
+     由 harness_sync.py pull 从 Issue 的 assignee 回流到 features.json。
+     本命令**读取** assignee，但分派结果要生效必须回写到 GitHub —— 在 Issue 上
+     指派，而不是改 features.json（改了会被下次 pull 覆盖）。
+     `layer` 仍无 schema 等价物，继续在交互中向用户询问。 -->
 
 
 - **Unassigned pool**: features with `status` of `proposed`
 - **In progress**: features with `status` of `building`
+- **Current owner**: the `assignee` field (GitHub single-writer; populated by `harness_sync.py pull`)
 - **Dependency graph**: build a directed graph from `dependencies`; `blocks` is its reverse edge, derived locally (schema 2.0 has no `blocks` field)
 
 Then compute two key properties for each unassigned feature:
@@ -80,7 +82,11 @@ After collecting, update the member information into the `## Team Members` secti
 
 ## Phase 3: Generate Assignment Plan
 
-Apply the following four rules in order to output a recommended owner for each unassigned feature:
+Apply the following four rules in order to output a recommended owner for each unassigned feature.
+
+> **归属写回方向**：推荐结果要生效，必须在 GitHub Issue 上指派（`gh issue edit <n> --add-assignee <who>`）。
+> 直接改 features.json 的 `assignee` 会被下次 pull 覆盖 —— 该字段由 GitHub 单写（ADR-0011）。
+
 
 ### Rule 1 (Hard constraint): No related_files overlap
 Two features that are simultaneously `building` must not have any common path prefix in their `related_files` lists.

@@ -1,9 +1,16 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "version": "1.0",
   "product": "harness-engineering",
   "last_updated": "2026-08-23",
   "updated_by": "huangbaixun",
+  "github": {
+    "enabled": false,
+    "host": "",
+    "repo": "",
+    "label_prefix": "harness",
+    "track_label": "harness/track"
+  },
   "features": [
     {
       "id": "F001",
@@ -31,7 +38,11 @@
         "docs/decisions/0009-harness-delta-sidecar.md",
         "docs/templates/generic/features.json.template",
         "scripts/sync-superpowers.sh"
-      ]
+      ],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     },
     {
       "id": "F002",
@@ -51,7 +62,11 @@
         "F001"
       ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-2-vendor-new-skills.md",
-      "related_files": []
+      "related_files": [],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     },
     {
       "id": "F003",
@@ -73,7 +88,11 @@
         "F002"
       ],
       "technical_notes": "Plan: docs/plans/2026-05-23-phase-3-and-4-docs-and-verify.md",
-      "related_files": []
+      "related_files": [],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     },
     {
       "id": "F004",
@@ -114,7 +133,11 @@
         "commands/evals/evals.json",
         "skills/canary/SKILL.md",
         "skills/init/SKILL.md"
-      ]
+      ],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     },
     {
       "id": "F005",
@@ -154,7 +177,11 @@
         "scripts/session-start",
         "docs/templates/generic/features.json.template",
         "commands/assign.md"
-      ]
+      ],
+      "github_issue": null,
+      "delivery_state": null,
+      "assignee": null,
+      "milestone": null
     }
   ],
   "constraints": {
