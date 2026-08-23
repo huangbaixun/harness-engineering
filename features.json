@@ -2,7 +2,7 @@
   "schema_version": "2.0",
   "version": "1.0",
   "product": "harness-engineering",
-  "last_updated": "2026-08-22",
+  "last_updated": "2026-08-23",
   "updated_by": "huangbaixun",
   "features": [
     {
@@ -120,7 +120,7 @@
       "id": "F005",
       "name": "features-json-github-issue-sync",
       "priority": 2,
-      "status": "proposed",
+      "status": "building",
       "spec": "docs/specs/2026-08-22-features-github-sync-design.md",
       "description": "features.json 与 GitHub/GHE Issue 双向同步。字段级单写所有权消除冲突面；SessionStart 拉、Stop 推两个 hook 触点；编辑热路径零网络。",
       "acceptance_criteria": [
