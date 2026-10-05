@@ -38,3 +38,7 @@ This is bounded representative verification. GPT-6 model routing remains host/us
 ## Completion / archival review
 
 Documentation matches the shared-core and separate-adapter implementation; required scripts are present, versions align at 2.3.0 and ADR-0013 is accepted. New implementation scripts are below 300 lines. Upstream large companions remain exact source artifacts. No reverse-direction dependency was introduced. Active design and execution plan remain linked by ADR/features/evaluation evidence, so they are retained; historical F001–F005 archival and shared living-doc changes belong outside F007 (F006). No documents were silently moved. F007 remains building pending integration into main; local implementation and acceptance are complete. No merge, push, global installation or deployment was performed.
+
+## Main integration — 2026-10-05
+
+User explicitly requested pushing the Harness changes to GitHub main. Fetched origin/main at 2b6bc0261901ed6ab5fc23ddf051e968d530843a; it was an ancestor of the reviewed implementation. Fast-forwarded local main to the implementation and reran the complete offline validator. F007 transitions to done for the demonstrated local CLI/project scope. Previously noted native hook and App/Cloud limits remain. Active linked design/plan remain available; F006 and historical archival are unchanged. AIDC is not part of this push.

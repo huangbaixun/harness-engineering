@@ -214,7 +214,7 @@
       "id": "F007",
       "name": "codex-platform-adaptation",
       "priority": 1,
-      "status": "building",
+      "status": "done",
       "spec": "docs/specs/2026-10-05-codex-adaptation-design.md",
       "description": "共享Harness核心、Codex适配与离线项目接入",
       "acceptance_criteria": [
@@ -232,7 +232,7 @@
         "全局安装、自动提交、推送、发布"
       ],
       "dependencies": [],
-      "technical_notes": "Local CLI/project acceptance: docs/evals/2026-10-05-platform-smoke.md. Native trusted hook lifecycle and App/Cloud remain explicitly unverified; no host parity claim. Implementation and local acceptance complete on development branch; integration into main is pending explicit user action.",
+      "technical_notes": "Local CLI/project acceptance: docs/evals/2026-10-05-platform-smoke.md. Integrated into main by explicit user authorization. Native trusted hook lifecycle and App/Cloud remain explicitly unverified; no host parity claim.",
       "related_files": [
         "scripts/validate.py",
         "scripts/harness_init.py",
