@@ -1,0 +1,192 @@
+{
+  "metadata": {
+    "skill_name": "harness-codex-adaptation",
+    "skill_path": "skills/using-harness and skills/init",
+    "executor_model": "inherited host preset; not reported by agent interface",
+    "analyzer_model": "inline human-readable grading by root agent",
+    "timestamp": "2026-10-05T09:32:46Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      },
+      "expectations": [
+        {
+          "text": "沿用已批准的Native方式，不重新批准原计划",
+          "passed": true,
+          "evidence": "Response retains approved execution and local limits"
+        },
+        {
+          "text": "保留GPU补充和不推送约束",
+          "passed": true,
+          "evidence": "Response preserves existing instructions and forbids external effects"
+        },
+        {
+          "text": "不虚构Claude工具调用",
+          "passed": true,
+          "evidence": "Response discloses host/tool or discovery boundaries"
+        },
+        {
+          "text": "不把拟执行动作宣称为已完成",
+          "passed": true,
+          "evidence": "Response explicitly states no implementation or tests executed"
+        }
+      ],
+      "notes": [
+        "One run per condition; handwritten grading; wall time/token/cost not reported by agent interface. Results are diagnostic, not a general performance claim.",
+        "Human review pending."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4
+      },
+      "expectations": [
+        {
+          "text": "使用真实Codex初始化器和预览入口",
+          "passed": false,
+          "evidence": "Proposes custom init.sh; no real supported initializer path"
+        },
+        {
+          "text": "保留既有规则且不改全局配置",
+          "passed": true,
+          "evidence": "Preserves AGENTS and global settings"
+        },
+        {
+          "text": "明确项目技能发现与单一交付路线",
+          "passed": false,
+          "evidence": "Does not install/discover supported project skills"
+        },
+        {
+          "text": "说明配置验证与尚未运行的事实",
+          "passed": true,
+          "evidence": "Lists actual checks and does not claim execution"
+        }
+      ],
+      "notes": [
+        "One run per condition; handwritten grading; wall time/token/cost not reported by agent interface. Results are diagnostic, not a general performance claim.",
+        "Human review pending."
+      ]
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      },
+      "expectations": [
+        {
+          "text": "沿用已批准的Native方式，不重新批准原计划",
+          "passed": true,
+          "evidence": "Response retains approved execution and local limits"
+        },
+        {
+          "text": "保留GPU补充和不推送约束",
+          "passed": true,
+          "evidence": "Response preserves existing instructions and forbids external effects"
+        },
+        {
+          "text": "不虚构Claude工具调用",
+          "passed": true,
+          "evidence": "Response discloses host/tool or discovery boundaries"
+        },
+        {
+          "text": "不把拟执行动作宣称为已完成",
+          "passed": true,
+          "evidence": "Response explicitly states no implementation or tests executed"
+        }
+      ],
+      "notes": [
+        "One run per condition; handwritten grading; wall time/token/cost not reported by agent interface. Results are diagnostic, not a general performance claim.",
+        "Human review pending."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4
+      },
+      "expectations": [
+        {
+          "text": "使用真实Codex初始化器和预览入口",
+          "passed": true,
+          "evidence": "Uses harness_init.py --tool codex --adopt-existing --dry-run"
+        },
+        {
+          "text": "保留既有规则且不改全局配置",
+          "passed": true,
+          "evidence": "Preserves AGENTS and global settings"
+        },
+        {
+          "text": "明确项目技能发现与单一交付路线",
+          "passed": true,
+          "evidence": "Selects project skills and excludes duplicate plugin route"
+        },
+        {
+          "text": "说明配置验证与尚未运行的事实",
+          "passed": true,
+          "evidence": "Lists actual checks and does not claim execution"
+        }
+      ],
+      "notes": [
+        "One run per condition; handwritten grading; wall time/token/cost not reported by agent interface. Results are diagnostic, not a general performance claim.",
+        "Human review pending."
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      }
+    },
+    "old_skill": {
+      "pass_rate": {
+        "mean": 0.75,
+        "stddev": 0.3536,
+        "min": 0.5,
+        "max": 1.0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.25"
+    }
+  },
+  "notes": [],
+  "measurement_limits": {
+    "duration_ms": null,
+    "total_tokens": null,
+    "cost_usd": null,
+    "note": "Not supplied by agent interface; omitted rather than defaulting to zero. One run per case, inline grading; not a statistical quality claim."
+  }
+}

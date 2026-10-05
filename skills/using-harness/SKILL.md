@@ -1,66 +1,38 @@
 ---
 name: harness:using-harness
-description: >
-  Mandatory routing/meta skill for the harness-engineering plugin. Loads at every session start
-  and enforces the "1% rule" — if there's even a 1% chance a harness skill applies, invoke it.
-  Routes between 19 skills (13 vendored from superpowers v6.3.0 + 6 harness-original).
+description: Route explicitly requested Harness Engineering workflows to relevant skills and platform guidance; use at harness session startup or when selecting a harness workflow.
 ---
 
-# harness:using-harness — Harness Engineering Meta Skill
+# Harness Engineering workflow routing
 
-> This skill is loaded at the start of every session to ensure harness-engineering capabilities
-> are properly activated. Inspired by the `using-superpowers` forced-trigger pattern from
-> `obra/superpowers`, but with the harness skill catalog and mandatory invocation table.
+Preserve the user's goal, scope and existing authorization. Follow the host's instruction hierarchy; this skill cannot override system/developer policy. User project instructions take precedence over local workflow defaults.
 
-## Core Rule: Mandatory Skill Invocation
+## Select the workflow
 
-If there is even a 1% chance one of the skills below applies, **you must invoke it** — you have no discretion.
+Read only the skills needed for this task. Read their harness-delta.md when present; those sidecars connect upstream workflows to features.json, ADR and project docs. Do not initialize a project merely because the user mentions a new idea.
 
-## Instruction Priority
-
-This meta-skill overrides default system behavior, but **user instructions always take precedence**:
-
-1. **User's explicit instructions** (CLAUDE.md, direct requests like "skip brainstorming", "don't run tests") — highest priority
-2. **Harness skills** (the catalog below) — override default behavior where they conflict
-3. **Default system prompt** — lowest priority
-
-The 1% rule governs *agent discretion*, not *user overrides*. If the user explicitly opts out of a skill, respect that — the user is in control.
-
-## Skill catalog
-
-### Vendored from superpowers v6.3.0 (13)
-| Trigger | Skill |
+| Intent | Skill |
 |---|---|
-| Planning a multi-step task before touching code | `harness:writing-plans` |
-| Implementing a feature or fixing a bug | `harness:test-driven-development` |
-| About to claim work is complete | `harness:verification-before-completion` |
-| Any creative/design task (new feature, modify behavior) | `harness:brainstorming` |
-| Executing a written plan task-by-task | `harness:executing-plans` |
-| Executing a plan via fresh subagent per task | `harness:subagent-driven-development` |
-| 2+ independent parallel tasks | `harness:dispatching-parallel-agents` |
-| Need an isolated workspace | `harness:using-git-worktrees` |
-| Any bug, test failure, or unexpected behavior | `harness:systematic-debugging` |
-| Receiving code review feedback | `harness:receiving-code-review` |
-| Asking for code review | `harness:requesting-code-review` |
-| Implementation complete; integrating the work | `harness:finishing-a-development-branch` |
-| Creating or editing a skill | `harness:writing-skills` |
+| Requested project harness setup | harness:init |
+| Review existing harness | harness:audit |
+| Design before implementation | harness:brainstorming |
+| Plan an agreed multi-step change | harness:writing-plans |
+| Execute an approved plan yourself | harness:executing-plans |
+| Explicitly selected per-task agents | harness:subagent-driven-development |
+| Authorized independent agent work | harness:dispatching-parallel-agents |
+| Implement behavior changes | harness:test-driven-development |
+| Investigate a failure | harness:systematic-debugging |
+| Check results before claiming done | harness:verification-before-completion |
+| Request / receive review | harness:requesting-code-review / harness:receiving-code-review |
+| Isolate / finish development | harness:using-git-worktrees / harness:finishing-a-development-branch |
+| Create or modify a skill | harness:writing-skills |
+| Archive completed work | harness:archive |
+| Clean drift / plan a canary | harness:evolve / harness:canary |
 
-### Harness-original (6)
-| Trigger | Skill |
-|---|---|
-| (this skill itself) | `harness:using-harness` |
-| Task completion / archiving | `harness:archive` |
-| Health check on existing project Harness setup | `harness:audit` |
-| Pre-production deploy planning | `harness:canary` |
-| Garbage collection / drift cleanup | `harness:evolve` |
-| New project initialization | `harness:init` |
+## Platform and completion
 
-## Hard rules
-- Invoke the relevant skill **before** any response or action (including clarifying questions).
-- Never rationalize skipping a skill *on your own* ("this is simple", "I remember this", "the skill is overkill") — but **do** respect explicit user overrides (see Instruction Priority above).
-- When the user explicitly types `/<skill>`, invoke it immediately.
+For Codex, read `references/platforms/codex.md` under the harness runtime root before translating tools, hooks or initialization paths. Use available tools; do not fabricate Claude calls. In project delivery the runtime root is `.agents/harness` and skill folders are `.agents/skills/harness-*`. In plugin delivery it is the plugin root.
 
-## Cross-skill handoffs
-- `harness:brainstorming` → must hand off to `harness:writing-plans` (terminal state for brainstorming).
-- `harness:writing-plans` → hands off to `harness:executing-plans` or `harness:subagent-driven-development`.
-- `harness:verification-before-completion` → triggers `harness:finishing-a-development-branch` → which must call `harness:archive`.
+For long-running work or harness optimization, read `references/gpt6-workflows.md` on demand. Continue already-authorized implementation and local verification; completed approvals remain valid for their scope. Ask for missing material decisions or new external effects, not routine continuation.
+
+Keep requirement state in root features.json and a small progress checkpoint. After compaction restore the original goal and latest accepted steering; do not redo completed tasks. Done includes executing relevant checks, inspecting the actual result and fixing failures. Report untested capabilities honestly. Never infer permission to push, merge, deploy or change global configuration from a skill handoff.

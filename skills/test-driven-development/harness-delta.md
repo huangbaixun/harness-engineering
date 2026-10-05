@@ -1,7 +1,7 @@
 # harness-delta: test-driven-development
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -28,3 +28,7 @@ The session's Stop hook blocks "claim done without tests" (existing infrastructu
 ## Verification (covered by evals)
 - with-skill: when features.json has a `building` feature, the first test written cites the specific `acceptance_criterion` by content.
 - baseline: without the skill, tests may be written but won't trace to the criteria.
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

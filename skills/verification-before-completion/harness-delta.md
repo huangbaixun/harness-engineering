@@ -1,7 +1,7 @@
 # harness-delta: verification-before-completion
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -30,3 +30,7 @@ Existing Stop hooks for "claim done without tests" plus this skill's architectur
 ## Verification (covered by evals)
 - with-skill: when an acceptance_criterion is unsatisfied, the skill blocks "ready for finishing" and reports the gap.
 - baseline: without the skill, "ready" may be claimed despite gaps.
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

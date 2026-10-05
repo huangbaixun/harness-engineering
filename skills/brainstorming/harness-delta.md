@@ -1,7 +1,7 @@
 # harness-delta: brainstorming
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -60,3 +60,7 @@ None directly; writing-plans is the next mandatory step after brainstorming comp
 - with-skill: type=feature → entry appears in `features.json` before writing-plans handoff
 - with-skill: type=adr-proposal → ADR file appears in `docs/decisions/` before writing-plans handoff
 - baseline: spec may dangle without features.json sync or ADR
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

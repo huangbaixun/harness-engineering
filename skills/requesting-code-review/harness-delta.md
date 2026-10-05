@@ -1,7 +1,7 @@
 # harness-delta: requesting-code-review
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -43,3 +43,7 @@ None directly.
 - with-skill: review request blocked when any rigid constraint is unsatisfied
 - with-skill: PR body includes feature: <id> line
 - baseline: review may be requested with unsatisfied constraints or missing feature reference
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

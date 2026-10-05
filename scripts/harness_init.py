@@ -21,8 +21,8 @@ def build_plan(project, delivery, adopt_existing=False):
         if BEGIN in body or END in body:
             if body.count(BEGIN)!=1 or body.count(END)!=1 or body.index(BEGIN)>body.index(END):
                 raise ValueError('AGENTS.md has malformed harness managed markers')
-            body=re.sub(re.escape(BEGIN)+'.*?'+re.escape(END),rules.rstrip(),body,flags=re.S)
-        else: body=body.rstrip()+'\n\n'+rules
+            body=re.sub(re.escape(BEGIN)+'.*?'+re.escape(END),lambda _: rules.rstrip(),body,flags=re.S)
+        else: body=body+('\n' if body.endswith('\n') else '\n\n')+rules
         rules=body
     config=(template/'harness.json.template').read_text().replace('{{DELIVERY}}',delivery)
     plan=[(project/'AGENTS.md',rules.encode()),(project/'.harness/config.json',config.encode())]
@@ -30,16 +30,18 @@ def build_plan(project, delivery, adopt_existing=False):
         features={'schema_version':'2.1','features':[],'github':{'enabled':False}}
         plan.append((project/'features.json',(json.dumps(features,indent=2)+'\n').encode()))
     if delivery=='project':
-        for folder in ('scripts','references','commands','agents','docs/templates','docs/decisions'):
+        for folder in ('scripts','references','commands','agents','docs/templates','docs/decisions','third_party'):
             for path in sorted((ROOT/folder).rglob('*')):
                 if not path.is_file() or '__pycache__' in path.parts or path.suffix=='.pyc' or 'tests' in path.parts: continue
                 # Claude lifecycle scripts must not be implicitly available as a Codex entrypoint.
                 plan.append((project/'.agents/harness'/path.relative_to(ROOT),path.read_bytes()))
         plan.append((project/'.agents/harness/LICENSE',(ROOT/'LICENSE').read_bytes()))
-        for path in sorted((ROOT/'skills').rglob('*')):
+        skill_root=ROOT/'skills' if (ROOT/'skills').is_dir() else ROOT.parent/'skills'
+        for path in sorted(skill_root.rglob('*')):
             if not path.is_file() or '__pycache__' in path.parts or path.suffix=='.pyc': continue
-            rel=path.relative_to(ROOT/'skills')
-            plan.append((project/'.agents/skills'/('harness-'+rel.parts[0])/Path(*rel.parts[1:]),path.read_bytes()))
+            rel=path.relative_to(skill_root)
+            name=rel.parts[0] if skill_root==ROOT.parent/'skills' else 'harness-'+rel.parts[0]
+            plan.append((project/'.agents/skills'/name/Path(*rel.parts[1:]),path.read_bytes()))
     return plan
 
 

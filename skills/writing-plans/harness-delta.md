@@ -1,7 +1,7 @@
 # harness-delta: writing-plans
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -40,3 +40,7 @@ None directly. Downstream `harness:executing-plans` and `harness:verification-be
 ## Verification (covered by evals)
 - with-skill: when features.json has an in-progress feature, the plan output references each entry in that feature's `acceptance_criteria` (verbatim or paraphrased per eval #1 assertion).
 - baseline: without the skill, plan output may diverge from `acceptance_criteria` or invent unrelated tasks.
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

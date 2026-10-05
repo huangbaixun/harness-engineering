@@ -122,6 +122,20 @@
           "check": "status 取值属于 proposed/building/done，不出现 planned/in_progress/cancelled。"
         }
       ]
+    },
+    {
+      "id": 5,
+      "type": "functional",
+      "eval_name": "codex-existing-project-adoption",
+      "prompt": "在已有项目配置Harness给Codex用。已有AGENTS.md，不覆盖；零依赖，不自动提交/同步Issue/修改全局配置。先列实际步骤与验收，不执行。",
+      "expected_output": "Use actual Codex initializer dry-run and preserve rules; no global side effects; configure explicit checks.",
+      "assertions": [
+        "使用真实Codex初始化器和预览入口",
+        "保留既有规则且不改全局配置",
+        "明确项目技能发现与单一交付路线",
+        "说明配置验证与尚未运行的事实"
+      ],
+      "files": []
     }
   ]
 }

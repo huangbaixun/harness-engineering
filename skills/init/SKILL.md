@@ -1,20 +1,18 @@
 ---
 name: harness:init
-description: >
-  AI Agent Harness engineering initialization for new projects. Activate when users mention
-  "new project", "project initialization", "set up Harness", "create CLAUDE.md",
-  "set up Agent environment", "init harness", "start from scratch",
-  "initialize AI coding environment", "establish Agent constraints", or
-  "set up Claude Code project".
-  Even if the user simply mentions wanting to "start a new project" or
-  "configure an AI development environment", use this Skill,
-  because every new project should begin by establishing a Harness.
+description: Initialize or adopt Harness Engineering in a project when explicitly requested, choosing the actual Claude Code or Codex platform and preserving existing instructions.
 ---
 
 # Harness Initialization Skill
 
 > This Skill guides you in establishing a complete AI Agent Harness engineering system for a new project.
 > Core philosophy: **Observe first, then constrain** — do not fill in every rule on day one. Instead, establish a minimal viable Harness and let the team discover what needs to be added through actual usage.
+
+## Choose the actual platform first
+
+Inspect the requested tool and existing project instructions before initializing. For Codex, read `references/platforms/codex.md` and use `python3 scripts/harness_init.py --tool codex --project <project> --dry-run` from the harness runtime root. Inspect the changes, then apply the same command without `--dry-run` within the user-authorized setup scope. Existing AGENTS.md requires explicit `--adopt-existing`, preserving all text outside the managed block. Choose project skills or plugin delivery, never both. Defaults are offline with no auto-commit, Issue sync, global configuration edits or active hooks. Configure verification_commands as argv arrays; lack of configuration is not verified completion. Codex setup ends here: do not generate the Claude-specific artifacts below.
+
+For Claude Code, continue with the existing workflow below. For other hosts, report the unsupported platform rather than inventing an adapter. Do not initialize infrastructure for an unrelated new-project discussion.
 
 ## Initialization Artifacts
 

@@ -1,7 +1,7 @@
 # harness-delta: systematic-debugging
 
 ## Upstream
-superpowers v6.3.0 (commit SHA recorded in UPSTREAM.md)
+superpowers v6.4.2 (commit SHA recorded in UPSTREAM.md)
 
 ## Hard integrations (must do)
 
@@ -42,3 +42,7 @@ None directly.
 - with-skill: every debug session produces a docs/incidents/ note tied to a feature or with bug: prefix
 - with-skill: ADR-invalidating bugs result in ADR Consequences update
 - baseline: bugs may be fixed silently without ADR or features.json tracking
+
+## Codex and GPT-6 workflow adapter
+
+Read `references/platforms/codex.md` from the runtime root when running on Codex; map tools to the actual host and preserve native permissions. Long-running workflow policy is in `references/gpt6-workflows.md`, loaded only when relevant. The user's existing approval and scope remain authoritative; do not repeat approval gates already satisfied. Native execution records a checkpoint, runs all approved tasks, and gets one final independent review. Planning records interfaces and checkable decisions rather than implementing the product during planning. Do not change models or global configuration implicitly.

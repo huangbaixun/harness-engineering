@@ -4,6 +4,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -73,6 +74,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('session-start','pre-tool','verify','stop'))
     parser.add_argument('--project',type=Path)
+    parser.add_argument('--report',help='explicit project-relative verification report path')
     args=parser.parse_args()
     if args.mode=='pre-tool':
         print('[harness-hook] pre-tool protection is not registered; use native permissions',file=sys.stderr); return 2
@@ -80,7 +82,13 @@ def main():
         if args.mode=='verify':
             if args.project is None: raise ValueError('verify requires --project')
             project=args.project.resolve()
-            return run_verification(project,config_for(project).get('verification_commands'))
+            started=time.monotonic()
+            report_path=contained(project,args.report) if args.report else None
+            result=run_verification(project,config_for(project).get('verification_commands'))
+            if report_path:
+                from harness_state import write_json_atomic
+                write_json_atomic(report_path,{'schema_version':1,'success':result==0,'exit_code':result,'duration_ms':round((time.monotonic()-started)*1000,3),'total_tokens':None,'cost_usd':None,'measurement':'local-verification-only'})
+            return result
         try: event=json.load(sys.stdin)
         except ValueError: raise ValueError('malformed hook event JSON') from None
         if not isinstance(event,dict) or not isinstance(event.get('cwd'),str) or not event['cwd']:

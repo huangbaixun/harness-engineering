@@ -26,3 +26,5 @@ Sources (checked 2026-10-05):
 - https://learn.chatgpt.com/docs/build-skills
 - https://learn.chatgpt.com/docs/hooks
 - https://developers.openai.com/plugins/build/plugins
+
+For long-running workflow decisions, read `references/gpt6-workflows.md` from the runtime root. Store checkpoints with `scripts/harness_state.py`; old progress files remain untouched.

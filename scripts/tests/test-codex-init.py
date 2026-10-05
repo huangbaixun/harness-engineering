@@ -27,6 +27,15 @@ class InitTests(unittest.TestCase):
         self.assertEqual(config['verification_commands'],[])
         skill=self.project/'.agents/skills/harness-using-harness/SKILL.md'
         self.assertTrue(skill.is_file()); self.assertTrue((self.project/'.agents/harness/scripts/validate.py').is_file())
+    def test_bundled_initializer_can_initialize_another_project(self):
+        r=self.init(); self.assertEqual(r.returncode,0,r.stderr)
+        bundled=self.project/'.agents/harness/scripts/harness_init.py'
+        other=Path(self.tmp.name)/'other'
+        r=subprocess.run([sys.executable,str(bundled),'--tool','codex','--project',str(other)],capture_output=True,text=True)
+        self.assertEqual(r.returncode,0,r.stderr)
+        self.assertTrue((other/'.agents/skills/harness-using-harness/SKILL.md').is_file())
+        self.assertTrue((other/'.agents/harness/third_party/superpowers/LICENSE').is_file())
+
     def test_plugin_delivery_has_no_duplicate_project_skills(self):
         r=self.init('--delivery','plugin'); self.assertEqual(r.returncode,0,r.stderr)
         self.assertFalse((self.project/'.agents/skills').exists())
@@ -36,6 +45,12 @@ class InitTests(unittest.TestCase):
         r=self.init('--adopt-existing'); self.assertEqual(r.returncode,0,r.stderr)
         self.assertTrue(p.read_text().startswith('original rules\n'))
         before=p.read_bytes(); self.assertEqual(self.init('--adopt-existing').returncode,0); self.assertEqual(before,p.read_bytes())
+    def test_adoption_preserves_all_original_bytes(self):
+        original=b'original rules\n\n  \n'
+        p=self.project/'AGENTS.md'; p.write_bytes(original)
+        r=self.init('--adopt-existing'); self.assertEqual(r.returncode,0,r.stderr)
+        self.assertTrue(p.read_bytes().startswith(original))
+
     def test_symlink_destination_is_rejected(self):
         outside=Path(self.tmp.name)/'outside'; outside.mkdir()
         (self.project/'.agents').symlink_to(outside,target_is_directory=True)

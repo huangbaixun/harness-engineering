@@ -11,3 +11,6 @@
 - Operational hooks are silent on success; SessionStart context is intentional protocol output.
 - Project initialization defaults to no auto-commit, Issue sync, push or deploy. Do not run this repository's opt-in Issue hooks as a development check.
 - Keep framework adaptation and consuming-product changes separately reviewable.
+
+- Routine local reads, edits, disposable-data tests and fixes within the approved plan are authorized; complete them without repeated confirmation. Ask only for missing material decisions or new external effects.
+- Keep stable instructions separate from runtime state; load platform/GPT-6 references only when relevant. Completion includes running checks and inspecting results, with gaps disclosed.
