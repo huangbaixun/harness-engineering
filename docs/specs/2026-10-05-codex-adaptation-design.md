@@ -2,7 +2,7 @@
 date: 2026-10-05
 topic: codex-adaptation
 type: exploration
-status: proposed
+status: accepted
 ---
 
 # Harness Engineering：Codex 适配与更新设计
@@ -62,4 +62,4 @@ Superpowers更新先核对版本与SHA、逐技能及companion差异；记录UPS
 
 ## 待审阅
 
-此文件是拟议设计，尚未开始产品实现。设计审阅后生成逐任务实施计划并选择执行方式，遵循Superpowers设计/计划门槛。
+设计和计划已获用户确认，Native 实施已完成本地 CLI / 项目交付验收。未验证能力及证据见 docs/evals/2026-10-05-platform-smoke.md。GPU 产品功能另按原目标推进。

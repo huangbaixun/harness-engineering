@@ -8,17 +8,24 @@
   "plugins": [
     {
       "name": "harness-engineering",
-      "description": "AI Agent engineering: project initialization, existing project audit, team Sprint allocation. Built for Claude Code.",
+      "description": "Shared engineering workflows with Claude Code and Codex platform adapters",
       "source": {
         "source": "github",
         "repo": "huangbaixun/harness-engineering"
       },
-      "version": "2.2.1",
+      "version": "2.3.0",
       "author": {
         "name": "Harness Engineering",
         "url": "https://github.com/huangbaixun/harness-engineering"
       },
-      "keywords": ["harness", "agent", "engineering", "devops", "team", "sprint"],
+      "keywords": [
+        "harness",
+        "agent",
+        "engineering",
+        "devops",
+        "team",
+        "sprint"
+      ],
       "license": "MIT"
     }
   ]

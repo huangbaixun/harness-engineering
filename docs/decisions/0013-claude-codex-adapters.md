@@ -1,8 +1,8 @@
 # ADR 0013：共享 Harness 核心与 Claude / Codex 平台适配
 
-- 状态：Proposed
+- 状态：Accepted
 - 日期：2026-10-05
-- Supersedes：ADR-0007 的 Claude Code only 限制（执行验收后生效）
+- Supersedes：ADR-0007 的 Claude Code only 限制（本地 CLI / 项目交付验收，未验证能力见矩阵）
 
 ## 背景
 

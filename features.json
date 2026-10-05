@@ -2,7 +2,7 @@
   "schema_version": "2.1",
   "version": "1.0",
   "product": "harness-engineering",
-  "last_updated": "2026-08-23",
+  "last_updated": "2026-10-05",
   "updated_by": "huangbaixun",
   "github": {
     "enabled": true,
@@ -232,7 +232,7 @@
         "全局安装、自动提交、推送、发布"
       ],
       "dependencies": [],
-      "technical_notes": "Approved Native implementation; docs/plans/2026-10-05-codex-adaptation-plan.md",
+      "technical_notes": "Local CLI/project acceptance: docs/evals/2026-10-05-platform-smoke.md. Native trusted hook lifecycle and App/Cloud remain explicitly unverified; no host parity claim. Implementation and local acceptance complete on development branch; integration into main is pending explicit user action.",
       "related_files": [
         "scripts/validate.py",
         "scripts/harness_init.py",

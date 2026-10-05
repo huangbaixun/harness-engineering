@@ -25,7 +25,7 @@ class InitTests(unittest.TestCase):
         config=json.loads((self.project/'.harness/config.json').read_text())
         self.assertIs(config['auto_commit'],False); self.assertIs(config['github_sync'],False)
         self.assertEqual(config['verification_commands'],[])
-        skill=self.project/'.agents/skills/harness-using-harness/SKILL.md'
+        skill=self.project/'.agents/skills/using-harness/SKILL.md'
         self.assertTrue(skill.is_file()); self.assertTrue((self.project/'.agents/harness/scripts/validate.py').is_file())
     def test_bundled_initializer_can_initialize_another_project(self):
         r=self.init(); self.assertEqual(r.returncode,0,r.stderr)
@@ -33,8 +33,46 @@ class InitTests(unittest.TestCase):
         other=Path(self.tmp.name)/'other'
         r=subprocess.run([sys.executable,str(bundled),'--tool','codex','--project',str(other)],capture_output=True,text=True)
         self.assertEqual(r.returncode,0,r.stderr)
-        self.assertTrue((other/'.agents/skills/harness-using-harness/SKILL.md').is_file())
+        self.assertTrue((other/'.agents/skills/using-harness/SKILL.md').is_file())
         self.assertTrue((other/'.agents/harness/third_party/superpowers/LICENSE').is_file())
+
+    def test_native_helpers_keep_layout_and_executable_modes(self):
+        r=self.init(); self.assertEqual(r.returncode,0,r.stderr)
+        helper=self.project/'.agents/skills/executing-plans/scripts/task-start'
+        sibling=self.project/'.agents/skills/subagent-driven-development/scripts/task-brief'
+        self.assertTrue(sibling.is_file())
+        import os
+        self.assertTrue(os.access(helper,os.X_OK))
+        r=subprocess.run([str(helper)],capture_output=True,text=True)
+        self.assertEqual(r.returncode,2); self.assertIn('usage:',r.stderr)
+        subprocess.run(['git','init','-q',str(self.project)],check=True,capture_output=True)
+        subprocess.run(['git','-C',str(self.project),'-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','--allow-empty','-qm','fixture'],check=True,capture_output=True)
+        plan=self.project/'plan.md'; plan.write_text('# Plan\n### Task 1: fixture\nRun checks.\n')
+        r=subprocess.run([str(helper),str(plan),'1'],cwd=self.project,capture_output=True,text=True)
+        self.assertEqual(r.returncode,0,r.stderr); self.assertIn('base:',r.stdout)
+        base=subprocess.check_output(['git','-C',str(self.project),'rev-parse','HEAD'],text=True).strip()
+        done=helper.parent/'task-done'
+        r=subprocess.run([str(done),str(plan),'1',base,'--',sys.executable,'-c','print("passed")'],cwd=self.project,capture_output=True,text=True)
+        self.assertEqual(r.returncode,0,r.stderr); self.assertIn('Task 1: complete',r.stdout)
+
+
+    def test_regular_file_ancestor_conflict_writes_nothing(self):
+        (self.project/'.agents').write_text('keep')
+        r=self.init(); self.assertEqual(r.returncode,2)
+        self.assertEqual(sorted(p.name for p in self.project.iterdir()),['.agents'])
+
+    def test_plugin_rules_reference_plugin_runtime(self):
+        r=self.init('--delivery','plugin'); self.assertEqual(r.returncode,0,r.stderr)
+        rules=(self.project/'AGENTS.md').read_text()
+        self.assertNotIn('python3 .agents/harness/',rules)
+        self.assertIn('installed plugin root',rules)
+
+    def test_reinitialization_preserves_custom_verification(self):
+        self.assertEqual(self.init().returncode,0)
+        p=self.project/'.harness/config.json'; d=json.loads(p.read_text())
+        d['verification_commands']=[[sys.executable,'-m','unittest']];d['custom_extension']=42
+        p.write_text(json.dumps(d,indent=2)+'\n');before=p.read_bytes()
+        r=self.init();self.assertEqual(r.returncode,0,r.stderr);self.assertEqual(p.read_bytes(),before)
 
     def test_plugin_delivery_has_no_duplicate_project_skills(self):
         r=self.init('--delivery','plugin'); self.assertEqual(r.returncode,0,r.stderr)
@@ -46,7 +84,7 @@ class InitTests(unittest.TestCase):
         self.assertTrue(p.read_text().startswith('original rules\n'))
         before=p.read_bytes(); self.assertEqual(self.init('--adopt-existing').returncode,0); self.assertEqual(before,p.read_bytes())
     def test_adoption_preserves_all_original_bytes(self):
-        original=b'original rules\n\n  \n'
+        original=b'original rules\r\n\r\n  \r\n'
         p=self.project/'AGENTS.md'; p.write_bytes(original)
         r=self.init('--adopt-existing'); self.assertEqual(r.returncode,0,r.stderr)
         self.assertTrue(p.read_bytes().startswith(original))

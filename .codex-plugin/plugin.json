@@ -1,7 +1,7 @@
 {
   "name": "harness",
-  "version": "2.2.0",
-  "description": "Harness Engineering shared workflows with a Codex platform adapter",
+  "version": "2.3.0",
+  "description": "Harness Engineering: 19 shared workflow skills, Claude Code and Codex adapters, Superpowers 6.4.2 provenance and GPT-6 workflow guidance",
   "skills": "./skills/",
   "hooks": "./hooks/codex.json"
 }

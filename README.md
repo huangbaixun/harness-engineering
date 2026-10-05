@@ -1,12 +1,34 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v2.2.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.3.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 
 **Shift your core engineering work from "writing code" to "designing environments where AI agents work reliably."**
 
 Harness Engineering Plugin packages this methodology into ready-to-use Skills, Commands, and Agents -- install and go, no extra configuration needed.
+
+## Codex local quick start (v2.3.0)
+
+Requires Python 3.10+; local development/tests use only standard libraries. From this repository, preview and adopt a project:
+
+```bash
+python3 scripts/harness_init.py --tool codex --project ../my-project --dry-run --adopt-existing
+python3 scripts/harness_init.py --tool codex --project ../my-project --adopt-existing
+```
+
+Project delivery installs 19 skills in `.agents/skills/<name>` and supporting resources in `.agents/harness`. Existing project rules remain outside the managed AGENTS block. Conflicting resources/configuration are reported before writes; review updates rather than overwriting existing settings. GitHub sync and automatic commits are disabled. Configure verification as argv arrays in `.harness/config.json`, then run:
+
+```bash
+python3 .agents/harness/scripts/codex_hook.py verify --project .
+python3 .agents/harness/scripts/harness_state.py checkpoint --project . --task F001 --next-action "run checks"
+```
+
+Alternatively use `--delivery plugin` and load this checkout through Codex's native local plugin flow; do not also install project skills. `.codex-plugin/plugin.json` explicitly selects `hooks/codex.json`. Review hook trust with `/hooks`. Project-only skills do not activate hooks; no global configuration is written. See [platform matrix](docs/platform-capabilities.md), [Codex adapter](references/platforms/codex.md) and [GPT-6 workflow guidance](references/gpt6-workflows.md). Claude commands/agent model declarations remain Claude-specific.
+
+To uninstall project delivery, review and remove the generated `.agents/harness`, `.agents/skills/<name>`, managed AGENTS block and `.harness/config.json`; retain your own rules/features/progress. Uninstall plugin delivery through the host plugin UI. Legacy `docs/claude-progress.json` is read-only fallback; new checkpoints use `docs/harness-progress.json`.
+
+Validation: `python3 scripts/validate.py`. Actual measurements and unverified host capabilities are listed in [evaluation](docs/evals/2026-10-05-codex-adaptation-report.md).
 
 ---
 
@@ -80,11 +102,11 @@ After installation, these Skills trigger automatically based on your intent -- n
 | **harness:init** | New project / "set up my Harness" | Generates complete 6-layer Harness structure (CLAUDE.md + Hooks + templates) |
 | **harness:audit** | "Agent keeps making the same mistakes" / legacy project audit | 7-dimension health score + prioritized fix plan |
 | **harness:evolve** | "CLAUDE.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
-| **harness:using-harness** | Every scenario (1% rule, loaded each session) | Intent recognition, ensures the right Skill is triggered |
+| **harness:using-harness** | Relevant workflow routing | Intent recognition, ensures the right Skill is triggered |
 | **harness:writing-plans** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
 | **harness:canary** | Ready to deploy / release planning | Risk-scored canary deployment runbook with staged rollout, rollback triggers, observability checklists |
 | **harness:archive** | Feature completed, ready to archive | Archives specs to `docs/archive/`, checks doc-code consistency, runs architecture health scan |
-| **harness:test-driven-development** | Any code writing (bound to 1% rule) | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
+| **harness:test-driven-development** | Behavioral implementation | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
 | **harness:verification-before-completion** | Before declaring a task complete | 4-layer check (Functional / Quality / Architecture / Integration) |
 | **harness:brainstorming** | New feature / design task | Turns ideas into specs at `docs/specs/`, gates handoff to writing-plans by features.json/ADR linkage |
 | **harness:executing-plans** | Plan ready to run | Executes a plan from `docs/plans/` task-by-task, blocks on out-of-scope work |
@@ -171,9 +193,9 @@ This plugin is fully self-bootstrapped (dogfooding) -- Harness Engineering conve
 
 - `CLAUDE.md` <=60 lines, the single source of truth
 - `docs/architecture.md` contains explicit dependency rules
-- `docs/decisions/` has complete ADR records for every key decision (incl. ADR 0007 Claude-Code-only architecture)
+- `docs/decisions/` has complete ADR records for every key decision (ADR 0013 supersedes the ADR 0007 Claude-only constraint)
 - Hook scripts follow the "silent on success, visible on failure" principle
-- Skills use `.claude/` paths directly
+- Platform adapters select host paths; shared skills remain platform-neutral
 
 ---
 
@@ -206,7 +228,7 @@ harness-engineering-plugin/
 ├── .claude-plugin/
 │   └── plugin.json                       <- Claude Code plugin manifest
 ├── skills/                               <- Unified harness: namespace
-│   ├── using-harness/SKILL.md            harness:using-harness meta-Skill (1% rule)
+│   ├── using-harness/SKILL.md            harness:using-harness relevant workflow routing
 │   ├── init/SKILL.md                     harness:init project initialization
 │   ├── audit/SKILL.md                    harness:audit legacy audit
 │   ├── evolve/SKILL.md                   harness:evolve continuous evolution

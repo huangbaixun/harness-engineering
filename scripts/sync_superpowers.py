@@ -58,6 +58,7 @@ def main():
             if rel not in remote_files: print(f'  companion GONE upstream: {rel}')
             elif rel not in local_files: print(f'  companion MISSING locally: {rel}')
             elif (local/rel).read_bytes()!=(remote/rel).read_bytes(): print(f'  companion CHANGED upstream: {rel}')
+            elif (local/rel).stat().st_mode & 0o111 != (remote/rel).stat().st_mode & 0o111: print(f'  companion EXECUTABLE mode differs: {rel}')
     if not matched:
         print('[sync-superpowers] no corresponding vendored skills',file=sys.stderr); return 1
     print('Read-only report; review each skill and provenance before accepting changes.')

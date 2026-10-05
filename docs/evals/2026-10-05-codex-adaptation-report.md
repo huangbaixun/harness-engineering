@@ -11,7 +11,7 @@ User requested Codex compatibility and then the OpenAI GPT-6 family guide as opt
 
 [Actual response comparison viewer](codex-adaptation/review.html), [benchmark](codex-adaptation/benchmark.json). Single samples and manual grades are diagnostic; do not treat 100% as general reliability. Agent interface did not supply wall time, token use or cost; those measurements are unknown, not zero. Aggregator defaults and delta direction were corrected in the stored benchmark to avoid misleading measurements.
 
-Behavioral evaluation exposed trimming of existing AGENTS trailing whitespace. Added a failing byte-preservation test, fixed initializer, then observed GREEN. Already-existing project rules now retain all bytes outside the managed block. Eight initialization tests pass, including reuse of the project-bundled initializer and preservation of the upstream license.
+Behavioral evaluation exposed trimming of existing AGENTS trailing whitespace. Added a failing byte-preservation test, fixed initializer, then observed GREEN. Already-existing project rules now retain all bytes outside the managed block. Twelve initialization tests pass, including reuse of the project-bundled initializer and preservation of the upstream license.
 
 ## Upstream reconciliation
 
@@ -37,3 +37,11 @@ Sources:
 - https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra
 - https://learn.chatgpt.com/docs/build-skills
 - https://learn.chatgpt.com/docs/hooks
+
+## Independent review corrections
+
+Four functional findings accepted and fixed with regression tests: preserve upstream sibling directory names and executable modes so Native helper scripts work; render delivery-specific plugin runtime paths; reject regular-file ancestors during conflict preflight. Original harness: skill names remain unchanged. This deliberately adjusts the plan's proposed harness- directory prefixes without changing upstream bytes. Actual task-start/task-done execution now passes in a disposable Git fixture.
+
+Review-only exclusions accepted: native hook trust/lifecycle and App/Cloud parity remain unverified; human review of the skill response viewer remains pending; these limits do not imply functional test success. No broad reliability or cost improvement is claimed.
+
+Portable project configuration may be checked in independently of local skills. Reinitialization preserves compatible existing configuration, including verification commands and extension fields; incompatible tool/schema/delivery conflicts before writes. Added RED→GREEN regression for this adoption path.

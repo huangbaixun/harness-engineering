@@ -8,7 +8,7 @@ Supports project-scoped skills and a separate Codex plugin entrypoint. Choose on
 
 Read skill files from disk when there is no Skill tool. Use actual available shell, patch, clarification and agent tools; never fabricate calls to Claude's Skill/AskUserQuestion/Task tools. User scope and host instruction hierarchy remain authoritative. Use a fresh reviewer when available and required by the selected execution workflow; otherwise disclose self-review.
 
-Resolve harness-original skill names through the discovered catalog. Vendored upstream cross-links such as `superpowers:writing-plans` refer to the corresponding local `harness:writing-plans` implementation and its sidecar. With project delivery, resolve `skills/<name>` at `.agents/skills/harness-<name>`; references/scripts/templates are under `.agents/harness`.
+Resolve harness-original skill names through the discovered catalog. Vendored upstream cross-links such as `superpowers:writing-plans` refer to the corresponding local `harness:writing-plans` implementation and its sidecar. With project delivery, resolve `skills/<name>` at `.agents/skills/<name>`; references/scripts/templates are under `.agents/harness`.
 
 ## Lifecycle
 
@@ -28,3 +28,5 @@ Sources (checked 2026-10-05):
 - https://developers.openai.com/plugins/build/plugins
 
 For long-running workflow decisions, read `references/gpt6-workflows.md` from the runtime root. Store checkpoints with `scripts/harness_state.py`; old progress files remain untouched.
+
+Codex plugin discovery automatically adds the plugin namespace: this source uses `harness:<name>`, so the local plugin loader reports `harness:harness:<name>`. Resolve actual discovered names rather than assuming project and plugin names are identical; project discovery remains `harness:<name>`. This preserves the shared source and ADR-0009 namespace constraint.

@@ -3,11 +3,11 @@
 
 - Keep the project's existing instructions and task scope authoritative.
 - Delivery: {{DELIVERY}}. Use exactly one skill delivery route; do not enable the same harness plugin alongside project skills.
-- Project delivery resources are under `.agents/harness/`; discoverable skills are under `.agents/skills/harness-*`.
-- Before a workflow, read its SKILL.md and harness-delta.md, then `.agents/harness/references/platforms/codex.md` for platform differences. Do not assume Claude-specific tools are available.
+- {{RESOURCE_LAYOUT}}
+- Before a workflow, read its SKILL.md and harness-delta.md, then `{{RUNTIME_ROOT}}/references/platforms/codex.md` for platform differences. Do not assume Claude-specific tools are available.
 - Track requirements in root `features.json`. Use `docs/harness-progress.json`, falling back to legacy `docs/claude-progress.json` without deleting it.
 - Plan → test-first implementation → verification → archive; preserve scope and existing authorization. Map tools to actual available capabilities and disclose unavailable automation.
 - Configuration is `.harness/config.json`. Default: no auto-commit, Issue sync, push, deploy or global settings changes.
-- Explicit checks: `python3 .agents/harness/scripts/codex_hook.py verify --project .` after configuring verification_commands as argv arrays.
+- Explicit checks: `python3 {{RUNTIME_ROOT}}/scripts/codex_hook.py verify --project .` after configuring verification_commands as argv arrays.
 - Hooks are optional and require native trust review. Project skill installation alone does not activate hooks or provide security enforcement.
 <!-- harness:end -->

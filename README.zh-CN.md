@@ -1,12 +1,34 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v2.2.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.3.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 
 **把工程师的核心工作从「编写代码」转变为「设计让 AI 智能体可靠工作的环境」。**
 
 Harness Engineering Plugin 将这套方法论落地为可直接使用的 Skills、Commands 和 Agents——安装即用，无需额外配置。
+
+## Codex 本地接入（v2.3.0）
+
+需要 Python 3.10+，开发与测试仅使用标准库。在框架仓库中预览并接入：
+
+```bash
+python3 scripts/harness_init.py --tool codex --project ../my-project --dry-run --adopt-existing
+python3 scripts/harness_init.py --tool codex --project ../my-project --adopt-existing
+```
+
+项目交付将 19 个技能放入 `.agents/skills/<name>`，配套资源放入 `.agents/harness`；AGENTS 托管段之外的既有规则保留。任何资源或配置冲突均在写入前报出，更新应审阅差异，不覆盖既有设置。默认关闭 GitHub 同步和自动提交。在 `.harness/config.json` 配置 argv 数组形式的检查命令后运行：
+
+```bash
+python3 .agents/harness/scripts/codex_hook.py verify --project .
+python3 .agents/harness/scripts/harness_state.py checkpoint --project . --task F001 --next-action "执行检查"
+```
+
+另一种方式是 `--delivery plugin`，通过 Codex 原生本地插件流程加载本仓库；两种技能入口择一。Codex manifest 独立选择 `hooks/codex.json`，通过 `/hooks` 审阅信任；项目技能不会自动注册 hooks，不写全局配置。Claude 的命令与 agent 模型声明仍属 Claude 专用。详见[能力矩阵](docs/platform-capabilities.md)、[Codex 适配](references/platforms/codex.md)和 [GPT-6 工作流](references/gpt6-workflows.md)。
+
+卸载项目交付时，先审阅再移除生成的 `.agents/harness`、`.agents/skills/<name>`、AGENTS 托管段和 `.harness/config.json`，保留自己的规则、features 与进度。插件交付通过宿主 UI 卸载。旧 `docs/claude-progress.json` 仅作为只读回退，新检查点使用 `docs/harness-progress.json`。
+
+统一验证：`python3 scripts/validate.py`。实际评估及未验证能力见[评估报告](docs/evals/2026-10-05-codex-adaptation-report.md)。
 
 ---
 
@@ -80,11 +102,11 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:writin
 | **harness:init** | 新项目 / 「帮我搭建 Harness」 | 生成完整六层 Harness 结构（CLAUDE.md + Hooks + 模板） |
 | **harness:audit** | 「Agent 老是犯同样的错」/ 存量项目审计 | 七维度健康评分 + 优先级修复方案 |
 | **harness:evolve** | 「CLAUDE.md 太长了」/ 新模型发布后 | 记忆文件瘦身 + Hooks 适配 + 垃圾回收 |
-| **harness:using-harness** | 所有场景（1% 规则，每次加载） | 意图识别，确保上述 Skill 被正确触发 |
+| **harness:using-harness** | 相关工作流的意图路由 | 意图识别，确保上述 Skill 被正确触发 |
 | **harness:writing-plans** | 实现新功能 / 修 Bug（>30 分钟或涉及 3+ 文件） | 拆解为可验证任务块，`<action>/<verify>/<done>` 三段式结构 |
 | **harness:canary** | 准备部署 / 发布规划 | 基于风险评分的灰度发布 Runbook，含分阶段流量切换、回滚触发条件、可观测性清单 |
 | **harness:archive** | 特性完成后归档 | Spec 归档至 `docs/archive/`、文档一致性检查、架构快检 |
-| **harness:test-driven-development** | 任何代码编写（与 1% 规则绑定） | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
+| **harness:test-driven-development** | 行为实现与错误修复 | 强制 RED→GREEN→REFACTOR 循环，先写测试再写实现 |
 | **harness:verification-before-completion** | 准备声明任务完成前 | 四层检查（Functional / Quality / Architecture / Integration） |
 | **harness:brainstorming** | 新功能 / 设计任务 | 把想法落到 `docs/specs/` 的设计 spec，按 features.json/ADR 关联门禁后再交给 writing-plans |
 | **harness:executing-plans** | plan 已写、准备执行 | 从 `docs/plans/` 读 plan 一任务一任务执行，遇到 out_of_scope 阻塞 |
@@ -159,7 +181,7 @@ SessionStart Hook 每次会话开启自动恢复进度上下文。harness:writin
 - `docs/architecture.md` 包含明确的依赖规则
 - `docs/decisions/` 有完整 ADR 记录每个关键决策
 - Hook 脚本遵循「成功静默、失败可见」原则
-- Skills 使用 `.claude/` 路径
+- 平台适配层选择宿主路径，共享技能按需加载；ADR-0013 取代 ADR-0007 的 Claude-only 限制
 
 ---
 

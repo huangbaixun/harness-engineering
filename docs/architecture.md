@@ -2,7 +2,7 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that supports Claude Code, with a Codex adapter under development and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.1.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.3.0), plus a set of supporting Commands, Hooks, and References.
+This is an AI Agent Harness plugin that supports Claude Code, and Codex via separate platform adapters and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.3.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.4.2), plus a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
@@ -20,7 +20,7 @@ harness-engineering-plugin/
 │   ├── canary/                     ← Pre-deployment canary planning
 │   ├── evolve/                     ← Continuous iterative improvement
 │   ├── init/                       ← New project Harness initialization
-│   ├── # vendored from superpowers v6.3.0 (13) — 4 harness files + upstream companions
+│   ├── # vendored from superpowers v6.4.2 (13) — 4 harness files + upstream companions
 │   ├── brainstorming/              ← Spec authoring (writes to docs/specs/, gated by features.json)
 │   ├── dispatching-parallel-agents/← Parallel work dispatch
 │   ├── executing-plans/            ← Plan execution (reads from docs/plans/)
@@ -62,7 +62,7 @@ harness-engineering-plugin/
 │   └── templates/                  ← Multi-language project templates (typescript / python / go / generic)
 ├── references/                     ← Reference documents (loaded on demand)
 ├── scripts/
-│   ├── self-test.sh, health-score.py, generate-harness.sh
+│   ├── validate.py, harness_init.py, codex_hook.py, harness_state.py
 │   ├── sync-superpowers.sh         ← v2.0.0: upstream reconciliation helper (read-only diff report)
 │   ├── harness_sync.py             ← v2.2.0: features.json ↔ GitHub/GHE Issue 同步核心 (pull/push/status)
 │   ├── stop-sync-issues{,.sh,.cmd} ← v2.2.0: Stop hook — 推送（任何失败 exit 0）
@@ -76,7 +76,7 @@ Each of the 13 vendored skills contains 4 harness files plus whatever companion 
 
 ```
 skills/<name>/
-├── SKILL.md            # superpowers v6.3.0 content verbatim, only 2 allowed edits applied:
+├── SKILL.md            # superpowers v6.4.2 content verbatim, only 2 allowed edits applied:
 │                       #   1. frontmatter `name:` → `harness:<name>`
 │                       #   2. pointer line inserted: "> harness local rules: read harness-delta.md"
 ├── <companions>        # upstream verbatim, ZERO edits — e.g. visual-companion.md, code-reviewer.md,
@@ -137,6 +137,10 @@ Prohibited:
 
 ## Upstream sync workflow
 
-`scripts/sync-superpowers.sh` compares each vendored skill's `UPSTREAM.md` SHA against the currently installed superpowers cache and emits a per-skill diff summary. The script is read-only; it never auto-applies changes. Reconciliation cadence is once per superpowers minor release; each diff is reviewed individually per ADR-0009.
+`scripts/sync-superpowers.sh` compares vendored files against a selected installed cache or explicit fixed checkout (recorded SHA is independently verified before accepting updates) and emits a per-skill diff summary. The script is read-only; it never auto-applies changes. Reconciliation cadence is once per superpowers minor release; each diff is reviewed individually per ADR-0009.
 
-The script compares `SKILL.md` only. After applying a sync, verify the invariants directly: each vendored `SKILL.md` must differ from upstream by exactly the 2 allowed edits, and each companion file must be byte-identical (`cmp`). Last sync: **v5.1.0 → v6.3.0 on 2026-08-22**.
+The script compares `SKILL.md` and upstream companion files. After applying a sync, verify the invariants directly: each vendored `SKILL.md` must differ from upstream by exactly the 2 allowed edits, and each companion file must be byte-identical (`cmp`). Last sync: **v6.3.0 → v6.4.2 on 2026-10-05**, pinned at `8ca22dba9a94f28898bbce59f2537ff4d87c747d`.
+
+## Codex and GPT-6 adapter
+
+ADR-0013 introduces `.codex-plugin/plugin.json` with independent `hooks/codex.json`, alongside the unchanged Claude hook registration. Offline project initialization copies skills and their supporting resources without global configuration. Session context is bounded; explicit verification propagates failures. Atomic neutral checkpoints separate mutable progress/steering from stable instructions. Only relevant skills/references are loaded; model/effort selection remains with the host and user. No Codex PreTool security interception is registered.

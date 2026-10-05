@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0] - 2026-10-05
+
+- Add offline Codex initialization, project-scoped skills and independent plugin hooks (ADR-0013); preserve existing rules and disable implicit commits/Issue synchronization.
+- Bound session context, add neutral atomic checkpoints and explicit failure-propagating verification with honest local measurements.
+- Apply GPT-6 progressive disclosure, steering continuity and existing-approval guidance; preserve host model selection.
+- Pin all 13 vendored Superpowers workflows and companions to release 6.4.2 with upstream license; improve read-only numeric-version reconciliation.
+- Repair CI validation; add adapter regressions and paired skill behavior evaluation. Native hook trust remains required; App/Cloud parity is not assumed.
+
 ## v2.2.1 (2026-08-23)
 
 **修复：GHE 主机路由 —— 所有非 github.com 项目的同步 100% 失败且被谎报为网络问题**

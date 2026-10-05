@@ -22,6 +22,18 @@ class HookTests(unittest.TestCase):
         r=self.event('session-start',{'cwd':str(self.root)}); self.assertEqual(r.returncode,0,r.stderr)
         context=json.loads(r.stdout)['hookSpecificOutput']['additionalContext']; self.assertIn('F007',context); self.assertNotIn('F001',context)
         self.assertLess(len(context),6000)
+    def test_default_lifecycle_never_invokes_external_tools(self):
+        import shlex
+        bin_dir=self.root/'bin'; bin_dir.mkdir(); log=self.root/'external-calls'
+        for name in ('gh','git','curl','wget'):
+            p=bin_dir/name; p.write_text('#!/bin/sh\nprintf called >> '+shlex.quote(str(log))+'\nexit 93\n'); p.chmod(0o755)
+        env={**os.environ,'PATH':str(bin_dir)+os.pathsep+os.environ.get('PATH','')}
+        self.config['verification_commands']=[[sys.executable,'-c','pass']]; self.save()
+        for mode in ('session-start','stop'):
+            r=subprocess.run([sys.executable,str(SCRIPT),mode],input=json.dumps({'cwd':str(self.root)}),env=env,capture_output=True,text=True)
+            self.assertEqual(r.returncode,0,r.stderr)
+        self.assertFalse(log.exists())
+
     def test_legacy_progress_is_read_only(self):
         p=self.root/'docs/claude-progress.json'; p.write_text(json.dumps({'in_progress':'legacy task','completed_features':[]})); before=p.read_bytes()
         r=self.event('session-start',{'cwd':str(self.root)}); self.assertIn('legacy task',r.stdout); self.assertEqual(p.read_bytes(),before)

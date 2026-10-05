@@ -31,7 +31,7 @@ Read only the skills needed for this task. Read their harness-delta.md when pres
 
 ## Platform and completion
 
-For Codex, read `references/platforms/codex.md` under the harness runtime root before translating tools, hooks or initialization paths. Use available tools; do not fabricate Claude calls. In project delivery the runtime root is `.agents/harness` and skill folders are `.agents/skills/harness-*`. In plugin delivery it is the plugin root.
+For Codex, read `references/platforms/codex.md` under the harness runtime root before translating tools, hooks or initialization paths. Use available tools; do not fabricate Claude calls. In project delivery the runtime root is `.agents/harness` and skill folders are `.agents/skills/<name>`. In plugin delivery it is the plugin root.
 
 For long-running work or harness optimization, read `references/gpt6-workflows.md` on demand. Continue already-authorized implementation and local verification; completed approvals remain valid for their scope. Ask for missing material decisions or new external effects, not routine continuation.
 
