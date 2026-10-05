@@ -1,0 +1,7 @@
+{
+  "name": "harness",
+  "version": "2.2.0",
+  "description": "Harness Engineering shared workflows with a Codex platform adapter",
+  "skills": "./skills/",
+  "hooks": "./hooks/codex.json"
+}

@@ -1,0 +1,28 @@
+# Codex platform adapter
+
+## Scope
+
+Supports project-scoped skills and a separate Codex plugin entrypoint. Choose one delivery; installing skills does not register hooks. Project resources use `.agents/harness` as runtime root; plugin resources use the installed plugin root. Read local project instructions first.
+
+## Tools and workflow
+
+Read skill files from disk when there is no Skill tool. Use actual available shell, patch, clarification and agent tools; never fabricate calls to Claude's Skill/AskUserQuestion/Task tools. User scope and host instruction hierarchy remain authoritative. Use a fresh reviewer when available and required by the selected execution workflow; otherwise disclose self-review.
+
+Resolve harness-original skill names through the discovered catalog. Vendored upstream cross-links such as `superpowers:writing-plans` refer to the corresponding local `harness:writing-plans` implementation and its sidecar. With project delivery, resolve `skills/<name>` at `.agents/skills/harness-<name>`; references/scripts/templates are under `.agents/harness`.
+
+## Lifecycle
+
+Codex reads AGENTS.md and `.agents/skills`; plugin delivery declares `skills` and a separate `hooks/codex.json`. Do not load Claude's hooks/hooks.json: it includes optional commit and Issue operations. No sync or auto-commit occurs in the Codex adapter. Existing Claude behavior remains unchanged.
+
+Use `python3 .agents/harness/scripts/codex_hook.py verify --project .` in project mode, or the same script under plugin root in plugin mode. A verification command is an argv array, not shell text. Empty configuration is not successful verification. Legacy progress is read-only fallback.
+
+Native hooks must be reviewed/trusted through `/hooks`; never bypass trust. Project mode does not modify `.codex/config.toml` or global config automatically. Unregistered PreTool protection is not a security barrier: native permissions remain the enforcement boundary.
+
+## Version and evidence
+
+Initial compatibility target: Codex CLI 0.158.0. CLI parsing/loading and representative workflow results are recorded separately in the platform smoke report. Codex App and Work Cloud are not assumed equivalent to CLI. Cloud orchestration may not support local shell hooks. Unknown tools and absent lifecycle capabilities require explicit disclosure and manual verification.
+
+Sources (checked 2026-10-05):
+- https://learn.chatgpt.com/docs/build-skills
+- https://learn.chatgpt.com/docs/hooks
+- https://developers.openai.com/plugins/build/plugins
