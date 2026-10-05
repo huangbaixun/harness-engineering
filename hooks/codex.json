@@ -1,1 +1,11 @@
-{"hooks": {}}
+{
+  "hooks": {
+    "SessionStart": [{"matcher":"startup|resume|clear|compact", "hooks":[{
+      "type":"command", "command":"python3 \"${PLUGIN_ROOT}/scripts/codex_hook.py\" session-start",
+      "timeout":5, "additionalContextLimit":2000
+    }]}],
+    "Stop": [{"hooks":[{
+      "type":"command", "command":"python3 \"${PLUGIN_ROOT}/scripts/codex_hook.py\" stop", "timeout":300
+    }]}]
+  }
+}
