@@ -14,3 +14,5 @@
 | 0010 | 元技能 SessionStart 注入 | 已采纳 | 2026-05-25 |
 | 0011 | features.json 字段所有权与 schema 2.1 | 提议中 | 2026-08-22 |
 | 0012 | features.json 的规范位置为仓库根目录 | 已采纳 | 2026-08-22 |
+
+- [0013 Claude/Codex adapters (proposed)](0013-claude-codex-adapters.md)

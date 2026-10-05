@@ -209,6 +209,36 @@
       "delivery_state": "triage",
       "assignee": null,
       "milestone": null
+    },
+    {
+      "id": "F007",
+      "name": "codex-platform-adaptation",
+      "priority": 1,
+      "status": "building",
+      "spec": "docs/specs/2026-10-05-codex-adaptation-design.md",
+      "description": "共享Harness核心、Codex适配与离线项目接入",
+      "acceptance_criteria": [
+        "1. 新ADR、能力矩阵、文档与manifest准确反映双端支持，不声称不支持的自动化。",
+        "2. Codex发现技能；代表性规划、TDD、验证及归档工作流运行；Claude结构和回归仍通过。",
+        "3. hook有效/畸形输入、路径含空格、未知工具、失败命令、重复初始化和非受信hook均有测试。",
+        "4. 未启用同步时零网络；已有项目配置不被覆盖；无隐式提交、发布或扩大权限。",
+        "5. CI结构检查修复并纳入9个已有测试脚本及新增适配测试。",
+        "6. 修改技能依CLAUDE.md执行skill-creator评估，包含with-skill/baseline证据与供人工审阅的结果；不可将JSON结构检查当作行为评估。",
+        "7. 在隔离样例项目完成Codex本地冒烟后，再接入AIDC；接入后执行npm run check、npm test，并在开发浏览器中验证交互。"
+      ],
+      "out_of_scope": [
+        "F006共享活文档归档",
+        "GPU产品功能实现",
+        "全局安装、自动提交、推送、发布"
+      ],
+      "dependencies": [],
+      "technical_notes": "Approved Native implementation; docs/plans/2026-10-05-codex-adaptation-plan.md",
+      "related_files": [
+        "scripts/validate.py",
+        "scripts/harness_init.py",
+        "scripts/codex_hook.py",
+        ".codex-plugin/plugin.json"
+      ]
     }
   ],
   "constraints": {

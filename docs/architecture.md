@@ -2,7 +2,7 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that targets Claude Code and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.1.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.3.0), plus a set of supporting Commands, Hooks, and References.
+This is an AI Agent Harness plugin that supports Claude Code, with a Codex adapter under development and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.1.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.3.0), plus a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
