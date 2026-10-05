@@ -244,8 +244,8 @@
       "id": "F008",
       "name": "evidence-based-workflow-cleanup",
       "priority": 1,
-      "status": "building",
-      "spec": "docs/specs/2026-10-05-workflow-cleanup-design.md",
+      "status": "done",
+      "spec": "docs/archive/2026-10-05-workflow-cleanup-design.md",
       "description": "User-approved P0/P1/P2 cleanup of obsolete Harness behaviors and policy.",
       "acceptance_criteria": [
         "Retire default auto-commit/no-op formatting/telemetry; configured checks actually execute and reject empty configuration.",
@@ -263,14 +263,15 @@
       "dependencies": [
         "F007"
       ],
-      "technical_notes": "Approved plan: docs/plans/2026-10-05-workflow-cleanup-plan.md. Remains building until authorized integration; local completion evidence is recorded separately.",
+      "technical_notes": "Integrated into local main with explicit user authorization to push GitHub main. Verified report: docs/evals/2026-10-05-workflow-cleanup-report.md. Archived plan: docs/archive/2026-10-05-workflow-cleanup-plan.md. Native trusted hook lifecycle and native Windows remain unverified.",
       "related_files": [
         "scripts/harness_runtime.py",
         "scripts/claude_hook.py",
         "scripts/harness_init.py",
         "plugin.json",
         "docs/decisions/0014-evidence-based-workflow-cleanup.md"
-      ]
+      ],
+      "archived_at": "2026-10-05T12:49:57.087887+00:00"
     }
   ],
   "constraints": {

@@ -2,9 +2,12 @@
 date: 2026-10-05
 topic: workflow-cleanup
 type: feature
-status: building
+status: done
 features: [F008]
 adr: [0014]
+archived_at: 2026-10-05T12:49:57.087887+00:00
+completed_by: codex
+feature_id: F008
 ---
 
 # User-approved Harness workflow cleanup

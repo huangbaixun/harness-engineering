@@ -77,8 +77,8 @@ protocol execution passes; native Windows execution remains unverified.
 
 Native hook trust/loading/lifecycle and App/Cloud parity remain unverified. A Stop
 request does not intercept commits, enforce all acceptance criteria or prove
-completion; direct-path protection does not secure Bash. F008 remains building until
-separately authorized integration; implementation and local acceptance are complete.
+completion; direct-path protection does not secure Bash. F008 is done after user-authorized integration into local main; spec/plan are
+archived with references updated. Implementation and local acceptance are complete.
 
 Sources: [OpenAI plugin packaging](https://developers.openai.com/plugins/build/plugins),
 [Claude hooks](https://code.claude.com/docs/en/hooks),

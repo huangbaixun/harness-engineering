@@ -1,3 +1,9 @@
+---
+archived_at: 2026-10-05T12:49:57.087887+00:00
+completed_by: codex
+feature_id: F008
+---
+
 # Harness workflow cleanup — approved Native execution
 
 User approved the preceding audit and P0 → P1 → P2 order. Scope: framework only;
