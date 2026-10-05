@@ -1,0 +1,19 @@
+{
+  "response": "Adopt offline with the existing Claude configuration preserved. Use one project-local delivery unless an already installed plugin is selected; do not install both.",
+  "approach": [
+    "Inspect the real CLAUDE.md, managed markers, .claude/settings.json and other existing settings, .harness/config.json, features.json, legacy progress, package/build/test entrypoints and CI. Preserve permission policies and custom verification commands. Do not infer tests from another project.",
+    "From the available framework root preview: python3 scripts/harness_init.py --tool claude --project <project> --delivery project --adopt-existing --dry-run. Inspect the reported paths and conflicts. This evaluation does not execute against or mutate a real project.",
+    "Requested adoption authorizes the matching managed block and project-local resources; in an actual adoption, apply the same command without --dry-run after a clean reviewed plan. Conflicts outside the managed block fail before writes; resolve them without overwriting user-owned configuration. No redundant permission request just because instructions are long.",
+    "Expected project delivery paths are the managed CLAUDE.md block, .harness/config.json, root features.json if absent, .claude/harness runtime and .claude/skills sibling skills. Preserve executable modes, licenses and provenance. Settings and permission policies are not replaced and hooks are not activated.",
+    "Leave verification_commands empty until actual local project commands are discovered, then configure argv arrays and execute them. Run python3 .claude/harness/scripts/harness_runtime.py verify --project <project>. Empty commands yield unconfigured/error, not verified. Inspect results and demonstrate failing command propagation where needed.",
+    "Use python3 .claude/harness/scripts/harness_state.py checkpoint --project <project> --task <task> --next-action <next step> for new checkpoint writes to the configured neutral file, default docs/harness-progress.json. Read legacy progress only as fallback.",
+    "Inspect the final scoped diff, preservation of existing settings and requirements, local checks and any conflicts. Report files actually changed and checks actually run separately from unverified trusted-host loading."
+  ],
+  "unknowns": [
+    "Actual project contents and test commands are not supplied.",
+    "Host skill loading, native hook lifecycle and trust are untested.",
+    "Network unavailable; local initialization/checks require no network or credentials. If a discovered test needs unavailable resources, record it as not run."
+  ],
+  "approval_handling": "No real project mutation requested here. In actual adoption proceed with the authorized managed scope; optional hooks require deliberate native trust/configuration. Keep auto-commit and Issue sync disabled, and do not commit, sync, push, deploy, expand permissions or change global settings. Stop on out-of-scope conflicts with a concrete conflict report rather than seeking blanket approval.",
+  "checks_actually_run": "Source inspection only; no initializer, project verification, or host loading run."
+}

@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "no_unsupported_universal_numeric_quotas",
+      "passed": true,
+      "evidence": "Remove universal thresholds unless project-specific evidence justifies one."
+    },
+    {
+      "text": "checkpoint_compaction_continues_without_percentage_stop",
+      "passed": true,
+      "evidence": "Replace with a minimal checkpoint and native compaction, then continue authorized work."
+    },
+    {
+      "text": "respects_host_user_model_and_consolidates_duplicate_review",
+      "passed": true,
+      "evidence": "Respect actual host/user model selection; Trace both pipelines and consolidate into the chosen execution workflow."
+    },
+    {
+      "text": "retains_permission_security_boundaries_small_sample",
+      "passed": true,
+      "evidence": "Model upgrade does not authorize relaxing permission/security boundaries or external effects."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

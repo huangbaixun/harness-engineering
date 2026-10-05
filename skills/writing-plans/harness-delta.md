@@ -27,7 +27,7 @@ The plan must name its source spec in the upstream **`Spec:`** field (added in v
 At the end of plan authoring, verify every entry in `acceptance_criteria` has at least one corresponding task. List any orphan criteria and either add tasks or push back to brainstorming.
 
 ### Global Constraints section carries the project rules (new in v6.3.0)
-v6.3.0 added a **Global Constraints** block to the plan template, holding project-wide requirements copied verbatim from the spec. In this repo that block must carry, at minimum, the constraints from CLAUDE.md that plan tasks routinely trip over: the `references → templates → skills → commands` dependency direction, the ≤60-line CLAUDE.md template limit, the "hooks are silent on success" rule, and the `{{PLACEHOLDER}}` format. A task's requirements implicitly include this block, so anything omitted here is effectively unenforced.
+v6.3.0 added a **Global Constraints** block to the plan template, holding project-wide requirements copied verbatim from the spec. In this repo that block must carry, at minimum, the constraints from CLAUDE.md that plan tasks routinely trip over: the `references → templates → skills → commands` dependency direction, the "hooks are silent on success" rule, and the `{{PLACEHOLDER}}` format. A task's requirements implicitly include this block, so anything omitted here is effectively unenforced.
 
 ## Soft hints
 - Prefer fewer larger tasks if they remain reviewable (≤20 substeps each); otherwise split. v6.3.0's **Task Right-Sizing** section is the upstream statement of the same idea — a task is the smallest unit that carries its own test cycle and is worth a fresh reviewer's gate.

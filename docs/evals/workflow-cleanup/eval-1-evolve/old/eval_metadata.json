@@ -1,0 +1,5 @@
+{
+  "eval_id": 1,
+  "prompt": "After a model upgrade, six successful tasks but no security evaluation: review universal 60/300-line and 20k-token quotas, fixed sonnet, forced stop at 50% and duplicate two-phase review. Recommendations only.",
+  "configuration": "old"
+}

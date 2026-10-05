@@ -11,8 +11,10 @@
 | 0007 | Claude Code Only — 移除工具无关兼容层 | 已采纳 | 2026-05-23 |
 | 0008 | Vendor superpowers v5.1.0 | 已采纳 | 2026-05-23 |
 | 0009 | harness-delta sidecar 4 文件结构约定 | 已采纳（2026-08-22 修订：4 文件 + 上游 companion 文件） | 2026-05-23 |
-| 0010 | 元技能 SessionStart 注入 | 已采纳 | 2026-05-25 |
+| 0010 | 元技能 SessionStart 注入 | Superseded by 0014 | 2026-05-25 |
 | 0011 | features.json 字段所有权与 schema 2.1 | 提议中 | 2026-08-22 |
 | 0012 | features.json 的规范位置为仓库根目录 | 已采纳 | 2026-08-22 |
 
-- [0013 Claude/Codex adapters (proposed)](0013-claude-codex-adapters.md)
+- [0013 Claude/Codex adapters (accepted)](0013-claude-codex-adapters.md)
+
+- [0014 Evidence-based workflow cleanup (accepted)](0014-evidence-based-workflow-cleanup.md)

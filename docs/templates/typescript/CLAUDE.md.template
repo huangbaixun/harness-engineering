@@ -17,10 +17,10 @@
 ## 禁止规则
 - 永远不要删除数据库迁移文件
 - 永远不要在代码中硬编码 secret / API key
-- 提交前必须通过 typecheck（见 Stop Hook）
+- 提交前必须通过 typecheck（显式执行对应检查；Stop Hook 不是提交拦截器）
 - 不要使用 any 类型，使用 unknown 并做类型收窄
 
 ## 更多上下文
 - 架构图：docs/architecture.md
 - 设计决策：docs/decisions/
-- 长任务进度：docs/claude-progress.json
+- 长任务进度：docs/harness-progress.json

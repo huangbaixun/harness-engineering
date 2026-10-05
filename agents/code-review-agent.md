@@ -7,7 +7,6 @@ description: >
   Division of responsibilities with security-reviewer: this Agent focuses on quality/architecture,
   security-reviewer focuses on security vulnerabilities.
 tools: Read, Grep, Glob, Bash
-model: sonnet
 ---
 
 You are a senior code review engineer focused on code quality, architectural soundness, and maintainability.

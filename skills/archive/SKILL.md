@@ -23,7 +23,7 @@ description: >
 |---------|------|
 | Feature marked as completed | After harness:verification-before-completion passes |
 | Manual invocation via `/harness:archive` | End-of-sprint cleanup |
-| completed_features >= 10 | session-start prompts archiving |
+| Handoff history becomes hard to navigate | Review archive candidates on demand |
 | Major refactor completed | Sync documentation after architecture changes |
 
 ## Archiving Workflow
@@ -35,7 +35,8 @@ Check `features.json` (repo root; fall back to `docs/features.json` for legacy p
 ```
 For each completed feature:
   1. If a corresponding design document exists (docs/specs/F-xxx.md or docs/plans/F-xxx.md)
-     -> git mv to docs/archive/ (preserve git history)
+     -> inspect active references before moving; a shared/live document stays in place
+     -> for eligible completed artifacts, git mv to docs/archive/ and update references (preserve git history)
   2. Prepend completion metadata at the top of the archived file:
      ---
      archived_at: {{TIMESTAMP}}
@@ -70,7 +71,7 @@ Run the following comparisons (source: commands/sync-docs.md):
 Lightweight architecture scan (use `/harness:audit` for the full version):
 
 - [ ] Dependency direction violations (per architecture.md)
-- [ ] Source files exceeding 300 lines
+- [ ] Modules violating justified project-specific limits or exhibiting measured complexity
 - [ ] Files added in the last 7 days that have no tests
 
 ### Step 4: Generate Archiving Report
@@ -88,7 +89,7 @@ Output format:
 - [Suggestion] CLAUDE.md line 12 rule is already covered by pre-protect-env Hook
 
 ### Architecture Quick Check
-- [Warning] src/utils/helpers.ts exceeds 300 lines (currently 342 lines)
+- [Warning] src/utils/helpers.ts combines unrelated responsibilities; split if observed complexity warrants it
 
 ### Suggested Actions
 1. Update architecture.md to add the notification module description
@@ -104,9 +105,9 @@ harness:verification-before-completion (verification passed)
 harness:archive (this Skill — archiving + documentation sync)
     |
     v
-Stop Hook (commit progress)
+Explicit neutral checkpoint (no auto-commit)
 
-Trigger chain: verify confirms completion -> archive organizes handoff artifacts -> stop saves state
+Trigger chain: verify provides evidence -> authorized archive organizes handoff -> scripts/harness_state.py saves a neutral checkpoint. Hooks do not commit progress.
 ```
 
 ## Division of Responsibility with harness:evolve

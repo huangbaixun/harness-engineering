@@ -7,7 +7,7 @@ import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from codex_hook import config_for, contained, read_object
+from harness_runtime import config_for, contained, read_object
 
 
 def write_json_atomic(path, data):

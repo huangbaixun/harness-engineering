@@ -10,8 +10,8 @@ This skill OWNS the final transition of feature status to `done`. After this ski
 - The feature whose `spec:` field matches the spec the work implements, OR
 - The feature explicitly referenced in the branch name (per `using-git-worktrees` convention `feature/<features.json-id>`)
 
-### claude-progress.json sync
-After status transition, mirror the outcome to `claude-progress.json` (existing convention so subsequent sessions see the state).
+### Neutral progress sync
+After status transition, mirror the outcome to the configured neutral progress file (`docs/harness-progress.json` by default; legacy files are read-only) (existing convention so subsequent sessions see the state).
 
 ### Mandatory `harness:archive` call
 Before reporting completion, this skill MUST invoke `harness:archive` to:

@@ -1,0 +1,5 @@
+{
+  "eval_id": 0,
+  "prompt": "Audit an existing repo: PostToolUse formatter only exits 0, no Stop, working precommit/CI tests, CLAUDE.md 85 lines, no observed task failures or host cost data. Findings/priorities only.",
+  "configuration": "no_skill"
+}

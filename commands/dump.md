@@ -1,13 +1,10 @@
 ---
-description: Save key decisions and progress from the current session to documentation, for cross-session handoff of long tasks
+description: Save a minimal neutral checkpoint for continuing approved work across sessions
 ---
 
-Write the following information to docs/claude-progress.json:
-1. Features completed in this session (update completed_features)
-2. Current work in progress (update in_progress)
-3. Important decisions made and their rationale (append to docs/decisions/ directory)
-4. Key context that the next Agent needs to know
-5. If there are blockers, record them in in_progress.blockers
-
-Also update the last_updated timestamp.
-After completion, output a summary: "Saved X completed features, current progress: [feature name]"
+Use `scripts/harness_state.py checkpoint --project <project> --task <current task>
+--next-action <next step>` from the runtime root. Add --steering and --blocker when
+relevant. Preserve extension fields and legacy progress; never write the legacy file.
+Use the configured neutral path (default docs/harness-progress.json). Record durable
+architectural decisions in an ADR. Saving state does not require ending the session,
+committing, synchronizing Issues or marking a feature done.

@@ -33,12 +33,10 @@ Every SKILL.md must have YAML frontmatter with at least:
 - `name:` — namespaced as `harness:<skill-name>` (per CLAUDE.md and ADR-0007)
 - `description:` — what the skill does and when to invoke
 
-### File size limits
-- CLAUDE.md ≤ 60 lines (project rule)
-- Individual SKILL.md ≤ 500 lines (project rule, per CLAUDE.md "Prohibited Practices") — applies to **harness-original** skills only.
-  Vendored SKILL.md files are byte-for-byte upstream (ADR-0009), so their length is upstream's call, not ours: trimming one
-  would be an edit outside the 2 allowed and would make every future sync a manual merge. As of the v6.3.0 sync,
-  `writing-skills` (681 lines) and `subagent-driven-development` (570) exceed the cap by upstream's choice.
+### Progressive disclosure
+Keep skill instructions focused and move conditional detail to references when
+useful. No universal line quota applies. Vendored bodies and companions remain
+upstream-verbatim except the existing two permitted namespace/pointer edits.
 
 ### Terminology: SDO, not CSO (renamed in v6.3.0)
 Upstream renamed "Claude Search Optimization (CSO)" to **"Skill Discovery Optimization (SDO)"** and de-branded the surrounding
@@ -59,7 +57,7 @@ None directly; this is a meta-skill.
 
 ## Soft hints
 - Prefer integration-level evals over unit-level — match the integration-first stance from `harness:test-driven-development`.
-- For skills that will be invoked frequently, keep the SKILL.md tight (~150 lines or less).
+- For skills that will be invoked frequently, keep the SKILL.md focused and disclose conditional details progressively.
 
 ## Stop Hook contract
 None directly; the ADR-0004 workflow enforces discipline at commit time via the eval gate.

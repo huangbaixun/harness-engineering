@@ -15,17 +15,17 @@ Before execution begins:
 Plans are read from `docs/plans/YYYY-MM-DD-<topic>-plan.md` (the harness convention), **not** `docs/superpowers/plans/` (the upstream default). This matches `harness:writing-plans` output.
 
 ### features.json writes
-None directly. Status transitions are owned by the verify → finishing → archive chain.
+None directly. Status transitions follow the selected verified integration workflow; do not mark done before its completion requirements.
 
 ### ADR
 None directly. If executing-plans surfaces an architectural decision that wasn't anticipated during writing-plans, pause execution and escalate to brainstorming + ADR before continuing.
 
 ## Soft hints
 - Run gates (tests / JSON validation / smoke tests) after each task, not just at the end.
-- If a task fails, do not silently retry — report and surface for review.
+- Fix routine local failures within the approved scope; surface unresolved blockers and new decisions.
 
 ## Stop Hook contract
-Existing Stop hook ("claim done without tests") plus this skill's per-task verification close the loop. The Stop hook trips if a `git commit` is attempted while tests fail or while rigid constraints from features.json are unsatisfied.
+Configured Stop verification is an additional feedback mechanism. It does not intercept git commit, enforce acceptance criteria or replace explicit verification. An unconfigured check is unknown, never passed.
 
 ## Verification (covered by evals)
 - with-skill: when a plan tries to add tasks outside features.json acceptance_criteria, the skill blocks or asks for spec amendment

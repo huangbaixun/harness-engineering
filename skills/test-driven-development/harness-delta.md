@@ -16,14 +16,14 @@ None. This skill does not modify features.json.
 ### ADR
 None directly.
 
-### Binding to using-harness 1% rule
-This skill is one of the mandatory invocation targets in `harness:using-harness`. Any user message that suggests writing code, fixing bugs, or implementing features triggers it.
+### Task-relevant routing
+Use test-first work for applicable behavior changes in the selected workflow. Mentioning code alone does not authorize implementation or force this skill for read-only analysis.
 
 ## Soft hints
 - Prefer integration tests over unit tests when integration coverage is unclear; ADR-0004's "integration-first" stance applies.
 
 ## Stop Hook contract
-The session's Stop hook blocks "claim done without tests" (existing infrastructure). This skill plus that hook close the loop.
+A configured Stop verifier supplies feedback at session stopping only. It does not intercept commits or enforce test-first work. Explicit inspected test results remain required.
 
 ## Verification (covered by evals)
 - with-skill: when features.json has a `building` feature, the first test written cites the specific `acceptance_criterion` by content.

@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "concrete_local_initializer_and_preview",
+      "passed": false,
+      "evidence": "present the inspected contents and a concrete additive patch, then request that choice before any replacement"
+    },
+    {
+      "text": "preserves_instructions_settings_permissions",
+      "passed": true,
+      "evidence": "merge settings structurally while preserving existing allow/deny permissions and hook registrations"
+    },
+    {
+      "text": "unknown_check_commands_not_passed",
+      "passed": true,
+      "evidence": "Unknown test commands or unavailable local templates block verified initialization"
+    },
+    {
+      "text": "no_hook_global_external_activation_implied",
+      "passed": false,
+      "evidence": "Prepare SessionStart, Stop type-check, sensitive-file protection and formatter hooks; ensure hook scripts are executable, validate registration"
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  }
+}

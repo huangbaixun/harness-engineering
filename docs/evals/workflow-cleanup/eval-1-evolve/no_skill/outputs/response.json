@@ -1,0 +1,22 @@
+{
+  "recommended_changes": [
+    "Replace unconditional 60-line, 300-module, and 20k-token limits with task-specific guidance and measured thresholds. First clarify what each limit applies to and retain any independently justified resource bound.",
+    "Replace fixed Sonnet selection with configurable model choice based on task complexity, quality, and measured cost. A model upgrade does not automatically justify removing other controls.",
+    "Replace the forced stop at 50 percent with context-management guidance: checkpoint when useful, preserve the outstanding task, and stop only when a real resource limit or user instruction requires it.",
+    "Consolidate duplicate mandatory two-phase reviews into one proportionate review path, preserving independent review where changes are high risk or evidence shows it catches distinct defects.",
+    "Trial changes incrementally and compare quality, escaped defects, review findings, latency, and cost. Six successful tasks provide a small usability signal, not a security evaluation."
+  ],
+  "preserved_boundaries": [
+    "Retain permission policies and explicit authorization for destructive actions, external publication, deployment, and account changes.",
+    "Retain credential protection, untrusted-input handling, scope limits, and required verification unless a separate security evaluation supports a change.",
+    "Preserve project-specific requirements and user instructions; model capability does not supersede them."
+  ],
+  "unknowns": [
+    "Meaning and original rationale of each numeric limit",
+    "Representativeness of the six tasks",
+    "Security-control effectiveness",
+    "Distinct defects caught by each review phase",
+    "Comparative model costs and quality"
+  ],
+  "approval_handling": "These are recommendations. Security-policy changes require explicit review and authorization; do not infer their approval from the model upgrade."
+}

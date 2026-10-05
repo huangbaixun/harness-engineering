@@ -54,7 +54,7 @@ When the spec's `type` is `adr-proposal`, this skill must produce one or more AD
 - The `scripts/` companion (visual companion server) is now vendored; it was missing before this sync.
 
 ## Stop Hook contract
-None directly; writing-plans is the next mandatory step after brainstorming completes (forced exit at the workflow level via `harness:using-harness` 1% rule).
+No commit interception. Follow the selected workflow and existing approvals; load planning only when the approved change needs it.
 
 ## Verification (covered by evals)
 - with-skill: type=feature → entry appears in `features.json` before writing-plans handoff

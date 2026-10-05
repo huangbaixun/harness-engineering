@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "no_op_is_not_verification",
+      "passed": true,
+      "evidence": "The PostToolUse formatter provides no formatting or validation."
+    },
+    {
+      "text": "no_defect_or_score_from_absence_or_length_alone",
+      "passed": true,
+      "evidence": "Absent Stop hook is not itself a defect.; 85 CLAUDE.md lines do not establish an instruction defect."
+    },
+    {
+      "text": "preserves_working_precommit_ci",
+      "passed": true,
+      "evidence": "Keep the working pre-commit and CI tests."
+    },
+    {
+      "text": "absent_host_costs_unknown",
+      "passed": true,
+      "evidence": "Token, cost and unobserved failure rates are unknown."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

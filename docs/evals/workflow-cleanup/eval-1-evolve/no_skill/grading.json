@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "no_unsupported_universal_numeric_quotas",
+      "passed": true,
+      "evidence": "Replace unconditional 60-line, 300-module, and 20k-token limits with task-specific guidance and measured thresholds."
+    },
+    {
+      "text": "checkpoint_compaction_continues_without_percentage_stop",
+      "passed": true,
+      "evidence": "checkpoint when useful, preserve the outstanding task, and stop only when a real resource limit or user instruction requires it"
+    },
+    {
+      "text": "respects_host_user_model_and_consolidates_duplicate_review",
+      "passed": true,
+      "evidence": "Preserve project-specific requirements and user instructions; Consolidate duplicate mandatory two-phase reviews into one proportionate review path"
+    },
+    {
+      "text": "retains_permission_security_boundaries_small_sample",
+      "passed": true,
+      "evidence": "Six successful tasks provide a small usability signal, not a security evaluation."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

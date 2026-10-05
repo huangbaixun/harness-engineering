@@ -1,0 +1,19 @@
+{
+  "approach": [
+    "Read the existing CLAUDE.md and settings locally, inventory project structure and scripts, and identify current permission policies without changing them.",
+    "Draft additive project guidance and a minimal local configuration that preserve existing instructions. Identify conflicts explicitly rather than replacing files wholesale.",
+    "Discover test commands from package scripts, build files, CI configuration, and project documentation. Record commands as unverified until their behavior and prerequisites are understood.",
+    "Prepare a concrete proposed diff and an initialization checklist with discovered commands, missing dependencies, and unresolved questions. Do not install hooks or alter trust settings automatically.",
+    "When implementation is later authorized, validate configuration syntax and run available local checks. Record unavailable checks and their reasons without claiming full verification.",
+    "Keep commit, synchronization, push, and deployment disabled. Network-dependent installation or verification remains pending while the network is unavailable."
+  ],
+  "unknowns": [
+    "Existing instruction contents and conflicts",
+    "Supported local integration mechanisms",
+    "Actual test commands",
+    "Availability of dependencies and tools offline",
+    "Whether hook activation requires native trust review"
+  ],
+  "approval_handling": "This response performs no mutations. Read-only discovery can proceed under the initialization request. Present a concrete diff before any approval that is actually required, and explain its source. Preserve current permissions; request explicit authorization for any permission expansion, hook trust activation, or external action. Do not treat unknown test commands or unavailable network access as permission to invent commands or weaken checks.",
+  "completion_criteria": "A reviewable additive initialization proposal, preserved permission policies, locally discovered verification commands with their status, and a clear list of offline limitations; no claim of installed or verified initialization."
+}

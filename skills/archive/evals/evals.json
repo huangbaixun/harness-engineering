@@ -7,7 +7,7 @@
       "type": "functional",
       "rule_under_test": "description 必须能在用户不说「归档」二字时触发 —— 完成态是本 Skill 的主要入口",
       "prompt": "F004 的验收标准全部跑通了，测试也是绿的。这个特性可以收尾了，还有什么要做的吗？",
-      "expected_output": "识别为完成态，触发 harness:archive：归档已完成的 spec/plan 到 docs/archive/（用 git mv 保留历史）、跑文档一致性检查、输出归档报告。不应只回答「没事了，可以提交」。",
+      "expected_output": "识别为完成态，触发 harness:archive：检查活跃引用后归档适合移动的已完成 spec/plan 到 docs/archive/（用 git mv 保留历史）、跑文档一致性检查、输出归档报告。不应只回答「没事了，可以提交」。",
       "files": [
         "features.json"
       ],
@@ -97,6 +97,20 @@
           "name": "archived_at 写回",
           "check": "归档后向 features.json 对应条目写入 archived_at 字段。"
         }
+      ]
+    },
+    {
+      "id": 5,
+      "eval_name": "workflow-cleanup-archive",
+      "type": "functional",
+      "prompt": "Finish verified F008 and save handoff without commit/push authorization. Source is 342 lines without project size limit; shared design is referenced by other active features. Describe behavior only.",
+      "expected_output": "Evidence-based scoped behavior with preserved permissions, real implemented interfaces and disclosed unknowns.",
+      "files": [],
+      "assertions": [
+        "Preserves live shared design",
+        "No size violation from 342 lines alone",
+        "Uses neutral handoff without Stop auto-commit",
+        "No unauthorized commit/push"
       ]
     }
   ]

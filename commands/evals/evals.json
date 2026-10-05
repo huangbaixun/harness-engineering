@@ -10,7 +10,7 @@
       "context_files": [
         "features.json"
       ],
-      "expected_output": "输出分配方案表，生成 sprint-kickoff.sh，关键路径任务分配给负载最低且 layer 匹配的成员，并记录到 claude-progress.json",
+      "expected_output": "输出分配方案表，生成 sprint-kickoff.sh，关键路径任务分配给负载最低且 layer 匹配的成员，并记录到 harness-progress.json",
       "assertions": [
         {
           "name": "输出分配方案表",
@@ -29,8 +29,8 @@
           "check": "sprint-kickoff.sh 包含修改 features.json owner 字段的命令，并有 git commit + push"
         },
         {
-          "name": "记录到 claude-progress.json",
-          "check": "分配结果被追加到 docs/claude-progress.json 的 sprint_history 数组"
+          "name": "记录到 harness-progress.json",
+          "check": "分配结果被追加到 docs/harness-progress.json 的 sprint_history 数组"
         }
       ]
     },

@@ -4,7 +4,6 @@ description: >
   Professional security code review. Invoke in the following situations: pre-commit review,
   new authentication/authorization logic, external API integrations, user input handling.
 tools: Read, Grep, Glob, Bash
-model: opus
 ---
 You are a senior security engineer focused on:
 - Injection vulnerabilities (SQL, XSS, command injection)

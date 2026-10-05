@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "live_shared_design_stays",
+      "passed": true,
+      "evidence": "Keep the linked design accessible at its current reference because other active features still use it."
+    },
+    {
+      "text": "line_count_alone_not_violation_or_cleanup_warning",
+      "passed": true,
+      "evidence": "Its length alone is not a defect or a reason to refactor when the project has no size limit."
+    },
+    {
+      "text": "explicit_handoff_no_stop_autocommit",
+      "passed": true,
+      "evidence": "Save a handoff that states F008's delivered behavior, relevant files, verification evidence, known limitations, and any remaining work.; without creating a commit"
+    },
+    {
+      "text": "no_unauthorized_commit_push",
+      "passed": true,
+      "evidence": "Do not commit, push, deploy, or introduce an automatic publication workflow."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

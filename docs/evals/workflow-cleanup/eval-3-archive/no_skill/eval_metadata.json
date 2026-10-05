@@ -1,0 +1,5 @@
+{
+  "eval_id": 3,
+  "prompt": "Finish verified F008 and save handoff without commit/push authorization. Source is 342 lines without project size limit; shared design is referenced by other active features. Describe behavior only.",
+  "configuration": "no_skill"
+}

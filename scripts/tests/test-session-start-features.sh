@@ -18,8 +18,8 @@ OUT=$(CLAUDE_PROJECT_DIR="$TMP" CLAUDE_PLUGIN_ROOT="$(pwd)" bash scripts/session
 fail() { echo "FAIL: $1"; echo "--- 实际输出 ---"; echo "$OUT"; exit 1; }
 echo "$OUT" | grep -q "F001" || fail "building 特性 F001 未出现在摘要中"
 echo "$OUT" | grep -q "F002" || fail "proposed 特性 F002 未出现在摘要中"
-echo "$OUT" | grep -qE "1 done" || fail "done 计数错误（应为 1 done）"
-echo "$OUT" | grep -qE "in_progress|pending" && fail "输出仍含 v1 枚举字样"
+printf '%s' "$OUT" | python3 -c 'import json,sys; c=json.load(sys.stdin)["hookSpecificOutput"]["additionalContext"]; s=json.loads(c.split("<harness-state>")[1].split("</harness-state>")[0]); assert s["done_count"]==1' || fail "done 计数错误"
+echo "$OUT" | grep -q "EXTREMELY_IMPORTANT" && fail "不应无条件注入元技能"
 echo PASS
 
 # ── 回归：features.json 存在但 claude-progress.json 不存在时，摘要仍须渲染 ──
@@ -30,5 +30,5 @@ OUT2=$(CLAUDE_PROJECT_DIR="$TMP2" CLAUDE_PLUGIN_ROOT="$(pwd)" bash scripts/sessi
 fail2() { echo "FAIL(no-progress): $1"; echo "$OUT2"; exit 1; }
 echo "$OUT2" | grep -q "F001" || fail2 "无 progress 文件时特性摘要未渲染"
 echo "$OUT2" | grep -q "了解当前进度" && fail2 "无 progress 文件却仍提示去读它"
-echo "$OUT2" | grep -qE "^  1\. " || fail2 "清单编号未动态生成"
+echo "$OUT2" | grep -q "hookSpecificOutput" || fail2 "缺少合法启动协议输出"
 echo PASS-no-progress

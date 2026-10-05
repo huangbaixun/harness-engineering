@@ -25,7 +25,7 @@
 - 永远不要忽略 `@SuppressWarnings("unchecked")`，需要有注释说明为何安全
 - 永远不要 catch `Exception` 或 `Throwable` 而不重新抛出或记录
 - 不要在 `@Transactional` 方法内部捕获异常后静默处理（会导致事务回滚失效）
-- 提交前必须通过 Checkstyle 和 SpotBugs（见 Stop Hook）
+- 提交前必须通过 Checkstyle 和 SpotBugs（显式执行对应检查；Stop Hook 不是提交拦截器）
 
 ## 测试约定
 - 单元测试：`src/test/java/**/*Test.java`
@@ -36,5 +36,5 @@
 ## 更多上下文
 - 架构图：docs/architecture.md
 - 设计决策：docs/decisions/
-- 长任务进度：docs/claude-progress.json
+- 长任务进度：docs/harness-progress.json
 - API 文档：http://localhost:8080/swagger-ui.html（本地运行后）

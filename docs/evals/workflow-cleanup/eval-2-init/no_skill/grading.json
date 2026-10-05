@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "concrete_local_initializer_and_preview",
+      "passed": false,
+      "evidence": "Draft additive project guidance and a minimal local configuration; Prepare a concrete proposed diff and an initialization checklist"
+    },
+    {
+      "text": "preserves_instructions_settings_permissions",
+      "passed": true,
+      "evidence": "preserve existing instructions; Preserve current permissions"
+    },
+    {
+      "text": "unknown_check_commands_not_passed",
+      "passed": true,
+      "evidence": "Record commands as unverified until their behavior and prerequisites are understood."
+    },
+    {
+      "text": "no_hook_global_external_activation_implied",
+      "passed": true,
+      "evidence": "Do not install hooks or alter trust settings automatically.; Keep commit, synchronization, push, and deployment disabled."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  }
+}

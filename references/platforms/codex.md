@@ -12,7 +12,7 @@ Resolve harness-original skill names through the discovered catalog. Vendored up
 
 ## Lifecycle
 
-Codex reads AGENTS.md and `.agents/skills`; plugin delivery declares `skills` and a separate `hooks/codex.json`. Do not load Claude's hooks/hooks.json: it includes optional commit and Issue operations. No sync or auto-commit occurs in the Codex adapter. Existing Claude behavior remains unchanged.
+Codex reads AGENTS.md and `.agents/skills`; portable root plugin.json declares skills and extensions.com.openai.hooks pointing to hooks/codex.json. This inline object replaces the entire compatibility overlay, so its explicit hook override must remain. Do not load Claude hooks/hooks.json in Codex: it includes opt-in Issue operations and a different path guard. No sync or auto-commit occurs in the Codex adapter. Claude also uses shared bounded context and real verification; its old auto-commit default is retired.
 
 Use `python3 .agents/harness/scripts/codex_hook.py verify --project .` in project mode, or the same script under plugin root in plugin mode. A verification command is an argv array, not shell text. Empty configuration is not successful verification. Legacy progress is read-only fallback.
 

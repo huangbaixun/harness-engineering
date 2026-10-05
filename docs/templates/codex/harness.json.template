@@ -5,5 +5,6 @@
   "progress_file": "docs/harness-progress.json",
   "auto_commit": false,
   "github_sync": false,
-  "verification_commands": []
+  "verification_commands": [],
+  "telemetry_enabled": false
 }

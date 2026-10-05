@@ -1,0 +1,43 @@
+{
+  "response": "Recommend removing unsupported universal quotas and forced termination, and consolidating duplicate review. Six successful tasks justify re-evaluation but do not establish security coverage.",
+  "changes": [
+    {
+      "rule": "60-line instructions, 300-line modules, 20k-token cap",
+      "proposal": "Remove universal thresholds unless project-specific evidence justifies one. Use relevance, cohesion and observed task behavior; retain runtime state outside stable instructions.",
+      "validation": "Locate active callers and original purpose; compare representative tasks including large/cohesive modules and failures.",
+      "rollback": "Keep a focused reversible diff restoring specific limits if measured regressions appear."
+    },
+    {
+      "rule": "fixed sonnet",
+      "proposal": "Remove an unsupported skill-level alias. Respect actual host/user model selection; do not silently change it.",
+      "validation": "Check callers and compare outcomes with recorded actual model identity.",
+      "rollback": "Restore a justified project model preference only within existing authorization."
+    },
+    {
+      "rule": "forced stop at 50% context",
+      "proposal": "Replace with a minimal checkpoint and native compaction, then continue authorized work. Write new checkpoints through scripts/harness_state.py to the configured neutral state file; legacy progress remains read-only.",
+      "validation": "Interrupt and resume a long task, checking retained requirements, steering, blockers and next action.",
+      "rollback": "Restore a working checkpoint strategy if state retention fails, not an arbitrary premature stop."
+    },
+    {
+      "rule": "mandatory duplicate two-phase reviewer pipeline",
+      "proposal": "Trace both pipelines and consolidate into the chosen execution workflow. Keep relevant review and verification proportional to changes; do not mandate every reviewer for every edit.",
+      "validation": "Check representative risky edits, ordinary edits and seeded review failures; ensure removed duplication was not unique coverage.",
+      "rollback": "Restore a missing review control if failure coverage regresses."
+    }
+  ],
+  "preserved_boundaries": [
+    "Project invariants, requirements and scope",
+    "Native permissions and data protection; direct path guards do not secure arbitrary shell",
+    "Deterministic verification and error propagation at effective CLI/pre-commit/CI/trusted-hook control points",
+    "Licenses, provenance, exact upstream companions and historical records",
+    "Opt-in commits, Issue sync, push, deployment and global changes remain opt-in"
+  ],
+  "unknowns": [
+    "Six observed successes are a small positive sample, not security or failure-path evaluation.",
+    "No host token/cost measurements provided.",
+    "Actual active callers and unique reviewer coverage still need inspection."
+  ],
+  "evaluation": "For skill changes run paired old/new behavioral evaluation plus relevant regressions, including security and failure cases. Report correctness, failures, interventions and measured latency/cost only; retain uncertainty rather than claiming failures cannot recur.",
+  "approval_handling": "Recommendations only; no mutation. Model upgrade does not authorize relaxing permission/security boundaries or external effects."
+}

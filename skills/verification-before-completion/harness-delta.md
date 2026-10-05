@@ -18,14 +18,14 @@ Before declaring verification passed, run the architecture layer check (manually
 ### ADR
 If verification reveals an ADR assumption is broken, update that ADR's Consequences section (do not silently work around it). Cross-link the affected ADR from the verification report.
 
-### claude-progress.json
-Sync the verification outcome to `claude-progress.json` (existing convention) so subsequent sessions see the state.
+### Neutral progress
+Sync the verification outcome to the configured neutral progress file (`docs/harness-progress.json` by default; legacy files are read-only) (existing convention) so subsequent sessions see the state.
 
 ## Soft hints
 - Prefer running the actual feature in a browser/CLI rather than relying on tests alone (per system prompt: type checking is not feature correctness).
 
 ## Stop Hook contract
-Existing Stop hooks for "claim done without tests" plus this skill's architecture layer check together gate the completion claim.
+A configured Stop verifier supplies command feedback only. It does not enforce acceptance criteria, intercept commits or certify completion; explicit inspected evidence remains required.
 
 ## Verification (covered by evals)
 - with-skill: when an acceptance_criterion is unsatisfied, the skill blocks "ready for finishing" and reports the gap.

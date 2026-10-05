@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "no_op_is_not_verification",
+      "passed": true,
+      "evidence": "only exits 0 does not format files or verify anything"
+    },
+    {
+      "text": "no_defect_or_score_from_absence_or_length_alone",
+      "passed": true,
+      "evidence": "The absence of a Stop hook is not itself a demonstrated problem."
+    },
+    {
+      "text": "preserves_working_precommit_ci",
+      "passed": true,
+      "evidence": "Retain the functioning precommit and CI tests."
+    },
+    {
+      "text": "absent_host_costs_unknown",
+      "passed": true,
+      "evidence": "no host cost data mean there is no evidence"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "response": "The supplied evidence shows a redundant hook, not a broken delivery process. Keep the working pre-commit and CI tests. No urgent repair is evidenced.",
+  "findings": [
+    {
+      "priority": "P2",
+      "status": "fail",
+      "claim": "The PostToolUse formatter provides no formatting or validation.",
+      "evidence": "Scenario: its only operation is exit 0.",
+      "behavior": "It cannot catch formatting or test failures despite its label.",
+      "repair": "Remove the empty registration or implement an actual needed check at an effective control point; no new hook is required.",
+      "verification": "Inspect its command and caller; if replaced, demonstrate changed input and a failing check with propagated failure."
+    },
+    {
+      "priority": "preserve",
+      "status": "pass",
+      "claim": "Pre-commit and CI tests are working according to supplied evidence.",
+      "evidence": "Scenario states both work.",
+      "behavior": "Existing delivery control points supply value.",
+      "repair": "Preserve them.",
+      "verification": "Audit actual entrypoints and intentionally failing test exit propagation before extending this to an independently verified claim."
+    },
+    {
+      "priority": "no action established",
+      "status": "unknown",
+      "claim": "Absent Stop hook is not itself a defect.",
+      "evidence": "No Stop hook, with working pre-commit/CI and no observed task failures.",
+      "behavior": "Completion lifecycle enforcement has not been tested.",
+      "repair": "Add a hook only if a reproduced gap calls for it and native trust permits it.",
+      "verification": "Observe relevant lifecycle and failure cases; a Stop hook would not intercept commits."
+    },
+    {
+      "priority": "optional review",
+      "status": "unknown",
+      "claim": "85 CLAUDE.md lines do not establish an instruction defect.",
+      "evidence": "Only its length is supplied.",
+      "repair": "Inspect stale/conflicting policy and unconditional work while preserving project invariants and permissions.",
+      "verification": "Evaluate representative tasks before/after any justified change."
+    },
+    {
+      "priority": "measurement gap",
+      "status": "unknown",
+      "claim": "Token, cost and unobserved failure rates are unknown.",
+      "evidence": "No host cost data; no observed failures.",
+      "repair": "Use actual host observability if available; no invented estimates or hook-count health score.",
+      "verification": "Collect measured outcomes with disclosed sample size."
+    }
+  ],
+  "approval_handling": "Findings only as requested. No configuration changes, commit, Issue write, push, deployment or account changes authorized or performed."
+}

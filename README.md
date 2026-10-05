@@ -1,14 +1,14 @@
 # Harness Engineering Plugin
 
-[![Version](https://img.shields.io/badge/version-v2.3.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v2.4.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%E2%89%A51.0.0-orange)](https://docs.claude.com)
 
 **Shift your core engineering work from "writing code" to "designing environments where AI agents work reliably."**
 
-Harness Engineering Plugin packages this methodology into ready-to-use Skills, Commands, and Agents -- install and go, no extra configuration needed.
+Harness Engineering Plugin packages this methodology into ready-to-use Skills, Commands, and Agents -- install workflow skills, then configure the project checks that actually apply.
 
-## Codex local quick start (v2.3.0)
+## Codex local quick start (v2.4.0)
 
 Requires Python 3.10+; local development/tests use only standard libraries. From this repository, preview and adopt a project:
 
@@ -24,7 +24,7 @@ python3 .agents/harness/scripts/codex_hook.py verify --project .
 python3 .agents/harness/scripts/harness_state.py checkpoint --project . --task F001 --next-action "run checks"
 ```
 
-Alternatively use `--delivery plugin` and load this checkout through Codex's native local plugin flow; do not also install project skills. `.codex-plugin/plugin.json` explicitly selects `hooks/codex.json`. Review hook trust with `/hooks`. Project-only skills do not activate hooks; no global configuration is written. See [platform matrix](docs/platform-capabilities.md), [Codex adapter](references/platforms/codex.md) and [GPT-6 workflow guidance](references/gpt6-workflows.md). Claude commands/agent model declarations remain Claude-specific.
+Alternatively use `--delivery plugin` and load this checkout through Codex's native local plugin flow; do not also install project skills. Root `plugin.json` explicitly selects `hooks/codex.json` through `extensions.com.openai`; the legacy Codex manifest remains a fallback. Review hook trust with `/hooks`. Project-only skills do not activate hooks; no global configuration is written. See [platform matrix](docs/platform-capabilities.md), [Codex adapter](references/platforms/codex.md) and [GPT-6 workflow guidance](references/gpt6-workflows.md). Named command/agent files are Claude-specific; model selection stays with the host/user.
 
 To uninstall project delivery, review and remove the generated `.agents/harness`, `.agents/skills/<name>`, managed AGENTS block and `.harness/config.json`; retain your own rules/features/progress. Uninstall plugin delivery through the host plugin UI. Legacy `docs/claude-progress.json` is read-only fallback; new checkpoints use `docs/harness-progress.json`.
 
@@ -70,28 +70,57 @@ In Claude Code, say:
 
 > "Help me initialize this project's Harness"
 
-After initialization, your project gets:
+Preview offline Claude adoption from this repository:
 
-| File | Purpose |
-|------|---------|
-| `CLAUDE.md` | Project memory layer (<=60 lines), the single source of truth |
-| `init.sh` | Session startup script -- runs tool detection before each new session |
-| `.claude/settings.json` | Permission control + Hook registration (incl. SessionStart) |
-| `.claude/hooks/session-start.sh` | SessionStart Hook: restores progress context on session start |
-| `.claude/hooks/` | Type-check, .env protection, auto-format hooks |
-| `.claude/skills/writing-plans/` | Pre-implementation planning Skill (triggers for >30 min or 3+ file tasks) |
-| `.claude/skills/test-driven-development/` | TDD Skill (enforced RED->GREEN->REFACTOR cycle) |
-| `.claude/skills/verification-before-completion/` | Pre-completion verification Skill (4-layer check before marking done) |
-| `docs/architecture.md` | Architecture diagram -- the agent's spatial awareness doc |
-| `docs/claude-progress.json` | Cross-session progress tracking |
+```bash
+python3 scripts/harness_init.py --tool claude --project ../my-project --adopt-existing --dry-run
+python3 scripts/harness_init.py --tool claude --project ../my-project --adopt-existing
+```
 
-Verify readiness: `bash init.sh` -- you should see "Harness ready" on success.
+It creates/updates the managed CLAUDE.md block, `.harness/config.json`, root
+features.json if absent, `.claude/harness` resources and `.claude/skills`. Existing
+settings and permissions remain untouched; no hooks or global configuration are
+activated. Plugin delivery uses `--delivery plugin` instead and copies no skill tree.
 
-**Step 3: Ongoing benefits**
+Discover the actual project commands and configure verification_commands as argv
+arrays, then execute `python3 .claude/harness/scripts/harness_runtime.py verify
+--project .`. Empty checks are not a readiness signal. Save neutral progress through
+the checkpoint helper when needed. Design/docs templates are available on demand;
+the initializer does not manufacture project architecture, ADRs or test results.
 
-The SessionStart Hook automatically restores progress context at the start of every session. The harness:writing-plans / harness:test-driven-development / harness:verification-before-completion workflow Skills engage automatically during implementation, ensuring a complete plan -> implement -> verify loop. Commands let you trigger audits, PR reviews, and entropy scans on demand.
+Trusted plugin SessionStart emits bounded state; workflows are selected by relevant
+task intent. Local adapter fixtures do not prove actual native lifecycle execution.
 
 ---
+
+## Workflow cleanup (2.4.0)
+
+Portable root `plugin.json` is canonical. `extensions.com.openai.hooks` explicitly
+selects `hooks/codex.json`; `.codex-plugin/plugin.json` and `.claude-plugin/plugin.json`
+remain compatibility entries. Native hooks still require host trust.
+
+Both hosts share bounded context, argv verification and neutral checkpoint logic.
+The offline initializer now accepts `--tool claude` as well as `--tool codex`; Claude
+project delivery uses `.claude/harness` and `.claude/skills`. Existing settings and
+permissions are preserved; hooks are not implicitly activated by project adoption.
+
+Retired defaults: auto-commit progress, empty auto-format and homemade telemetry.
+`stop-commit-progress` / `post-format` remain warning-only compatibility stubs.
+`stop-typecheck` now runs real configured checks, using event JSON on stdin.
+Empty verification is not success. Direct-file protection parses stdin without jq,
+allows `.env.example` / `.env.sample` / `.env.template`, checks resolved aliases,
+and supplements native permissions without parsing or securing Bash commands.
+
+Optional observe reads native stdin events and requires `telemetry_enabled: true`;
+it stores sanitized event metadata in `.harness/telemetry.jsonl`. Token/cost/duration
+remain unknown. Issue sync remains separately opt-in through features.json.github;
+the initializer never enables it. Explicit checkpoints never commit.
+
+No universal 60/300-line, 20k-token, 50%-context or fixed model-alias policy remains.
+Audits assess actual enforcement and observed outcomes. Existing installs must
+review and remove retired hook registrations; this initializer deliberately refuses
+to overwrite an older runtime/configuration silently. See
+[ADR 0014](docs/decisions/0014-evidence-based-workflow-cleanup.md).
 
 ## Core Skills
 
@@ -99,11 +128,11 @@ After installation, these Skills trigger automatically based on your intent -- n
 
 | Skill | Trigger | What it does |
 |-------|---------|-------------|
-| **harness:init** | New project / "set up my Harness" | Generates complete 6-layer Harness structure (CLAUDE.md + Hooks + templates) |
-| **harness:audit** | "Agent keeps making the same mistakes" / legacy project audit | 7-dimension health score + prioritized fix plan |
+| **harness:init** | New project / "set up my Harness" | Conflict-first offline adoption for the actual host |
+| **harness:audit** | "Agent keeps making the same mistakes" / legacy project audit | Evidence-backed pass/fail/unknown findings + prioritized repairs |
 | **harness:evolve** | "CLAUDE.md is too long" / after new model release | Memory file trimming + Hook adaptation + garbage collection |
 | **harness:using-harness** | Relevant workflow routing | Intent recognition, ensures the right Skill is triggered |
-| **harness:writing-plans** | New feature / bug fix (>30 min or 3+ files) | Decomposes into 2-5 min verifiable task blocks with `<action>/<verify>/<done>` triple structure |
+| **harness:writing-plans** | An agreed change requiring a plan | Records interfaces, decisions and checkable implementation tasks |
 | **harness:canary** | Ready to deploy / release planning | Risk-scored canary deployment runbook with staged rollout, rollback triggers, observability checklists |
 | **harness:archive** | Feature completed, ready to archive | Archives specs to `docs/archive/`, checks doc-code consistency, runs architecture health scan |
 | **harness:test-driven-development** | Behavioral implementation | Enforces RED->GREEN->REFACTOR cycle -- tests first, then implementation |
@@ -130,10 +159,10 @@ After installation, these Skills trigger automatically based on your intent -- n
 | `/harness:assign` | Sprint feature assignment -- auto-calculates dependencies + generates claim script | Sprint start |
 | `/harness:canary` | Generate canary deployment runbook with risk assessment | Pre-deploy |
 | `/harness:review-pr` | Comprehensive PR review (quality + security + architecture) | Every PR |
-| `/harness:dump` | Save session progress to claude-progress.json | At ~50% context usage |
+| `/harness:dump` | Save session progress to harness-progress.json | When a useful checkpoint is needed |
 | `/harness:sync-docs` | Doc-code consistency check | Daily |
 | `/harness:scan-arch` | Architecture health scan | Weekly |
-| `/harness:trim` | Trim CLAUDE.md to <=60 lines | After new model release |
+| `/harness:trim` | Trim CLAUDE.md to focused instructions | After new model release |
 | `/harness:scan-entropy` | Dead code + duplicate implementation + over-coupling detection | Monthly |
 
 ---
@@ -142,10 +171,10 @@ After installation, these Skills trigger automatically based on your intent -- n
 
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| **security-reviewer** | Opus | Injection vulnerabilities, auth flaws, secret leaks |
-| **code-review-agent** | Sonnet | Architecture compliance, maintainability, tech debt |
-| **coding-agent** | Sonnet | Long-cycle multi-session coding with cross-session handoff |
-| **explore-agent** | Haiku | Codebase exploration, keeps main thread context clean |
+| **security-reviewer** | Host/user default | Injection vulnerabilities, auth flaws, secret leaks |
+| **code-review-agent** | Host/user default | Architecture compliance, maintainability, tech debt |
+| **coding-agent** | Host/user default | Long-cycle multi-session coding with cross-session handoff |
+| **explore-agent** | Host/user default | Codebase exploration, keeps main thread context clean |
 
 ---
 
@@ -171,7 +200,7 @@ This plugin supports cross-platform Hooks since v1.9.3:
 | Skills / Commands | Yes | Yes |
 | Hooks (polyglot wrappers) | Yes | Yes (Git Bash / MSYS2) |
 
-**Cross-platform Hook mechanism** (v1.9.3): Each hook script comes in three forms -- `.cmd` (polyglot wrapper, valid for both CMD and bash), extensionless (bash logic), and `.sh` (backward compat). `hooks.json` uses the `${CLAUDE_PLUGIN_ROOT:-.}` path variable, working in both plugin-install and local-dev modes. On Windows, Git for Windows bash is auto-detected; if unavailable, the hook silently succeeds without blocking.
+**Cross-platform Hook mechanism** (v1.9.3): Each hook script comes in three forms -- `.cmd` (polyglot wrapper, valid for both CMD and bash), extensionless (bash logic), and `.sh` (backward compat). `hooks.json` uses the `${CLAUDE_PLUGIN_ROOT:-.}` path variable, working in both plugin-install and local-dev modes. On Windows the compatibility wrappers require Git Bash / MSYS2; if unavailable, verification cannot be claimed. Windows runtime execution is not validated by the local macOS suite.
 
 ---
 
@@ -191,7 +220,7 @@ claude --plugin-dir /tmp/harness-test
 
 This plugin is fully self-bootstrapped (dogfooding) -- Harness Engineering conventions are used to develop the Harness Engineering Plugin itself:
 
-- `CLAUDE.md` <=60 lines, the single source of truth
+- `CLAUDE.md` focused instructions, the single source of truth
 - `docs/architecture.md` contains explicit dependency rules
 - `docs/decisions/` has complete ADR records for every key decision (ADR 0013 supersedes the ADR 0007 Claude-only constraint)
 - Hook scripts follow the "silent on success, visible on failure" principle
@@ -203,7 +232,7 @@ This plugin is fully self-bootstrapped (dogfooding) -- Harness Engineering conve
 
 This plugin is built on the [Harness Engineering Practice Manual](references/HarnessEngineering.md) -- synthesizing first-hand practices from Anthropic, OpenAI, InfoQ, and Hacker News, covering long-cycle task harness design, multi-agent architecture, garbage collection systems, and other core patterns.
 
-v1.9.2 integrated workflow design ideas from [obra/superpowers](https://github.com/obra/superpowers): the writing-plans (pre-implementation planning gate), test-driven-development (enforced RED->GREEN->REFACTOR cycle), and verification-before-completion (4-layer completion check) Skills are directly inspired by that project's core practices, deeply integrated with Harness's SessionStart Hook and claude-progress.json cross-session memory system to form a complete "plan -> implement -> verify -> remember" loop.
+v1.9.2 integrated workflow design ideas from [obra/superpowers](https://github.com/obra/superpowers): the writing-plans (pre-implementation planning gate), test-driven-development (enforced RED->GREEN->REFACTOR cycle), and verification-before-completion (4-layer completion check) Skills are directly inspired by that project's core practices, deeply integrated with Harness's SessionStart Hook and harness-progress.json cross-session memory system to form a complete "plan -> implement -> verify -> remember" loop.
 
 Multi-person collaboration design references the [Team Parallel Development Guide](references/team-parallel-development.md), including features.json parallel field design, Git Worktree isolation, and sprint assignment algorithms.
 
@@ -224,7 +253,7 @@ We welcome new Skills, language templates, and Hook script improvements. See [CO
 
 ```
 harness-engineering-plugin/
-├── CLAUDE.md                             <- Project memory file (single source of truth, <=60 lines)
+├── CLAUDE.md                             <- Project memory file (single source of truth, focused instructions)
 ├── .claude-plugin/
 │   └── plugin.json                       <- Claude Code plugin manifest
 ├── skills/                               <- Unified harness: namespace
@@ -249,10 +278,10 @@ harness-engineering-plugin/
 │   ├── trim.md
 │   └── scan-entropy.md
 ├── agents/
-│   ├── security-reviewer.md              Opus
-│   ├── explore-agent.md                  Haiku
-│   ├── code-review-agent.md              Sonnet
-│   └── coding-agent.md                   Sonnet
+│   ├── security-reviewer.md              host/user default
+│   ├── explore-agent.md                  host/user default
+│   ├── code-review-agent.md              host/user default
+│   └── coding-agent.md                   host/user default
 ├── hooks/
 │   └── hooks.json                        <- Hook registration (${CLAUDE_PLUGIN_ROOT:-.} fallback)
 ├── scripts/                              <- Each hook in three forms: .cmd / extensionless / .sh

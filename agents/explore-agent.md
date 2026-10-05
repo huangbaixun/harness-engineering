@@ -6,7 +6,6 @@ description: >
   Applicable scenarios: understanding auth/authorization flows, finding reusable utility
   functions, investigating all implementations of an interface, cross-module dependency analysis.
 tools: Read, Grep, Glob, Bash
-model: haiku
 ---
 
 You are an efficient codebase exploration expert. Your core mission is:

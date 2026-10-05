@@ -1,14 +1,24 @@
-# Platform capability matrix — 2026-10-05
+# Platform capability matrix — 2026-10-05 (2.4.0)
 
-| Capability | Claude Code | Codex CLI 0.158.0 | Codex App / Cloud |
+| Capability | Claude Code | Codex CLI | App / Cloud |
 |---|---|---|---|
-| Skill discovery | Existing plugin manifest retained; structural regressions | 19 project skills discovered by app-server | Not verified |
-| Planning/TDD/verify/archive | Existing behavior retained; 9 shell regressions | Actual isolated CLI execution + explicit local verification | Not verified |
-| SessionStart | Existing hooks unchanged | Separate JSON adapter; protocol fixtures pass | Not verified |
-| Stop verification | Existing hooks unchanged | Separate opt-in adapter; failure block once; native trust required | Not verified |
-| PreTool protection | Existing Claude registration | Not registered; native permissions are the boundary | Not claimed |
-| Issue sync / auto-commit | Existing opt-in behavior retained | Not registered; new project defaults disabled | Not claimed |
-| Commands and named agents | Claude-specific | References only; map actual host tools/model choice | Not verified |
-| Runtime checkpoints | Legacy claude-progress | Neutral harness-progress, read-only legacy fallback | Manual script requires local shell |
+| Discovery | Project .claude/skills and compatibility plugin entry; initialization fixtures pass | Project .agents/skills; prior CLI discovery of 19 skills; portable manifest validated locally | Not verified |
+| Workflows | Shared skills and preserved upstream bytes; scenario evaluations | Shared skills; prior isolated CLI workflow smoke | Not verified |
+| SessionStart | Shared bounded JSON context; protocol fixtures | Shared bounded JSON context; protocol fixtures | Not verified |
+| Stop | Real configured argv checks; one feedback request; lifecycle not verified | Same verifier; one feedback request; lifecycle not verified | Not verified |
+| Direct-file guard | Read/Edit/Write recognized secret filenames; no shell parsing; native permissions retained | Not registered; native permissions retained | Not claimed |
+| Issue sync | Separate opt-in root/legacy features.json configuration preserved | Not registered | Not claimed |
+| Progress auto-commit | Retired, unregistered warning stub | Not registered | Not claimed |
+| Formatting / telemetry | Empty formatter retired; observe is manually opt-in sanitized event metadata | No default formatter/telemetry | Not claimed |
+| Checkpoints | Shared neutral writes; legacy read-only fallback | Same | Requires a local shell |
+| Model routing | Host/user selection, no fixed agent aliases | Host/user selection | Not claimed |
 
-Installing project skills does not register hooks. Plugin hooks must be reviewed through the host's native trust flow; automated hook lifecycle execution is not claimed from fixture tests. All project initialization and regression checks are offline and require no third-party Python packages or credentials.
+Project adoption activates no hooks and changes no settings/permissions. Portable
+root plugin.json is canonical; explicit OpenAI hook override replaces default Claude
+hook discovery. Compatibility entries are retained. Native trust review cannot be
+bypassed. Fixtures establish adapter behavior, not actual trusted lifecycle loading.
+
+Local initialization/regressions require Python 3.10+ standard library and Bash,
+no credentials or network. Windows wrappers were checked on the Bash path only;
+native Windows execution is not verified. Existing 2.3.0 installs require reviewed
+migration; conflict-first initialization does not overwrite existing runtime files.

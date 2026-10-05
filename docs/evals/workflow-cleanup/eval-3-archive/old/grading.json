@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "live_shared_design_stays",
+      "passed": true,
+      "evidence": "Preserve the shared design at its current location"
+    },
+    {
+      "text": "line_count_alone_not_violation_or_cleanup_warning",
+      "passed": false,
+      "evidence": "the 342-line module would appear as a warning in its Architecture Quick Check"
+    },
+    {
+      "text": "explicit_handoff_no_stop_autocommit",
+      "passed": true,
+      "evidence": "save a handoff describing the delivered behavior, verification evidence, remaining work and the next entry point; that diagram does not authorize a commit here"
+    },
+    {
+      "text": "no_unauthorized_commit_push",
+      "passed": true,
+      "evidence": "No source refactor, automatic commit, push or deployment would occur."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  }
+}

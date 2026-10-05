@@ -23,14 +23,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-commit-progress\" \"$@\"' --"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
             "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/stop-sync-issues\" \"$@\"' --"
           }
         ]
@@ -38,30 +30,11 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash|Edit|Write",
+        "matcher": "Read|Edit|Write",
         "hooks": [
           {
             "type": "command",
             "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/pre-protect-env\" \"$@\"' --"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/post-format\" \"$@\"' --"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'exec \"${CLAUDE_PLUGIN_ROOT:-.}/scripts/post-observe\" \"$@\"' --"
           }
         ]
       }

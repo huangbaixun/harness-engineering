@@ -33,4 +33,16 @@ class ValidationTests(unittest.TestCase):
         target=self.root/'scripts/bad.sh'; target.parent.mkdir(); target.write_text('#!/bin/bash\nif then\n')
         self.assertNotEqual(self.run_validator().returncode,0)
 
+    def portable(self,hooks='./hooks/hooks.json',version='1'):
+        (self.root/'plugin.json').write_text(json.dumps({'name':'harness','version':version,'description':'fixture','skills':'./skills/','extensions':{'com.openai':{'hooks':hooks}}}))
+    def test_root_manifest_must_not_fall_back_to_claude_hooks(self):
+        self.portable(); d=json.loads((self.root/'plugin.json').read_text()); d['extensions']['com.openai']={}; (self.root/'plugin.json').write_text(json.dumps(d))
+        self.assertNotEqual(self.run_validator().returncode,0)
+    def test_manifest_path_escape_is_rejected(self):
+        self.portable('../outside.json'); self.assertNotEqual(self.run_validator().returncode,0)
+    def test_manifest_version_mismatch_is_rejected(self):
+        self.portable(version='different'); self.assertNotEqual(self.run_validator().returncode,0)
+    def test_missing_manifest_target_is_rejected(self):
+        self.portable('./hooks/missing.json'); self.assertNotEqual(self.run_validator().returncode,0)
+
 if __name__=='__main__': unittest.main()

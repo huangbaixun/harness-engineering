@@ -1,0 +1,33 @@
+{
+  "consulted_paths": [
+    "skills/archive/SKILL.md"
+  ],
+  "response": "Finish F008 using its supplied verification evidence and save a neutral handoff. Preserve the shared design in its current location, and do not impose an unsupported module-size limit.",
+  "behavior": [
+    "Inspect root features.json, falling back to docs/features.json only for a legacy project. Confirm F008 identity, completion evidence and related artifacts; update F008 to done if needed within the requested completion scope.",
+    "Inspect references before moving any completed artifact. The linked design is still used by other active features, so it stays in place and its live references remain intact. Do not mark that design archived or move it merely because F008 is done.",
+    "Move only any other F008-specific completed artifacts that are no longer live to docs/archive/ with git mv, preserving history and updating affected references. Add factual archived_at, completed_by and feature_id metadata to actually archived artifacts and the corresponding archive timestamp to the feature when archiving occurs. Do not fabricate a session identity or imply a shared artifact was archived.",
+    "Compare available architecture documentation with actual source structure, review instruction validity and adopted ADR usage, and scan for dependency-direction violations, justified project limits, measured complexity and recently added files lacking tests. Report evidence and unknowns; findings alone do not justify unrelated refactors or removal of permission rules.",
+    "The 342-line source module is not a violation: no project size limit is supplied. Only observed complexity or an actual architecture problem warrants a finding; leave the source module unchanged on current evidence.",
+    "Save a neutral checkpoint through the selected runtime scripts/harness_state.py, using the configured neutral progress file. Include F008 completion, verification evidence, retained shared design, any drift findings, unresolved issues and the next action so a future session can resume accurately.",
+    "Report which feature records, archive artifacts/references and handoff state actually changed, distinguish preserved live design from archived artifacts, and state checks actually run. Supplied verified status does not establish independently observed execution."
+  ],
+  "would_change": [
+    "F008 completion/status record if needed",
+    "Only eligible exclusive completed F008 artifacts and their references, if present",
+    "Factual archive metadata only where archiving occurs",
+    "Configured neutral handoff checkpoint"
+  ],
+  "would_preserve": [
+    "Shared linked design used by active features",
+    "342-line module absent evidence of complexity or a justified limit",
+    "Project permission policies, scope and existing verification evidence"
+  ],
+  "unknowns": [
+    "Actual feature record, artifact paths and additional eligible artifacts are not supplied.",
+    "Verification details, configured checkpoint path and runtime root require project inspection.",
+    "Documentation drift and architecture issues have not been established."
+  ],
+  "approval_handling": "Finishing and saving handoff authorize the scoped reversible feature/archive/checkpoint work; no extra approval merely to do that. No auto-commit, push, Issue sync, deployment or global configuration changes. git mv organizes the working tree and does not itself authorize a commit.",
+  "actions_actually_performed": "Read current archive skill and wrote this evaluation JSON only. No real project mutation or tests executed."
+}

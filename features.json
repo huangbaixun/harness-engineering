@@ -239,6 +239,38 @@
         "scripts/codex_hook.py",
         ".codex-plugin/plugin.json"
       ]
+    },
+    {
+      "id": "F008",
+      "name": "evidence-based-workflow-cleanup",
+      "priority": 1,
+      "status": "building",
+      "spec": "docs/specs/2026-10-05-workflow-cleanup-design.md",
+      "description": "User-approved P0/P1/P2 cleanup of obsolete Harness behaviors and policy.",
+      "acceptance_criteria": [
+        "Retire default auto-commit/no-op formatting/telemetry; configured checks actually execute and reject empty configuration.",
+        "Shared bounded context and neutral checkpoint writes; no context-percentage termination, duplicate review or fixed model aliases.",
+        "Direct-path guard parses native stdin without jq; malformed input fails visibly and shell/native permission coverage is stated accurately.",
+        "Portable root manifest explicitly selects Codex hooks, compatibility manifests agree, and existing Claude project rules/settings survive offline adoption.",
+        "Audit/evolve/init/archive evaluations use actual old/no-skill/new responses with a reviewable artifact; quotas and inventory scores are retired.",
+        "All offline regressions pass, vendored skills/companions remain exact and final independent review is resolved."
+      ],
+      "out_of_scope": [
+        "Consuming AIDC product changes",
+        "Automatic commit of runtime progress, Issue calls, push, deployment, global permissions",
+        "General-purpose evaluation service or telemetry cost estimation"
+      ],
+      "dependencies": [
+        "F007"
+      ],
+      "technical_notes": "Approved plan: docs/plans/2026-10-05-workflow-cleanup-plan.md. Remains building until authorized integration; local completion evidence is recorded separately.",
+      "related_files": [
+        "scripts/harness_runtime.py",
+        "scripts/claude_hook.py",
+        "scripts/harness_init.py",
+        "plugin.json",
+        "docs/decisions/0014-evidence-based-workflow-cleanup.md"
+      ]
     }
   ],
   "constraints": {

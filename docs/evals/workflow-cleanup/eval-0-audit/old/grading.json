@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "no_op_is_not_verification",
+      "passed": true,
+      "evidence": "exiting 0 proves the script ran, not that formatting was checked or applied"
+    },
+    {
+      "text": "no_defect_or_score_from_absence_or_length_alone",
+      "passed": false,
+      "evidence": "the absent Stop quality gate is the highest-priority coverage gap"
+    },
+    {
+      "text": "preserves_working_precommit_ci",
+      "passed": true,
+      "evidence": "Existing pre-commit and CI checks should remain."
+    },
+    {
+      "text": "absent_host_costs_unknown",
+      "passed": true,
+      "evidence": "Host token cost, memory tokens, MCP tool tokens and test-output volume are also unknown"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  }
+}

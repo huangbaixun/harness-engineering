@@ -1,6 +1,6 @@
 {
   "name": "harness",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Harness Engineering: 19 shared workflow skills, Claude Code and Codex adapters, Superpowers 6.4.2 provenance and GPT-6 workflow guidance",
   "homepage": "https://github.com/huangbaixun/harness-engineering",
   "repository": "https://github.com/huangbaixun/harness-engineering",
@@ -29,7 +29,7 @@
     "default_tech_stack": {
       "type": "string",
       "title": "Default tech stack",
-      "description": "Default tech stack (typescript / python / go / java / generic) — auto-selects template during project init",
+      "description": "Default tech stack (typescript / python / go / java / generic) \u2014 auto-selects template during project init",
       "sensitive": false
     }
   }

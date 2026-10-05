@@ -2,19 +2,20 @@
 
 ## System Overview
 
-This is an AI Agent Harness plugin that supports Claude Code, and Codex via separate platform adapters and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.3.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.4.2), plus a set of supporting Commands, Hooks, and References.
+This is an AI Agent Harness plugin that supports Claude Code, and Codex via separate platform adapters and provides engineering teams with standardized AI Agent Harness engineering capabilities. As of v2.4.0 it consists of 19 skills under the `harness:` namespace (6 harness-original + 13 vendored from `obra/superpowers` v6.4.2), plus a set of supporting Commands, Hooks, and References.
 
 ## Directory Structure
 
 ```
 harness-engineering-plugin/
-├── CLAUDE.md                       ← Project memory file (≤ 60 lines, single source of truth)
+├── CLAUDE.md                       ← Project memory file (focused project instructions)
+├── plugin.json                    ← Portable canonical manifest; OpenAI hook override
 ├── features.json                   ← Root features.json (dogfood; tracks plugin's own work per ADR-0003)
 ├── .claude-plugin/
 │   └── plugin.json                 ← Claude Code plugin manifest
 ├── skills/
 │   ├── # harness-original (6) — 2-file structure (SKILL.md + evals/evals.json)
-│   ├── using-harness/              ← Routing/meta skill (mandatory invocation table for all 19 skills)
+│   ├── using-harness/              ← Routing/meta skill (task-relevant routing for 19 skills)
 │   ├── archive/                    ← Completion archiving and documentation sync
 │   ├── audit/                      ← Existing project health check and optimization
 │   ├── canary/                     ← Pre-deployment canary planning
@@ -43,7 +44,8 @@ harness-engineering-plugin/
 │   ├── scan-entropy.md, trim.md    ← Sub-steps invoked by harness:evolve
 ├── hooks/                          ← Hook template scripts (silent on success)
 │   ├── stop-typecheck.sh, pre-protect-env.sh, post-format.sh
-│   ├── stop-commit-progress.sh, post-observe.sh, session-start.sh
+│   ├── session-start.sh (bounded context), post-observe.sh (opt-in)
+│   ├── stop-commit-progress.sh (retired warning stub)
 ├── docs/
 │   ├── architecture.md             ← This file
 │   ├── decisions/                  ← ADR (Architecture Decision Records)
@@ -144,3 +146,14 @@ The script compares `SKILL.md` and upstream companion files. After applying a sy
 ## Codex and GPT-6 adapter
 
 ADR-0013 introduces `.codex-plugin/plugin.json` with independent `hooks/codex.json`, alongside the unchanged Claude hook registration. Offline project initialization copies skills and their supporting resources without global configuration. Session context is bounded; explicit verification propagates failures. Atomic neutral checkpoints separate mutable progress/steering from stable instructions. Only relevant skills/references are loaded; model/effort selection remains with the host and user. No Codex PreTool security interception is registered.
+
+## Shared runtime (2.4.0)
+
+`plugin.json` is the portable canonical manifest; OpenAI's explicit hook override
+selects `hooks/codex.json`. Legacy platform manifests remain compatibility entries.
+`harness_runtime.py` owns context/argv verification; `codex_hook.py` is a compatibility
+entrypoint and `claude_hook.py` handles native stdin, narrow direct-path checks and
+opt-in sanitized event telemetry. `harness_state.py` imports the shared runtime.
+Project adoption copies resources under `.agents` (Codex) or `.claude` (Claude),
+preserving instructions/settings and not activating hooks. Retired default scripts
+never auto-commit or imply a formatting check. No fixed model routing.

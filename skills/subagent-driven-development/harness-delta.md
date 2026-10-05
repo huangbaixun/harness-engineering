@@ -25,7 +25,7 @@ v6.3.0 has SDD read the spec at setup and resolve plan conflicts against it inst
 v6.3.0 lets the controller rule on non-catastrophic plan conflicts and keep going instead of stalling. In this repo a recorded ruling that changes scope must still reach `features.json`: if a ruling adds, drops, or redefines work relative to the feature's `acceptance_criteria`, update the entry (or push back to brainstorming) before the Finish report — a ruling is not a licence to drift from the spec.
 
 ## Soft hints
-- Use the model parameter to right-size cost (Haiku for mechanical tasks, Sonnet for judgment, Opus for design). v6.3.0 requires the model be specified explicitly on every dispatch.
+- Preserve the host/user model selection. Translate upstream model-dispatch examples to the actual available tools; do not force model aliases or overrides. Use explicit model parameters only when the user or applicable host instructions require them.
 - Review is now **one task review per task** covering spec compliance and code quality together, plus a broad whole-branch review at the end. (Through v5.1.0 these were two sequential per-task reviews; the old ordering rule no longer applies.)
 - Implementers and reviewers must not spawn their own subagents — the upstream prompt templates carry that contract. Do not edit it out.
 - The `scripts/` helpers (`sdd-workspace`, `task-brief`, `review-package`) and the three prompt templates are vendored as of this sync; prefer them over hand-rolled dispatch text.

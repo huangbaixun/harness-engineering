@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "concrete_local_initializer_and_preview",
+      "passed": true,
+      "evidence": "python3 scripts/harness_init.py --tool claude --project <project> --delivery project --adopt-existing --dry-run"
+    },
+    {
+      "text": "preserves_instructions_settings_permissions",
+      "passed": true,
+      "evidence": "Settings and permission policies are not replaced and hooks are not activated."
+    },
+    {
+      "text": "unknown_check_commands_not_passed",
+      "passed": true,
+      "evidence": "Empty commands yield unconfigured/error, not verified."
+    },
+    {
+      "text": "no_hook_global_external_activation_implied",
+      "passed": true,
+      "evidence": "optional hooks require deliberate native trust/configuration.; do not commit, sync, push, deploy, expand permissions or change global settings."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "eval_id": 2,
+  "prompt": "Describe offline Harness adoption on existing Claude project with CLAUDE.md/settings permission policies, unknown test commands, no permission for commit/sync/deploy. Do not mutate a real project.",
+  "configuration": "with_skill"
+}

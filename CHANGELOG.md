@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0] - 2026-10-05
+
+- Retire default progress auto-commit, empty formatter and homemade telemetry hooks. Real argv verification is shared across Claude/Codex; empty configuration is not success.
+- Share bounded startup state and neutral checkpoints; remove forced context termination, duplicate review pipeline, inventory health scores, universal quotas and fixed agent models.
+- Parse Claude native stdin for narrow direct-file protection and opt-in event metadata; preserve native permissions and unknown cost measurements.
+- Adopt existing Claude projects offline without changing settings/permissions; introduce canonical portable plugin.json with explicit Codex hook override and retained compatibility manifests.
+- Add regressions and paired skill response evaluations, retain exact Superpowers 6.4.2 provenance. Native hook trust/lifecycle and Windows execution remain unverified.
+
 ## [2.3.0] - 2026-10-05
 
 - Add offline Codex initialization, project-scoped skills and independent plugin hooks (ADR-0013); preserve existing rules and disable implicit commits/Issue synchronization.

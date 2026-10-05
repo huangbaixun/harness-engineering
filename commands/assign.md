@@ -76,7 +76,7 @@ If CLAUDE.md does not have this section, ask the user:
 > Please provide team member information (one per line, format: name / layer preference / current `building` count)
 > Example: simon / backend / 1
 
-After collecting, update the member information into the `## Team Members` section of CLAUDE.md (create if it doesn't exist, placed at the end of the file, not counted toward the 60-line limit).
+After collecting, update the member information into the `## Team Members` section of CLAUDE.md (create if it doesn't exist, placed at the end of the file).
 
 ---
 
@@ -185,7 +185,7 @@ if [ "$MEMBER" = "alice" ] || [ "$MEMBER" = "all" ]; then
   git pull origin main
   claude --worktree feature-users -p "
     Read the task with id=F-002 from features.json.
-    Continue from where you left off. Refer to docs/claude-progress.json for existing progress.
+    Continue from where you left off. Refer to docs/harness-progress.json for existing progress.
   " &
 fi
 
@@ -222,9 +222,9 @@ Save this script to the project root: `sprint-kickoff.sh`, and run `chmod +x spr
 
 ---
 
-## Phase 5: Record Sprint Assignment in claude-progress.json
+## Phase 5: Record Sprint Assignment in harness-progress.json
 
-Append this assignment to the `sprint_history` array in `docs/claude-progress.json`:
+Append this assignment to the `sprint_history` array in `docs/harness-progress.json`:
 
 ```json
 {
@@ -261,7 +261,7 @@ Waiting for next batch: F-003 (unblocked after F-001 completes)
 Needs human decision: F-008 (related_files conflicts with F-002)
 
 Generated: sprint-kickoff.sh (ready to run or distribute to team members)
-Recorded: docs/claude-progress.json sprint_history
+Recorded: docs/harness-progress.json sprint_history
 ```
 
 ---

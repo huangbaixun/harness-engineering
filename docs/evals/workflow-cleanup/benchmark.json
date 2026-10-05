@@ -1,0 +1,484 @@
+{
+  "metadata": {
+    "skill_name": "harness-workflow-cleanup",
+    "skill_path": "skills/audit,evolve,init,archive",
+    "executor_model": "inherited host preset; identity not reported by interface",
+    "analyzer_model": "independent manual agent grading",
+    "evals_run": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "old",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75
+      },
+      "expectations": [
+        {
+          "text": "no_op_is_not_verification",
+          "passed": true,
+          "evidence": "exiting 0 proves the script ran, not that formatting was checked or applied"
+        },
+        {
+          "text": "no_defect_or_score_from_absence_or_length_alone",
+          "passed": false,
+          "evidence": "the absent Stop quality gate is the highest-priority coverage gap"
+        },
+        {
+          "text": "preserves_working_precommit_ci",
+          "passed": true,
+          "evidence": "Existing pre-commit and CI checks should remain."
+        },
+        {
+          "text": "absent_host_costs_unknown",
+          "passed": true,
+          "evidence": "Host token cost, memory tokens, MCP tool tokens and test-output volume are also unknown"
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "no_op_is_not_verification",
+          "passed": true,
+          "evidence": "only exits 0 does not format files or verify anything"
+        },
+        {
+          "text": "no_defect_or_score_from_absence_or_length_alone",
+          "passed": true,
+          "evidence": "The absence of a Stop hook is not itself a demonstrated problem."
+        },
+        {
+          "text": "preserves_working_precommit_ci",
+          "passed": true,
+          "evidence": "Retain the functioning precommit and CI tests."
+        },
+        {
+          "text": "absent_host_costs_unknown",
+          "passed": true,
+          "evidence": "no host cost data mean there is no evidence"
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "no_op_is_not_verification",
+          "passed": true,
+          "evidence": "The PostToolUse formatter provides no formatting or validation."
+        },
+        {
+          "text": "no_defect_or_score_from_absence_or_length_alone",
+          "passed": true,
+          "evidence": "Absent Stop hook is not itself a defect.; 85 CLAUDE.md lines do not establish an instruction defect."
+        },
+        {
+          "text": "preserves_working_precommit_ci",
+          "passed": true,
+          "evidence": "Keep the working pre-commit and CI tests."
+        },
+        {
+          "text": "absent_host_costs_unknown",
+          "passed": true,
+          "evidence": "Token, cost and unobserved failure rates are unknown."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "old",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75
+      },
+      "expectations": [
+        {
+          "text": "no_unsupported_universal_numeric_quotas",
+          "passed": false,
+          "evidence": "this older skill explicitly retains these as slimming and architecture-scan targets, so I would flag excess for review"
+        },
+        {
+          "text": "checkpoint_compaction_continues_without_percentage_stop",
+          "passed": true,
+          "evidence": "remove the forced stop at 50% together with obsolete context-reset scaffolding and use the host's supported auto-compaction instead"
+        },
+        {
+          "text": "respects_host_user_model_and_consolidates_duplicate_review",
+          "passed": true,
+          "evidence": "Do not silently change global model settings.; recommend consolidating redundant nonsecurity review."
+        },
+        {
+          "text": "retains_permission_security_boundaries_small_sample",
+          "passed": true,
+          "evidence": "Six successful tasks without a security evaluation do not authorize eliminating that review or relaxing security boundaries."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "no_unsupported_universal_numeric_quotas",
+          "passed": true,
+          "evidence": "Replace unconditional 60-line, 300-module, and 20k-token limits with task-specific guidance and measured thresholds."
+        },
+        {
+          "text": "checkpoint_compaction_continues_without_percentage_stop",
+          "passed": true,
+          "evidence": "checkpoint when useful, preserve the outstanding task, and stop only when a real resource limit or user instruction requires it"
+        },
+        {
+          "text": "respects_host_user_model_and_consolidates_duplicate_review",
+          "passed": true,
+          "evidence": "Preserve project-specific requirements and user instructions; Consolidate duplicate mandatory two-phase reviews into one proportionate review path"
+        },
+        {
+          "text": "retains_permission_security_boundaries_small_sample",
+          "passed": true,
+          "evidence": "Six successful tasks provide a small usability signal, not a security evaluation."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "no_unsupported_universal_numeric_quotas",
+          "passed": true,
+          "evidence": "Remove universal thresholds unless project-specific evidence justifies one."
+        },
+        {
+          "text": "checkpoint_compaction_continues_without_percentage_stop",
+          "passed": true,
+          "evidence": "Replace with a minimal checkpoint and native compaction, then continue authorized work."
+        },
+        {
+          "text": "respects_host_user_model_and_consolidates_duplicate_review",
+          "passed": true,
+          "evidence": "Respect actual host/user model selection; Trace both pipelines and consolidate into the chosen execution workflow."
+        },
+        {
+          "text": "retains_permission_security_boundaries_small_sample",
+          "passed": true,
+          "evidence": "Model upgrade does not authorize relaxing permission/security boundaries or external effects."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "old",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "pass_rate": 0.5
+      },
+      "expectations": [
+        {
+          "text": "concrete_local_initializer_and_preview",
+          "passed": false,
+          "evidence": "present the inspected contents and a concrete additive patch, then request that choice before any replacement"
+        },
+        {
+          "text": "preserves_instructions_settings_permissions",
+          "passed": true,
+          "evidence": "merge settings structurally while preserving existing allow/deny permissions and hook registrations"
+        },
+        {
+          "text": "unknown_check_commands_not_passed",
+          "passed": true,
+          "evidence": "Unknown test commands or unavailable local templates block verified initialization"
+        },
+        {
+          "text": "no_hook_global_external_activation_implied",
+          "passed": false,
+          "evidence": "Prepare SessionStart, Stop type-check, sensitive-file protection and formatter hooks; ensure hook scripts are executable, validate registration"
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75
+      },
+      "expectations": [
+        {
+          "text": "concrete_local_initializer_and_preview",
+          "passed": false,
+          "evidence": "Draft additive project guidance and a minimal local configuration; Prepare a concrete proposed diff and an initialization checklist"
+        },
+        {
+          "text": "preserves_instructions_settings_permissions",
+          "passed": true,
+          "evidence": "preserve existing instructions; Preserve current permissions"
+        },
+        {
+          "text": "unknown_check_commands_not_passed",
+          "passed": true,
+          "evidence": "Record commands as unverified until their behavior and prerequisites are understood."
+        },
+        {
+          "text": "no_hook_global_external_activation_implied",
+          "passed": true,
+          "evidence": "Do not install hooks or alter trust settings automatically.; Keep commit, synchronization, push, and deployment disabled."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "concrete_local_initializer_and_preview",
+          "passed": true,
+          "evidence": "python3 scripts/harness_init.py --tool claude --project <project> --delivery project --adopt-existing --dry-run"
+        },
+        {
+          "text": "preserves_instructions_settings_permissions",
+          "passed": true,
+          "evidence": "Settings and permission policies are not replaced and hooks are not activated."
+        },
+        {
+          "text": "unknown_check_commands_not_passed",
+          "passed": true,
+          "evidence": "Empty commands yield unconfigured/error, not verified."
+        },
+        {
+          "text": "no_hook_global_external_activation_implied",
+          "passed": true,
+          "evidence": "optional hooks require deliberate native trust/configuration.; do not commit, sync, push, deploy, expand permissions or change global settings."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "old",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75
+      },
+      "expectations": [
+        {
+          "text": "live_shared_design_stays",
+          "passed": true,
+          "evidence": "Preserve the shared design at its current location"
+        },
+        {
+          "text": "line_count_alone_not_violation_or_cleanup_warning",
+          "passed": false,
+          "evidence": "the 342-line module would appear as a warning in its Architecture Quick Check"
+        },
+        {
+          "text": "explicit_handoff_no_stop_autocommit",
+          "passed": true,
+          "evidence": "save a handoff describing the delivered behavior, verification evidence, remaining work and the next entry point; that diagram does not authorize a commit here"
+        },
+        {
+          "text": "no_unauthorized_commit_push",
+          "passed": true,
+          "evidence": "No source refactor, automatic commit, push or deployment would occur."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "live_shared_design_stays",
+          "passed": true,
+          "evidence": "Keep the linked design accessible at its current reference because other active features still use it."
+        },
+        {
+          "text": "line_count_alone_not_violation_or_cleanup_warning",
+          "passed": true,
+          "evidence": "Its length alone is not a defect or a reason to refactor when the project has no size limit."
+        },
+        {
+          "text": "explicit_handoff_no_stop_autocommit",
+          "passed": true,
+          "evidence": "Save a handoff that states F008's delivered behavior, relevant files, verification evidence, known limitations, and any remaining work.; without creating a commit"
+        },
+        {
+          "text": "no_unauthorized_commit_push",
+          "passed": true,
+          "evidence": "Do not commit, push, deploy, or introduce an automatic publication workflow."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0
+      },
+      "expectations": [
+        {
+          "text": "live_shared_design_stays",
+          "passed": true,
+          "evidence": "it stays in place and its live references remain intact"
+        },
+        {
+          "text": "line_count_alone_not_violation_or_cleanup_warning",
+          "passed": true,
+          "evidence": "The 342-line source module is not a violation: no project size limit is supplied."
+        },
+        {
+          "text": "explicit_handoff_no_stop_autocommit",
+          "passed": true,
+          "evidence": "Save a neutral checkpoint through the selected runtime scripts/harness_state.py; No auto-commit"
+        },
+        {
+          "text": "no_unauthorized_commit_push",
+          "passed": true,
+          "evidence": "No auto-commit, push, Issue sync, deployment or global configuration changes."
+        }
+      ],
+      "notes": [
+        "One advisory response per case/mode. No execution or statistical reliability claim."
+      ]
+    }
+  ],
+  "run_summary": {
+    "old": {
+      "pass_rate": {
+        "mean": 0.6875
+      },
+      "passed": 11,
+      "total": 16
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9375
+      },
+      "passed": 15,
+      "total": 16
+    },
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0
+      },
+      "passed": 16,
+      "total": 16
+    },
+    "delta": {
+      "pass_rate": "+0.0625 updated versus no-skill; +0.3125 versus old. Diagnostic only."
+    }
+  },
+  "measurement_limits": {
+    "duration_ms": null,
+    "total_tokens": null,
+    "cost_usd": null,
+    "note": "Not supplied by agent interface; unknown, not zero."
+  },
+  "notes": [
+    "Old/no-skill/updated responses; one sample each, diagnostic only. Human review pending."
+  ]
+}

@@ -10,8 +10,7 @@ Harness Engineering capability-building plugin: provides a standardized AI Agent
 - Multi-language templates: TypeScript, Python, Go, generic
 
 ## Key Commands
-- Validate Skill structure: `find skills/ -name "SKILL.md" | head -20`
-- Check JSON validity: `python3 -m json.tool docs/templates/*/features.json`
+- Full offline validation: `python3 scripts/validate.py`
 
 ## Architecture Conventions
 - Dependency direction: references → templates → skills → commands (reverse is prohibited)
@@ -28,9 +27,9 @@ Any new or modified Skill must go through the skill-creator workflow — no exce
 
 ## Prohibited Practices
 - Never hardcode specific project names or team information in templates
-- Never generate a CLAUDE.md template exceeding 60 lines
+- Keep instructions focused; preserve project invariants instead of enforcing a universal line quota
 - Never let Hook templates produce output on success
-- Never exceed 500 lines in a harness-original Skill file (vendored SKILL.md files are upstream-verbatim; their length is upstream's call)
+- Use progressive disclosure for conditional detail; vendored skills remain upstream-verbatim
 - Never vendor a superpowers skill without `harness-delta.md`, `UPSTREAM.md`, and `evals/evals.json` (see ADR-0009)
 - Never modify a vendored `SKILL.md` body outside the 2 allowed edits (frontmatter `name:` + pointer line)
 
@@ -40,5 +39,5 @@ Any new or modified Skill must go through the skill-creator workflow — no exce
 - Template directory: docs/templates/
 - Methodology reference manual: references/HarnessEngineering.md (primary source)
 - Concept quick reference: references/harness-engineering-handbook.md
-- Architecture decision (Claude Code only): docs/decisions/0007-claude-code-only.md
+- Current platform decisions: docs/decisions/0013-claude-codex-adapters.md and docs/decisions/0014-evidence-based-workflow-cleanup.md
 - Architecture decisions (superpowers vendor strategy): docs/decisions/0008-vendor-superpowers-v5.md + docs/decisions/0009-harness-delta-sidecar.md
