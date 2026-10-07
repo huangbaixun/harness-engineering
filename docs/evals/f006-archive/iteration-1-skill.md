@@ -39,8 +39,7 @@ Before moving a candidate, inspect all feature references and repository inbound
 references, including relative Markdown links, source comments, scripts and user
 documentation. Search its path and filename (for example with `rg`), resolve links
 relative to their referring files, and distinguish actual consumers from historical
-mentions. In the report, list every referring feature ID (including completed
-co-owners), concrete consumer paths and the reason for each keep/move decision.
+mentions. Record referring paths and the reason for each keep/move decision.
 
 - **Shared spec:** retain it while any referring feature is not `done`. Completion
   of one feature does not complete a shared design.

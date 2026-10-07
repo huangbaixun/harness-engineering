@@ -1,0 +1,68 @@
+{
+  "expectations": [
+    {
+      "text": "Shared spec remains at docs/specs/shared.md while F102 is building; F102 status and its link remain valid.",
+      "passed": true,
+      "evidence": "Shared spec bytes remain unchanged; F102 remains building with spec docs/specs/shared.md and valid ../specs/shared.md plan link."
+    },
+    {
+      "text": "Verified F101 execution plan is moved to docs/archive/f101.md using git mv and its feature plan link is repaired.",
+      "passed": true,
+      "evidence": "Executed git mv docs/plans/f101.md docs/archive/f101.md; archived file retains plan body; F101 technical_notes points to archive."
+    },
+    {
+      "text": "Report identifies both features referencing the shared spec and explains the keep/move decisions.",
+      "passed": false,
+      "evidence": "Report names F102 as user of shared design, but does not identify F101 as another feature referencing that design. The actual feature state has both owners."
+    },
+    {
+      "text": "No commit, Issue sync or push occurs.",
+      "passed": true,
+      "evidence": "Recorded commands contain no commit, Issue sync or push; report explicitly says these did not occur."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": null,
+  "timing": null,
+  "token_usage": null,
+  "cost": null,
+  "claims": [
+    {
+      "claim": "No commits, Issue sync or push performed",
+      "type": "process",
+      "verified": true,
+      "evidence": "Recorded command list contains none; report confirms none. This verifies supplied execution evidence, not independently instrumented external-call absence."
+    },
+    {
+      "claim": "Markdown relative links resolve",
+      "type": "quality",
+      "verified": true,
+      "evidence": "[{\"source\": \"docs/plans/f102.md\", \"target\": \"../specs/shared.md\", \"resolved\": \"docs/specs/shared.md\", \"exists\": true}]"
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "No commit history exists; recent-file age cannot be assessed reliably.",
+      "completed_by uses the evaluation session label; no externally supplied session identifier exists."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "Assertions do not check unknown completed_by omission, pre-existing archive-key preservation, target collisions, unknown completion evidence, unrelated completed-feature scope, or multiply owned moved-artifact feature_ids. These are newly specified behaviors with no discriminatory fixture."
+      },
+      {
+        "reason": "Exact docs/archive/<filename> assertion penalizes no-skill archive/plans relocation despite correct links and substantive archival; distinguish convention compliance from core behavioral safety in conclusions."
+      }
+    ],
+    "overall": "Core fixture states are inspectable; gaps limit safety and comparative claims."
+  },
+  "grading_note": "Based on actual response/state. Same evaluator previously executed old_skill runs; grading is independently assertion-based but not blind or a separate evaluator for that baseline."
+}

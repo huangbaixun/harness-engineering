@@ -1,0 +1,127 @@
+{
+  "case_id": 8,
+  "eval_name": "repair-links-after-plan-move",
+  "skill": "old-skill.md",
+  "prompt": "F301 已验证完成，归档它的执行计划。保持历史记录可追溯，不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "repository": "/private/tmp/harness-f006-old/8",
+  "files": {
+    "CLAUDE.md": "# Project\nNo commits or external writes authorized.\n",
+    "docs/architecture.md": "# Architecture\nNo source modules.\n",
+    "docs/archive/f301.md": "---\narchived_at: 2026-10-06T12:00:58.626196+00:00\ncompleted_by: archive-old-skill-eval-8\nfeature_id: F301\nowner: release-team\n---\n# F301 plan\nVerified complete. See [architecture](../architecture.md).\n",
+    "docs/history.md": "# History\nCompleted implementation: [plan](archive/f301.md).\n",
+    "features.json": "{\n  \"schema_version\": \"2.1\",\n  \"features\": [\n    {\n      \"id\": \"F301\",\n      \"status\": \"done\",\n      \"technical_notes\": \"Plan: docs/archive/f301.md\",\n      \"archived_at\": \"2026-10-06T12:00:58.626196+00:00\"\n    }\n  ]\n}\n"
+  },
+  "git_status": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f301.md\nAM docs/history.md\nAM features.json\n",
+  "performed_commands": [
+    {
+      "command": [
+        "git",
+        "init"
+      ],
+      "exit_code": 0,
+      "stdout": "Initialized empty Git repository in /private/tmp/harness-f006-old/8/.git/\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "add",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nA  docs/history.md\nA  docs/plans/f301.md\nA  features.json\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "docs/specs|docs/plans|specs/|plans/|status|^#",
+        "--glob",
+        "!.git/**",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "./CLAUDE.md:1:# Project\n./docs/history.md:1:# History\n./docs/history.md:2:Completed implementation: [plan](plans/f301.md).\n./docs/plans/f301.md:4:# F301 plan\n./docs/architecture.md:1:# Architecture\n./features.json:6:      \"status\": \"done\",\n./features.json:7:      \"technical_notes\": \"Plan: docs/plans/f301.md\"\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "mkdir",
+        "-p",
+        "docs/archive"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "mv",
+        "docs/plans/f301.md",
+        "docs/archive/f301.md"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Python pathlib.write_text: add archive metadata to docs/archive/f301.md",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Python pathlib.write_text: update moved plan reference and archived_at in features.json",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Python pathlib.write_text: replace plans/f301.md with archive/f301.md in docs/history.md",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f301.md\nAM docs/history.md\nAM features.json\n",
+      "stderr": ""
+    }
+  ],
+  "execution_script": "/private/tmp/harness-f006-old/run_baseline.py",
+  "execution_script_contents": "import json,pathlib,subprocess,datetime\nbase=pathlib.Path('/private/tmp/harness-f006-old')\noutputs=pathlib.Path('/Users/huangbaixun/codes/harness-engineering/docs/evals/f006-archive')\nfixtures=json.loads((outputs/'fixtures.json').read_text())\nts=datetime.datetime.now(datetime.timezone.utc).isoformat()\nfor case in fixtures:\n root=base/str(case['id']);logfile=root/'.evaluation-command-log.json'\n commands=json.loads(logfile.read_text());logfile.unlink()\n def run(args):\n  r=subprocess.run(args,cwd=root,text=True,capture_output=True)\n  commands.append(dict(command=args,exit_code=r.returncode,stdout=r.stdout,stderr=r.stderr))\n  if r.returncode:raise RuntimeError(r.stderr)\n if case['id'] in (6,8):\n  feature='F101' if case['id']==6 else 'F301';stem=feature.lower()\n  run(['mkdir','-p','docs/archive'])\n  run(['git','mv',f'docs/plans/{stem}.md',f'docs/archive/{stem}.md'])\n  p=root/f'docs/archive/{stem}.md';s=p.read_text()\n  metadata=f'archived_at: {ts}\\ncompleted_by: archive-old-skill-eval-{case[\"id\"]}\\nfeature_id: {feature}\\n'\n  if s.startswith('---\\n'):s='---\\n'+metadata+s[4:]\n  else:s='---\\n'+metadata+'---\\n'+s\n  p.write_text(s)\n  commands.append({'command':'Python pathlib.write_text: add archive metadata to '+str(p.relative_to(root)),'exit_code':0,'stdout':'','stderr':''})\n  p=root/'features.json';data=json.loads(p.read_text())\n  for f in data['features']:\n   if f['id']==feature:\n    f['technical_notes']=f['technical_notes'].replace(f'docs/plans/{stem}.md',f'docs/archive/{stem}.md')\n    f['archived_at']=ts\n  p.write_text(json.dumps(data,indent=2)+'\\n')\n  commands.append({'command':'Python pathlib.write_text: update moved plan reference and archived_at in features.json','exit_code':0,'stdout':'','stderr':''})\n  if case['id']==8:\n   p=root/'docs/history.md';p.write_text(p.read_text().replace('plans/f301.md','archive/f301.md'))\n   commands.append({'command':'Python pathlib.write_text: replace plans/f301.md with archive/f301.md in docs/history.md','exit_code':0,'stdout':'','stderr':''})\n run(['git','diff','--check'])\n run(['git','status','--short'])\n files={str(p.relative_to(root)):p.read_text() for p in sorted(root.rglob('*')) if p.is_file() and '.git' not in p.parts}\n status=commands[-1]['stdout']\n if case['id']==6:\n  response='已完成本地归档：F101 的执行计划通过 git mv 移至 docs/archive/f101.md，并补充归档元数据、更新 technical_notes 和 archived_at。\\n\\n共享设计 docs/specs/shared.md 保留原位：F102 仍在开发且使用此文档。F102 状态和执行计划未修改。文档结构没有发现漂移；没有 src/ 或 ADR，因此相关架构检查不适用。git diff --check 通过。未提交、同步 Issue 或推送。\\n'\n elif case['id']==7:\n  response='检查后保留 docs/specs/api.md 原位。虽然 F201、F202 都已完成，但 src/api.py 和用户指南仍引用此文档；它是现行 API 契约，属于仍在使用的文档。此次没有可移动的完成工件，未添加 archived_at。\\n\\n架构描述与 src/api.py 一致，未发现依赖方向问题；仓库没有测试文件，且没有提交历史，无法依据“最近 7 天新增”判定测试覆盖。git diff --check 通过。未提交、同步 Issue 或推送。\\n'\n else:\n  response='已通过 git mv 将 F301 执行计划移至 docs/archive/f301.md。保留 owner: release-team，加入 archived_at、completed_by 和 feature_id，更新 features.json 的计划路径与 archived_at，并修复 docs/history.md 的入链。计划中的 ../architecture.md 在归档后仍正确指向 docs/architecture.md。\\n\\n没有发现文档结构漂移；src/ 和 ADR 不存在，相关架构检查不适用。git diff --check 通过。仓库没有提交历史；已使用 git mv 保持可追溯的移动操作，未创建提交、同步 Issue 或推送。\\n'\n dest=outputs/f'eval-{case[\"id\"]}-{case[\"eval_name\"]}'/'old_skill'/'outputs';dest.mkdir(parents=True,exist_ok=True)\n (dest/'response.md').write_text(response)\n state={'case_id':case['id'],'eval_name':case['eval_name'],'skill':'old-skill.md','prompt':case['prompt'],'repository':str(root),'files':files,'git_status':status,'performed_commands':commands,'execution_script':str(base/'run_baseline.py'),'execution_script_contents':(base/'run_baseline.py').read_text(),'errors':[],'uncertainties':['No commit history exists; recent-file age cannot be assessed reliably.','completed_by uses the evaluation session label; no externally supplied session identifier exists.'] if case['id']!=7 else ['No commit history exists; recent-file age cannot be assessed reliably.'],'token_usage':None,'cost':None}\n (dest/'state.json').write_text(json.dumps(state,indent=2,ensure_ascii=False)+'\\n')\n print(json.dumps({'case':case['id'],'output':str(dest),'git_status':status},ensure_ascii=False))\n",
+  "errors": [],
+  "uncertainties": [
+    "No commit history exists; recent-file age cannot be assessed reliably.",
+    "completed_by uses the evaluation session label; no externally supplied session identifier exists."
+  ],
+  "token_usage": null,
+  "cost": null
+}

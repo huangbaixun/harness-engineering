@@ -1,0 +1,72 @@
+{
+  "case_id": 6,
+  "prompt": "F101 已验证完成，帮我收尾归档。F102 继续开发；不要改其他特性的状态，不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "repository": "/private/tmp/harness-f006-with/6",
+  "files": {
+    "CLAUDE.md": "# Project\nNo commits or external writes authorized.\n",
+    "docs/architecture.md": "# Architecture\nNo source modules.\n",
+    "docs/archive/f101.md": "---\narchived_at: 2026-10-06\nfeature_id: F101\n---\n# F101 execution plan\nVerified complete.\n",
+    "docs/plans/f102.md": "# F102 execution plan\nRead [design](../specs/shared.md).\n",
+    "docs/specs/shared.md": "# Shared design\nContract for F101 and F102.\n",
+    "features.json": "{\n  \"schema_version\": \"2.1\",\n  \"features\": [\n    {\n      \"id\": \"F101\",\n      \"status\": \"done\",\n      \"spec\": \"docs/specs/shared.md\",\n      \"technical_notes\": \"Plan: docs/archive/f101.md\",\n      \"archived_at\": \"2026-10-06\"\n    },\n    {\n      \"id\": \"F102\",\n      \"status\": \"building\",\n      \"spec\": \"docs/specs/shared.md\"\n    }\n  ]\n}\n"
+  },
+  "git_status": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f101.md\nA  docs/plans/f102.md\nA  docs/specs/shared.md\nAM features.json\n",
+  "performed_commands": [
+    {
+      "command": "git init",
+      "exit_code": 0
+    },
+    {
+      "command": "git add .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg -n 'shared.md|f101.md|f102.md|docs/specs|docs/plans' .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg --files --hidden -g '!.git'",
+      "exit_code": 0
+    },
+    {
+      "command": "git mv docs/plans/f101.md docs/archive/f101.md",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 archive operation: assert destination absent; prepend archived_at and feature_id while preserving frontmatter; replace selected technical_notes path; resolve every Markdown link; set selected archived_at after validation",
+      "exit_code": 0
+    },
+    {
+      "command": "rg -n 'docs/plans/f101.md|\\]\\(plans/f101.md\\)' .",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "no stale references"
+    },
+    {
+      "command": "python3 diagnostic inspection: read CLAUDE.md and docs/architecture.md; enumerate src, docs/decisions and hook/lint filenames",
+      "exit_code": 0
+    },
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f101.md\nA  docs/plans/f102.md\nA  docs/specs/shared.md\nAM features.json\n"
+    }
+  ],
+  "uncertainties": [
+    "No commit history; cannot date files added in last seven days.",
+    "Completed_by unknown; field omitted."
+  ],
+  "errors": [
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    }
+  ]
+}

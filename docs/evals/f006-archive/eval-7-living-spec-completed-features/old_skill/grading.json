@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "API spec stays at docs/specs/api.md despite both features being done.",
+      "passed": true,
+      "evidence": "docs/specs/api.md is present unchanged; no archive destination exists."
+    },
+    {
+      "text": "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+      "passed": false,
+      "evidence": "Report cites src/api.py and generically 用户指南, but never cites concrete docs/guide.md consumer path required by the assertion."
+    },
+    {
+      "text": "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+      "passed": true,
+      "evidence": "features.json has no archived_at; both statuses remain done; source and guide references still target existing docs/specs/api.md."
+    },
+    {
+      "text": "No commit, Issue sync or push occurs.",
+      "passed": true,
+      "evidence": "No commit, Issue sync or push appears in recorded commands; report confirms none occurred."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": null,
+  "timing": null,
+  "token_usage": null,
+  "cost": null,
+  "claims": [
+    {
+      "claim": "No commits, Issue sync or push performed",
+      "type": "process",
+      "verified": true,
+      "evidence": "Recorded command list contains none; report confirms none. This verifies supplied execution evidence, not independently instrumented external-call absence."
+    },
+    {
+      "claim": "Markdown relative links resolve",
+      "type": "quality",
+      "verified": true,
+      "evidence": "[{\"source\": \"docs/guide.md\", \"target\": \"specs/api.md\", \"resolved\": \"docs/specs/api.md\", \"exists\": true}]"
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "No commit history exists; recent-file age cannot be assessed reliably."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "Assertions do not check unknown completed_by omission, pre-existing archive-key preservation, target collisions, unknown completion evidence, unrelated completed-feature scope, or multiply owned moved-artifact feature_ids. These are newly specified behaviors with no discriminatory fixture."
+      }
+    ],
+    "overall": "Core fixture states are inspectable; gaps limit safety and comparative claims."
+  },
+  "grading_note": "Based on actual response/state. Same evaluator previously executed old_skill runs; grading is independently assertion-based but not blind or a separate evaluator for that baseline."
+}

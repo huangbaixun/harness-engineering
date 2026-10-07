@@ -1,0 +1,65 @@
+{
+  "expectations": [
+    {
+      "text": "API spec stays at docs/specs/api.md despite both features being done.",
+      "passed": true,
+      "evidence": "docs/specs/api.md remains unchanged at its active path."
+    },
+    {
+      "text": "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+      "passed": true,
+      "evidence": "Report specifically cites src/api.py Contract comment and docs/guide.md relative link as living-contract consumers."
+    },
+    {
+      "text": "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+      "passed": true,
+      "evidence": "No archived_at present; F201 and F202 remain done and both consumer links preserve valid targets."
+    },
+    {
+      "text": "No commit, Issue sync or push occurs.",
+      "passed": true,
+      "evidence": "Recorded commands are local inspection only; report confirms no commit, Issue sync or push."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": null,
+  "timing": null,
+  "token_usage": null,
+  "cost": null,
+  "claims": [
+    {
+      "claim": "No commits, Issue sync or push performed",
+      "type": "process",
+      "verified": true,
+      "evidence": "Recorded command list contains none; report confirms none. This verifies supplied execution evidence, not independently instrumented external-call absence."
+    },
+    {
+      "claim": "Markdown relative links resolve",
+      "type": "quality",
+      "verified": true,
+      "evidence": "[{\"source\": \"docs/guide.md\", \"target\": \"specs/api.md\", \"resolved\": \"docs/specs/api.md\", \"exists\": true}]"
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "No commit history; cannot date files added in last seven days.",
+      "No tests; API behavioral coverage unknown."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "Assertions do not check unknown completed_by omission, pre-existing archive-key preservation, target collisions, unknown completion evidence, unrelated completed-feature scope, or multiply owned moved-artifact feature_ids. These are newly specified behaviors with no discriminatory fixture."
+      }
+    ],
+    "overall": "Core fixture states are inspectable; gaps limit safety and comparative claims."
+  },
+  "grading_note": "Based on actual response/state. Same evaluator previously executed old_skill runs; grading is independently assertion-based but not blind or a separate evaluator for that baseline."
+}

@@ -1,0 +1,57 @@
+{
+  "case_id": 7,
+  "prompt": "F201 和 F202 都 done 了，把它们的设计文档清理归档吧。不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "repository": "/private/tmp/harness-f006-with/7",
+  "files": {
+    "CLAUDE.md": "# Project\nNo commits or external writes authorized.\n",
+    "docs/architecture.md": "# Architecture\nsrc/ contains api.py.\n",
+    "docs/guide.md": "# User guide\nSee [API contract](specs/api.md).\n",
+    "docs/specs/api.md": "# API contract\nThe public API returns status as a string.\n",
+    "features.json": "{\n  \"schema_version\": \"2.1\",\n  \"features\": [\n    {\n      \"id\": \"F201\",\n      \"status\": \"done\",\n      \"spec\": \"docs/specs/api.md\"\n    },\n    {\n      \"id\": \"F202\",\n      \"status\": \"done\",\n      \"spec\": \"docs/specs/api.md\"\n    }\n  ]\n}",
+    "src/api.py": "# Contract: docs/specs/api.md\ndef status():\n    return \"ready\"\n"
+  },
+  "git_status": "A  CLAUDE.md\nA  docs/architecture.md\nA  docs/guide.md\nA  docs/specs/api.md\nA  features.json\nA  src/api.py\n",
+  "performed_commands": [
+    {
+      "command": "git init",
+      "exit_code": 0
+    },
+    {
+      "command": "git add .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg -n 'api.md|docs/specs|docs/plans' .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg --files --hidden -g '!.git'",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 diagnostic inspection: read CLAUDE.md and docs/architecture.md; enumerate src, docs/decisions and hook/lint filenames; read and compile src/api.py",
+      "exit_code": 0
+    },
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nA  docs/guide.md\nA  docs/specs/api.md\nA  features.json\nA  src/api.py\n"
+    }
+  ],
+  "uncertainties": [
+    "No commit history; cannot date files added in last seven days.",
+    "No tests; API behavioral coverage unknown."
+  ],
+  "errors": [
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    }
+  ]
+}

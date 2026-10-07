@@ -1,0 +1,20 @@
+[
+  {
+    "eval_id": 6,
+    "snapshot_matches_live_repo": true,
+    "markdown_link_targets_exist": true,
+    "case_state_invariants_pass": true
+  },
+  {
+    "eval_id": 7,
+    "snapshot_matches_live_repo": true,
+    "markdown_link_targets_exist": true,
+    "case_state_invariants_pass": true
+  },
+  {
+    "eval_id": 8,
+    "snapshot_matches_live_repo": true,
+    "markdown_link_targets_exist": true,
+    "case_state_invariants_pass": true
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "case_id": 6,
+  "eval_name": "shared-spec-active-feature",
+  "prompt": "F101 \u5df2\u9a8c\u8bc1\u5b8c\u6210\uff0c\u5e2e\u6211\u6536\u5c3e\u5f52\u6863\u3002F102 \u7ee7\u7eed\u5f00\u53d1\uff1b\u4e0d\u8981\u6539\u5176\u4ed6\u7279\u6027\u7684\u72b6\u6001\uff0c\u4e0d\u8981\u63d0\u4ea4\u3001\u540c\u6b65 Issue \u6216\u63a8\u9001\u3002\u6267\u884c\u672c\u5730\u6587\u4ef6\u6574\u7406\u5e76\u7ed9\u51fa\u62a5\u544a\u3002",
+  "repository": "/private/tmp/harness-f006-none-iteration2/6",
+  "files": {
+    "CLAUDE.md": "# Project\nNo commits or external writes authorized.\n",
+    "docs/architecture.md": "# Architecture\nNo source modules.\n",
+    "docs/archive/plans/f101.md": "# F101 execution plan\nVerified complete.\n",
+    "docs/plans/f102.md": "# F102 execution plan\nRead [design](../specs/shared.md).\n",
+    "docs/specs/shared.md": "# Shared design\nContract for F101 and F102.\n",
+    "features.json": "{\n  \"schema_version\": \"2.1\",\n  \"features\": [\n    {\n      \"id\": \"F101\",\n      \"status\": \"done\",\n      \"spec\": \"docs/specs/shared.md\",\n      \"technical_notes\": \"Plan: docs/archive/plans/f101.md\"\n    },\n    {\n      \"id\": \"F102\",\n      \"status\": \"building\",\n      \"spec\": \"docs/specs/shared.md\"\n    }\n  ]\n}\n"
+  },
+  "git_status": "A  CLAUDE.md\nA  docs/architecture.md\nA  docs/archive/plans/f101.md\nA  docs/plans/f102.md\nA  docs/specs/shared.md\nAM features.json\n",
+  "commands": [
+    {
+      "command": [
+        "git",
+        "init"
+      ],
+      "exit_code": 0,
+      "stdout": "Initialized empty Git repository in /private/tmp/harness-f006-none-iteration2/6/.git/\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "add",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "docs/|\\]\\(",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "./features.json:7:      \"spec\": \"docs/specs/shared.md\",\n./features.json:8:      \"technical_notes\": \"Plan: docs/plans/f101.md\"\n./features.json:13:      \"spec\": \"docs/specs/shared.md\"\n./docs/plans/f102.md:2:Read [design](../specs/shared.md).\n",
+      "stderr": ""
+    },
+    {
+      "command": "Python pathlib.mkdir(parents=True): docs/archive/plans",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "mv",
+        "docs/plans/f101.md",
+        "docs/archive/plans/f101.md"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Python pathlib.write_text: features.json",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "Python: verify all relative Markdown link targets exist",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nA  docs/archive/plans/f101.md\nA  docs/plans/f102.md\nA  docs/specs/shared.md\nAM features.json\n",
+      "stderr": ""
+    }
+  ],
+  "errors": [],
+  "uncertainties": [],
+  "token_data": "unknown",
+  "cost_data": "unknown"
+}

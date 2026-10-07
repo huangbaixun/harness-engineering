@@ -1,0 +1,11 @@
+{
+  "eval_id": 7,
+  "eval_name": "living-spec-completed-features",
+  "prompt": "F201 和 F202 都 done 了，把它们的设计文档清理归档吧。不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "assertions": [
+    "API spec stays at docs/specs/api.md despite both features being done.",
+    "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+    "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+    "No commit, Issue sync or push occurs."
+  ]
+}

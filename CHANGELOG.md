@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Clarify F006 archive handling: preserve shared/living specs, archive completed execution plans with repaired inbound links, preserve metadata and report unknowns; add paired disposable-repository behavioral evaluations.
+
 ## [2.4.0] - 2026-10-05
 
 - Retire default progress auto-commit, empty formatter and homemade telemetry hooks. Real argv verification is shared across Claude/Codex; empty configuration is not success.

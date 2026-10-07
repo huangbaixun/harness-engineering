@@ -1,0 +1,71 @@
+{
+  "expectations": [
+    {
+      "text": "Completed plan moves with git mv to docs/archive/f301.md, rather than being retained solely for a historical inbound link.",
+      "passed": true,
+      "evidence": "Recorded git mv targets docs/archive/f301.md despite history inbound link; archive retains plan body."
+    },
+    {
+      "text": "features.json technical_notes and docs/history.md relative link point to the archive; internal architecture link remains valid.",
+      "passed": true,
+      "evidence": "technical_notes points to docs/archive/f301.md; docs/history.md links archive/f301.md; archive ../architecture.md resolves to existing docs/architecture.md."
+    },
+    {
+      "text": "Existing owner frontmatter is preserved and archive metadata is added without duplicate frontmatter.",
+      "passed": true,
+      "evidence": "Single initial frontmatter block contains owner: release-team and archived_at/completed_by/feature_id; no duplicate block."
+    },
+    {
+      "text": "Report lists concrete repaired inbound links and checks their targets; no commit, Issue sync or push occurs.",
+      "passed": false,
+      "evidence": "Report lists feature/history repairs and claims internal architecture link is correct, but no recorded link-target check or report verification of repaired inbound targets exists. git diff --check verifies whitespace, not links."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": null,
+  "timing": null,
+  "token_usage": null,
+  "cost": null,
+  "claims": [
+    {
+      "claim": "No commits, Issue sync or push performed",
+      "type": "process",
+      "verified": true,
+      "evidence": "Recorded command list contains none; report confirms none. This verifies supplied execution evidence, not independently instrumented external-call absence."
+    },
+    {
+      "claim": "Markdown relative links resolve",
+      "type": "quality",
+      "verified": true,
+      "evidence": "[{\"source\": \"docs/archive/f301.md\", \"target\": \"../architecture.md\", \"resolved\": \"docs/architecture.md\", \"exists\": true}, {\"source\": \"docs/history.md\", \"target\": \"archive/f301.md\", \"resolved\": \"docs/archive/f301.md\", \"exists\": true}]"
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "No commit history exists; recent-file age cannot be assessed reliably.",
+      "completed_by uses the evaluation session label; no externally supplied session identifier exists."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "Assertions do not check unknown completed_by omission, pre-existing archive-key preservation, target collisions, unknown completion evidence, unrelated completed-feature scope, or multiply owned moved-artifact feature_ids. These are newly specified behaviors with no discriminatory fixture."
+      },
+      {
+        "reason": "Exact docs/archive/<filename> assertion penalizes no-skill archive/plans relocation despite correct links and substantive archival; distinguish convention compliance from core behavioral safety in conclusions."
+      },
+      {
+        "reason": "Internal link ../architecture.md remains valid after plans → archive because depth stays the same. Fixture does not test required rewrite for a deeper-origin file."
+      }
+    ],
+    "overall": "Core fixture states are inspectable; gaps limit safety and comparative claims."
+  },
+  "grading_note": "Based on actual response/state. Same evaluator previously executed old_skill runs; grading is independently assertion-based but not blind or a separate evaluator for that baseline."
+}

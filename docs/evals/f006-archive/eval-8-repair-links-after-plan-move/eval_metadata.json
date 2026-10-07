@@ -1,0 +1,11 @@
+{
+  "eval_id": 8,
+  "eval_name": "repair-links-after-plan-move",
+  "prompt": "F301 已验证完成，归档它的执行计划。保持历史记录可追溯，不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "assertions": [
+    "Completed plan moves with git mv to docs/archive/f301.md, rather than being retained solely for a historical inbound link.",
+    "features.json technical_notes and docs/history.md relative link point to the archive; internal architecture link remains valid.",
+    "Existing owner frontmatter is preserved and archive metadata is added without duplicate frontmatter.",
+    "Report lists concrete repaired inbound links and checks their targets; no commit, Issue sync or push occurs."
+  ]
+}

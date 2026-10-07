@@ -1,0 +1,71 @@
+{
+  "case_id": 8,
+  "prompt": "F301 已验证完成，归档它的执行计划。保持历史记录可追溯，不要提交、同步 Issue 或推送。执行本地文件整理并给出报告。",
+  "repository": "/private/tmp/harness-f006-with/8",
+  "files": {
+    "CLAUDE.md": "# Project\nNo commits or external writes authorized.\n",
+    "docs/architecture.md": "# Architecture\nNo source modules.\n",
+    "docs/archive/f301.md": "---\narchived_at: 2026-10-06\nfeature_id: F301\nowner: release-team\n---\n# F301 plan\nVerified complete. See [architecture](../architecture.md).\n",
+    "docs/history.md": "# History\nCompleted implementation: [plan](archive/f301.md).\n",
+    "features.json": "{\n  \"schema_version\": \"2.1\",\n  \"features\": [\n    {\n      \"id\": \"F301\",\n      \"status\": \"done\",\n      \"technical_notes\": \"Plan: docs/archive/f301.md\",\n      \"archived_at\": \"2026-10-06\"\n    }\n  ]\n}\n"
+  },
+  "git_status": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f301.md\nAM docs/history.md\nAM features.json\n",
+  "performed_commands": [
+    {
+      "command": "git init",
+      "exit_code": 0
+    },
+    {
+      "command": "git add .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg -n 'f301.md|architecture.md|docs/plans' .",
+      "exit_code": 0
+    },
+    {
+      "command": "rg --files --hidden -g '!.git'",
+      "exit_code": 0
+    },
+    {
+      "command": "git mv docs/plans/f301.md docs/archive/f301.md",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 archive operation: assert destination absent; prepend archived_at and feature_id while preserving frontmatter; replace selected technical_notes path; replace docs/history.md link; resolve every Markdown link; set selected archived_at after validation",
+      "exit_code": 0
+    },
+    {
+      "command": "rg -n 'docs/plans/f301.md|\\]\\(plans/f301.md\\)' .",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "",
+      "meaning": "no stale references"
+    },
+    {
+      "command": "python3 diagnostic inspection: read CLAUDE.md and docs/architecture.md; enumerate src, docs/decisions and hook/lint filenames",
+      "exit_code": 0
+    },
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "stdout": "A  CLAUDE.md\nA  docs/architecture.md\nAM docs/archive/f301.md\nAM docs/history.md\nAM features.json\n"
+    }
+  ],
+  "uncertainties": [
+    "No commit history; cannot date files added in last seven days.",
+    "Completed_by unknown; field omitted."
+  ],
+  "errors": [
+    {
+      "command": "git log --since=7 days ago --name-only --format=",
+      "exit_code": 128,
+      "stderr": "fatal: your current branch 'main' does not have any commits yet\n"
+    }
+  ]
+}

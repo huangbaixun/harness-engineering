@@ -2,7 +2,7 @@
   "schema_version": "2.1",
   "version": "1.0",
   "product": "harness-engineering",
-  "last_updated": "2026-10-05",
+  "last_updated": "2026-10-07",
   "updated_by": "huangbaixun",
   "github": {
     "enabled": true,
@@ -187,8 +187,8 @@
       "id": "F006",
       "name": "archive-skill-shared-and-living-doc-handling",
       "priority": 3,
-      "status": "proposed",
-      "spec": "",
+      "status": "done",
+      "spec": "docs/specs/2026-10-06-F006-archive-design.md",
       "description": "harness:archive 的 Step 1「按特性逐个搬运设计文档」有两个盲区，F004 与 F005 收尾时各踩到一次。",
       "acceptance_criteria": [
         "archive 遇到被多个特性共用的 spec 时，仅当所有引用特性均为 done 才考虑归档",
@@ -200,7 +200,7 @@
         "F001–F003 的历史归档积压（需同步修 0008/0009/sync-superpowers.sh 三处链接，属独立任务）"
       ],
       "dependencies": [],
-      "technical_notes": "缺口来源：F004 收尾时共用 spec 会切断 F005 的回指；F005 收尾时该 spec 已被 harness_sync.py 与 commands/sync-issues.md 引用，成为活文档。两次都靠人工判断绕开，说明规则应该写进 skill。",
+      "technical_notes": "缺口来源：F004 收尾时共用 spec 会切断 F005 的回指；F005 收尾时该 spec 已被 harness_sync.py 与 commands/sync-issues.md 引用，成为活文档。两次都靠人工判断绕开，说明规则应该写进 skill。 Trial plan: docs/plans/2026-10-06-F006-archive-plan.md; evaluation: docs/evals/f006-archive/. Local acceptance passed; user authorized main commit and push on 2026-10-07. Evidence: docs/evals/2026-10-06-F006-archive-report.md.",
       "related_files": [
         "skills/archive/SKILL.md",
         "skills/archive/evals/evals.json"

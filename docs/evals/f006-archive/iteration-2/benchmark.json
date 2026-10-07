@@ -1,0 +1,440 @@
+{
+  "metadata": {
+    "skill_name": "harness:archive",
+    "source_revision": "1eb4738f18a38d496cb48f4eea0ba22c2b5739e4",
+    "skill_sha256": "771845291f52c32cc293f81f23dd852ceec73a82628493eb6311dba5185e5609",
+    "runs_per_configuration": 1,
+    "evals_run": [
+      6,
+      7,
+      8
+    ],
+    "executor_model": "inherited host configuration; exact ID unavailable",
+    "timestamp": "2026-10-06",
+    "scope": "Three independent mode contexts, each executing three disposable repositories. No real host lifecycle or cross-session recovery test."
+  },
+  "runs": [
+    {
+      "eval_id": 6,
+      "eval_name": "shared-spec-active-feature",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "Shared spec remains at docs/specs/shared.md while F102 is building; F102 status and its link remain valid.",
+          "passed": true,
+          "evidence": "Shared spec is unchanged; F102 remains building with original spec and valid plan link."
+        },
+        {
+          "text": "Verified F101 execution plan is moved to docs/archive/f101.md using git mv and its feature plan link is repaired.",
+          "passed": true,
+          "evidence": "Recorded git mv moves f101.md to docs/archive/f101.md; selected technical_notes points to that existing file."
+        },
+        {
+          "text": "Report identifies both features referencing the shared spec and explains the keep/move decisions.",
+          "passed": true,
+          "evidence": "Report explicitly lists F101 (done) and F102 (building) as shared spec owners, names docs/plans/f102.md as consumer, and explains plan move versus shared-design retention."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Recorded command log has no commit, Issue sync or push; report explicitly disclaims these actions."
+        }
+      ],
+      "notes": [
+        "No commit history: cannot establish seven-day addition dates.",
+        "Completed_by unknown: omitted."
+      ]
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "living-spec-completed-features",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "API spec stays at docs/specs/api.md despite both features being done.",
+          "passed": true,
+          "evidence": "docs/specs/api.md remains unchanged at its active path."
+        },
+        {
+          "text": "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+          "passed": true,
+          "evidence": "Report specifically cites src/api.py Contract comment and docs/guide.md relative link as living-contract consumers."
+        },
+        {
+          "text": "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+          "passed": true,
+          "evidence": "No archived_at present; F201 and F202 remain done and both consumer links preserve valid targets."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Recorded commands are local inspection only; report confirms no commit, Issue sync or push."
+        }
+      ],
+      "notes": [
+        "No commit history: cannot establish seven-day addition dates.",
+        "No tests provided: behavioral coverage unknown."
+      ]
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "repair-links-after-plan-move",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "pass_rate": 1.0,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 1
+      },
+      "expectations": [
+        {
+          "text": "Completed plan moves with git mv to docs/archive/f301.md, rather than being retained solely for a historical inbound link.",
+          "passed": true,
+          "evidence": "Recorded git mv targets docs/archive/f301.md, and archived plan is present while source is absent."
+        },
+        {
+          "text": "features.json technical_notes and docs/history.md relative link point to the archive; internal architecture link remains valid.",
+          "passed": true,
+          "evidence": "Feature and history links point to archive; internal ../architecture.md resolves to existing architecture file."
+        },
+        {
+          "text": "Existing owner frontmatter is preserved and archive metadata is added without duplicate frontmatter.",
+          "passed": true,
+          "evidence": "One frontmatter block retains owner and adds archived_at/feature_id; completed_by omitted because unknown."
+        },
+        {
+          "text": "Report lists concrete repaired inbound links and checks their targets; no commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Report names features.json and docs/history.md repairs and says all Markdown targets exist; command record documents link resolution and no stale references. No prohibited external actions recorded."
+        }
+      ],
+      "notes": [
+        "No commit history: cannot establish seven-day addition dates.",
+        "Completed_by unknown: omitted."
+      ]
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "shared-spec-active-feature",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Shared spec remains at docs/specs/shared.md while F102 is building; F102 status and its link remain valid.",
+          "passed": true,
+          "evidence": "Shared spec bytes remain unchanged; F102 remains building with spec docs/specs/shared.md and valid ../specs/shared.md plan link."
+        },
+        {
+          "text": "Verified F101 execution plan is moved to docs/archive/f101.md using git mv and its feature plan link is repaired.",
+          "passed": true,
+          "evidence": "Executed git mv docs/plans/f101.md docs/archive/f101.md; archived file retains plan body; F101 technical_notes points to archive."
+        },
+        {
+          "text": "Report identifies both features referencing the shared spec and explains the keep/move decisions.",
+          "passed": false,
+          "evidence": "Report names F102 as user of shared design, but does not identify F101 as another feature referencing that design. The actual feature state has both owners."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Recorded commands contain no commit, Issue sync or push; report explicitly says these did not occur."
+        }
+      ],
+      "notes": [
+        "No commit history exists; recent-file age cannot be assessed reliably.",
+        "completed_by uses the evaluation session label; no externally supplied session identifier exists."
+      ]
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "living-spec-completed-features",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "API spec stays at docs/specs/api.md despite both features being done.",
+          "passed": true,
+          "evidence": "docs/specs/api.md is present unchanged; no archive destination exists."
+        },
+        {
+          "text": "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+          "passed": false,
+          "evidence": "Report cites src/api.py and generically 用户指南, but never cites concrete docs/guide.md consumer path required by the assertion."
+        },
+        {
+          "text": "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+          "passed": true,
+          "evidence": "features.json has no archived_at; both statuses remain done; source and guide references still target existing docs/specs/api.md."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "No commit, Issue sync or push appears in recorded commands; report confirms none occurred."
+        }
+      ],
+      "notes": [
+        "No commit history exists; recent-file age cannot be assessed reliably."
+      ]
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "repair-links-after-plan-move",
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Completed plan moves with git mv to docs/archive/f301.md, rather than being retained solely for a historical inbound link.",
+          "passed": true,
+          "evidence": "Recorded git mv targets docs/archive/f301.md despite history inbound link; archive retains plan body."
+        },
+        {
+          "text": "features.json technical_notes and docs/history.md relative link point to the archive; internal architecture link remains valid.",
+          "passed": true,
+          "evidence": "technical_notes points to docs/archive/f301.md; docs/history.md links archive/f301.md; archive ../architecture.md resolves to existing docs/architecture.md."
+        },
+        {
+          "text": "Existing owner frontmatter is preserved and archive metadata is added without duplicate frontmatter.",
+          "passed": true,
+          "evidence": "Single initial frontmatter block contains owner: release-team and archived_at/completed_by/feature_id; no duplicate block."
+        },
+        {
+          "text": "Report lists concrete repaired inbound links and checks their targets; no commit, Issue sync or push occurs.",
+          "passed": false,
+          "evidence": "Report lists feature/history repairs and claims internal architecture link is correct, but no recorded link-target check or report verification of repaired inbound targets exists. git diff --check verifies whitespace, not links."
+        }
+      ],
+      "notes": [
+        "No commit history exists; recent-file age cannot be assessed reliably.",
+        "completed_by uses the evaluation session label; no externally supplied session identifier exists."
+      ]
+    },
+    {
+      "eval_id": 6,
+      "eval_name": "shared-spec-active-feature",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Shared spec remains at docs/specs/shared.md while F102 is building; F102 status and its link remain valid.",
+          "passed": true,
+          "evidence": "Shared spec remains unchanged and F102 status/link remain valid."
+        },
+        {
+          "text": "Verified F101 execution plan is moved to docs/archive/f101.md using git mv and its feature plan link is repaired.",
+          "passed": false,
+          "evidence": "git mv targets docs/archive/plans/f101.md, not the asserted docs/archive/f101.md. Feature link is repaired to the chosen destination."
+        },
+        {
+          "text": "Report identifies both features referencing the shared spec and explains the keep/move decisions.",
+          "passed": false,
+          "evidence": "Report names F102 as shared-spec consumer but does not identify F101 shared ownership. Embedded rg output shows two spec lines without feature IDs."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Command log shows only local init/add/search/move/repair/check; report confirms no prohibited external actions."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "eval_name": "living-spec-completed-features",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "pass_rate": 0.75,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "API spec stays at docs/specs/api.md despite both features being done.",
+          "passed": false,
+          "evidence": "Spec moved to docs/archive/specs/api.md and original active path is absent."
+        },
+        {
+          "text": "Report cites src/api.py and docs/guide.md as living consumers, not merely shared feature ownership.",
+          "passed": true,
+          "evidence": "Report and embedded command transcript explicitly cite src/api.py contract comment and docs/guide.md user-guide link, and uncertainty text recognizes the contract remains living."
+        },
+        {
+          "text": "No archived_at is invented when nothing moves; done statuses and valid consumer links are preserved.",
+          "passed": true,
+          "evidence": "No archived_at is added; both statuses remain done; source and guide references are repaired and target the relocated existing contract. Nothing-moves antecedent does not apply, but its timestamp prohibition and preserved status/link clauses hold."
+        },
+        {
+          "text": "No commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Recorded commands have no prohibited action; report confirms no commits, Issue sync or push."
+        }
+      ],
+      "notes": [
+        "API contract remains referenced by live source and user guide. Interpreted explicit archive request as relocating it while repairing all references; future contract updates may still be necessary."
+      ]
+    },
+    {
+      "eval_id": 8,
+      "eval_name": "repair-links-after-plan-move",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "pass_rate": 0.5,
+        "time_seconds": null,
+        "tokens": null,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Completed plan moves with git mv to docs/archive/f301.md, rather than being retained solely for a historical inbound link.",
+          "passed": false,
+          "evidence": "Executed git mv to docs/archive/plans/f301.md, not asserted docs/archive/f301.md; did archive despite historical link."
+        },
+        {
+          "text": "features.json technical_notes and docs/history.md relative link point to the archive; internal architecture link remains valid.",
+          "passed": true,
+          "evidence": "Feature technical_notes and history link target actual archived plan; corrected ../../architecture.md resolves from archive/plans to existing docs/architecture.md."
+        },
+        {
+          "text": "Existing owner frontmatter is preserved and archive metadata is added without duplicate frontmatter.",
+          "passed": false,
+          "evidence": "owner frontmatter preserved, but no archive metadata was added."
+        },
+        {
+          "text": "Report lists concrete repaired inbound links and checks their targets; no commit, Issue sync or push occurs.",
+          "passed": true,
+          "evidence": "Embedded command report names feature/history/internal repairs and records successful assertion that all Markdown relative targets exist. No commits, Issue sync or push recorded."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null
+      }
+    },
+    "old_skill": {
+      "pass_rate": {
+        "mean": 0.75,
+        "stddev": 0.0,
+        "min": 0.75,
+        "max": 0.75
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.5833333333333334,
+        "stddev": 0.14433756729740643,
+        "min": 0.5,
+        "max": 0.75
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.4167",
+      "time_seconds": "unknown",
+      "tokens": "unknown"
+    }
+  },
+  "notes": [
+    "Timing/tokens/cost unavailable and null, never inferred from output length.",
+    "One sample per case and mode. Report-quality assertions and file-state assertions are mixed; totals do not measure general task success.",
+    "Old skill already preserves shared/living specs; examine individual findings before inferring improvement.",
+    "Human viewer review pending."
+  ]
+}

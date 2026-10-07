@@ -28,45 +28,25 @@ description: >
 
 ## Archiving Workflow
 
-### Step 1: Classify and Archive Completed Artifacts
+### Step 1: Archive Completed Specs
 
-Read root `features.json` (fall back to `docs/features.json` for legacy projects).
-Use the selected completed feature's `spec`, plan links and related files to find
-candidates; do not infer filenames from its ID or archive unrelated historical work.
-Process each candidate once, even when several features share it.
+Check `features.json` (repo root; fall back to `docs/features.json` for legacy projects) for features with `status: "done"`:
 
-Before moving a candidate, inspect all feature references and repository inbound
-references, including relative Markdown links, source comments, scripts and user
-documentation. Search its path and filename (for example with `rg`), resolve links
-relative to their referring files, and distinguish actual consumers from historical
-mentions. In the report, list every referring feature ID (including completed
-co-owners), concrete consumer paths and the reason for each keep/move decision.
+```
+For each completed feature:
+  1. If a corresponding design document exists (docs/specs/F-xxx.md or docs/plans/F-xxx.md)
+     -> inspect active references before moving; a shared/live document stays in place
+     -> for eligible completed artifacts, git mv to docs/archive/ and update references (preserve git history)
+  2. Prepend completion metadata at the top of the archived file:
+     ---
+     archived_at: {{TIMESTAMP}}
+     completed_by: {{SESSION_ID}}
+     feature_id: F-xxx
+     ---
+  3. Update features.json: add the archived_at field
+```
 
-- **Shared spec:** retain it while any referring feature is not `done`. Completion
-  of one feature does not complete a shared design.
-- **Living spec:** even when all referring features are `done`, retain a spec still
-  used as a contract or explanation by released code, scripts or user documentation.
-  Repairable bookkeeping links alone do not make a document a living contract.
-- **Execution plan:** archive after its work is verified complete and it is no longer
-  needed by active work. Historical links may be updated; a finished plan does not
-  become living documentation merely because it has inbound links.
-- **Unknown:** if completion or reference use cannot be established, retain the
-  candidate and report the missing evidence rather than claiming it is safe to move.
-
-For eligible artifacts, first list the inbound links that need repair and check
-that `docs/archive/<filename>` does not already contain a different file. If it
-conflicts, retain the source and report the conflict; do not overwrite the target.
-Use `git mv` to preserve traceable history, update affected feature paths and other
-repairable links, then verify the new targets and check for stale active references.
-Keep unrelated fields and documents unchanged. No commit, Issue sync, push or deploy
-is implied by archiving.
-
-Prepend archive metadata to moved files, preserving any existing frontmatter:
-`archived_at`, `completed_by` (only when known), and `feature_id` or `feature_ids`
-for shared artifacts. Set the selected feature's `archived_at` only after its
-eligible artifacts and reference repairs are complete. If all candidates stay in
-place, report that outcome without inventing an archive timestamp. Retaining a
-living/shared spec does not revoke the feature's verified `done` status.
+**Directory convention**: The archive directory is always `docs/archive/`. Create it if it does not exist. Use `git mv` instead of copy+delete to ensure `git log --follow` can trace the full history.
 
 ### Step 2: Documentation Consistency Check
 
@@ -103,14 +83,6 @@ Output format:
 
 ### Archived
 - F-001: User Login -> docs/archive/F-001-user-login.md
-
-### Retained / Unknown
-- docs/specs/shared-design.md: retained; F-002 is still building
-
-### Reference Repairs
-- features.json: spec path updated after move
-- docs/guide.md: relative link repaired and target checked
-- List unresolved links or archive conflicts; do not report them as verified
 
 ### Documentation Drift
 - [Critical] docs/architecture.md missing description for src/services/notification/
